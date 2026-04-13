@@ -6,7 +6,8 @@ import { deepRetirementApi } from '@/lib/api';
 const RetirementCalculator = () => {
   const [currentAge, setCurrentAge] = useState<number>(30);
   const [retirementAge, setRetirementAge] = useState<number>(65);
-  const [currentSavings, setCurrentSavings] = useState<number>(50000);
+  const [liquidAssets, setLiquidAssets] = useState<number>(50000);
+  const [illiquidAssets, setIlliquidAssets] = useState<number>(200000);
   const [monthlyContribution, setMonthlyContribution] = useState<number>(1000);
   const [annualReturnRate, setAnnualReturnRate] = useState<number>(7);
   const [socialSecurityAge, setSocialSecurityAge] = useState<number>(67);
@@ -14,7 +15,8 @@ const RetirementCalculator = () => {
   
   const [results, setResults] = useState<{
     yearsToRetirement: number;
-    totalSavingsAtRetirement: number;
+    totalLiquidSavingsAtRetirement: number;
+    totalNetWorthAtRetirement: number;
     monthlyIncomeAtRetirement: number;
     socialSecurityBenefit: number;
     withdrawalRate: number;
@@ -28,7 +30,7 @@ const RetirementCalculator = () => {
 
   useEffect(() => {
     calculateDeepRetirement();
-  }, [currentAge, retirementAge, currentSavings, monthlyContribution, annualReturnRate, socialSecurityAge, expectedLifespan]);
+  }, [currentAge, retirementAge, liquidAssets, illiquidAssets, monthlyContribution, annualReturnRate, socialSecurityAge, expectedLifespan]);
 
   const formatCurrency = (value: number): string => {
     if (!value && value !== 0) return 'N/A';
@@ -55,7 +57,8 @@ const RetirementCalculator = () => {
       const requestData = {
         current_age: currentAge,
         retirement_age: retirementAge,
-        current_savings: currentSavings,
+        liquid_assets: liquidAssets,
+        illiquid_assets: illiquidAssets,
         monthly_contribution: monthlyContribution,
         annual_return_rate: annualReturnRate / 100,  // Convert percentage to decimal
         social_security_age: socialSecurityAge,
@@ -120,15 +123,30 @@ const RetirementCalculator = () => {
             
             <div>
               <label className="block text-gray-700 text-sm font-bold mb-2">
-                Current Savings
+                Liquid Assets
               </label>
               <input
                 type="number"
-                value={currentSavings}
-                onChange={(e) => setCurrentSavings(Number(e.target.value))}
+                value={liquidAssets}
+                onChange={(e) => setLiquidAssets(Number(e.target.value))}
                 className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 min="0"
               />
+              <p className="text-xs text-gray-500 mt-1">Savings, stocks, bonds, and other easily accessible funds</p>
+            </div>
+            
+            <div>
+              <label className="block text-gray-700 text-sm font-bold mb-2">
+                Illiquid Assets
+              </label>
+              <input
+                type="number"
+                value={illiquidAssets}
+                onChange={(e) => setIlliquidAssets(Number(e.target.value))}
+                className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                min="0"
+              />
+              <p className="text-xs text-gray-500 mt-1">Real estate, private equity, and other non-easily-accessible assets</p>
             </div>
             
             <div>
@@ -198,22 +216,28 @@ const RetirementCalculator = () => {
             </div>
           ) : results ? (
             <div className="space-y-4">
-              {/* Total Savings at Retirement */}
+              {/* Total Net Worth at Retirement */}
               <div className="bg-green-50 p-4 rounded-lg border-l-4 border-green-500">
-                <p className="text-gray-600 text-sm">Total Savings at Retirement</p>
-                <p className="text-2xl font-bold text-green-700">{formatCurrency(results.totalSavingsAtRetirement)}</p>
+                <p className="text-gray-600 text-sm">Total Net Worth at Retirement</p>
+                <p className="text-2xl font-bold text-green-700">{formatCurrency(results.totalNetWorthAtRetirement)}</p>
+              </div>
+              
+              {/* Total Liquid Savings */}
+              <div className="bg-blue-50 p-4 rounded-lg border-l-4 border-blue-500">
+                <p className="text-gray-600 text-sm">Total Liquid Savings at Retirement</p>
+                <p className="text-xl font-bold text-blue-700">{formatCurrency(results.totalLiquidSavingsAtRetirement)}</p>
               </div>
               
               {/* Monthly Income */}
-              <div className="bg-blue-50 p-4 rounded-lg border-l-4 border-blue-500">
+              <div className="bg-purple-50 p-4 rounded-lg border-l-4 border-purple-500">
                 <p className="text-gray-600 text-sm">Monthly Income at Retirement</p>
-                <p className="text-xl font-bold text-blue-700">{formatCurrency(results.monthlyIncomeAtRetirement)}</p>
+                <p className="text-xl font-bold text-purple-700">{formatCurrency(results.monthlyIncomeAtRetirement)}</p>
               </div>
               
               {/* Social Security Benefit */}
-              <div className="bg-purple-50 p-4 rounded-lg border-l-4 border-purple-500">
+              <div className="bg-teal-50 p-4 rounded-lg border-l-4 border-teal-500">
                 <p className="text-gray-600 text-sm">Social Security Benefit (Monthly)</p>
-                <p className="text-xl font-bold text-purple-700">{formatCurrency(results.socialSecurityBenefit)}</p>
+                <p className="text-xl font-bold text-teal-700">{formatCurrency(results.socialSecurityBenefit)}</p>
               </div>
               
               {/* Safe Withdrawal Amount */}
@@ -224,9 +248,9 @@ const RetirementCalculator = () => {
               
               {/* Projected Balance at 90 */}
               {results.projectedBalanceAtAge90 > 0 && (
-                <div className="bg-teal-50 p-4 rounded-lg border-l-4 border-teal-500">
+                <div className="bg-indigo-50 p-4 rounded-lg border-l-4 border-indigo-500">
                   <p className="text-gray-600 text-sm">Projected Balance at Age 90</p>
-                  <p className="text-xl font-bold text-teal-700">{formatCurrency(results.projectedBalanceAtAge90)}</p>
+                  <p className="text-xl font-bold text-indigo-700">{formatCurrency(results.projectedBalanceAtAge90)}</p>
                 </div>
               )}
               
@@ -237,15 +261,15 @@ const RetirementCalculator = () => {
               </div>
               
               {/* Years to Retirement */}
-              <div className="bg-indigo-50 p-4 rounded-lg">
+              <div className="bg-yellow-50 p-4 rounded-lg border-l-4 border-yellow-500">
                 <p className="text-gray-600 text-sm">Years Until Retirement</p>
-                <p className="text-xl font-bold text-indigo-700">{results.yearsToRetirement} years</p>
+                <p className="text-xl font-bold text-yellow-700">{results.yearsToRetirement} years</p>
               </div>
               
               {/* Recommended Strategy */}
-              <div className="bg-yellow-50 p-4 rounded-lg border-l-4 border-yellow-500">
+              <div className="bg-pink-50 p-4 rounded-lg border-l-4 border-pink-500">
                 <p className="text-gray-600 text-sm font-semibold">Recommended Strategy</p>
-                <p className="text-base text-yellow-800 mt-1">{results.recommendedWithdrawalStrategy}</p>
+                <p className="text-base text-pink-800 mt-1">{results.recommendedWithdrawalStrategy}</p>
               </div>
             </div>
           ) : (

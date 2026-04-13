@@ -203,7 +203,8 @@ def calculate_deep_retirement_projection(input_data: Dict[str, Any]) -> Dict[str
     # Extract inputs
     current_age = input_data['current_age']
     retirement_age = input_data['retirement_age']
-    current_savings = input_data['current_savings']
+    liquid_assets = input_data['liquid_assets']
+    illiquid_assets = input_data.get('illiquid_assets', 0.0)
     monthly_contribution = input_data['monthly_contribution']
     annual_return_rate = input_data['annual_return_rate']
     social_security_age = input_data.get('social_security_age', 67)
@@ -216,13 +217,16 @@ def calculate_deep_retirement_projection(input_data: Dict[str, Any]) -> Dict[str
     if years_to_retirement <= 0:
         raise ValueError("Retirement age must be greater than current age")
     
-    # Calculate total savings at retirement
-    total_savings_at_retirement = calculate_future_value_with_contributions(
-        current_savings=current_savings,
+    # Calculate total liquid savings at retirement (only liquid assets earn returns)
+    total_liquid_savings_at_retirement = calculate_future_value_with_contributions(
+        current_savings=liquid_assets,
         monthly_contribution=monthly_contribution,
         annual_return_rate=annual_return_rate,
         years=years_to_retirement
     )
+    
+    # Total net worth includes both liquid and illiquid assets
+    total_net_worth_at_retirement = total_liquid_savings_at_retirement + illiquid_assets
     
     # Estimate Social Security benefit (simplified: ~$2,500/month at FRA 67)
     social_security_fra = 2500  # Full retirement age benefit
@@ -231,10 +235,10 @@ def calculate_deep_retirement_projection(input_data: Dict[str, Any]) -> Dict[str
         claimed_age=social_security_age
     )
     
-    # Calculate withdrawal strategies
+    # Calculate withdrawal strategies based on liquid savings
     remaining_years = expected_lifespan - retirement_age
     withdrawal_strategies = calculate_withdrawal_strategy(
-        total_savings=total_savings_at_retirement,
+        total_savings=total_liquid_savings_at_retirement,
         years_to_live=remaining_years,
         annual_return_rate=annual_return_rate,
         inflation_rate=inflation_rate
@@ -248,7 +252,7 @@ def calculate_deep_retirement_projection(input_data: Dict[str, Any]) -> Dict[str
     )
     
     # Project balance at age 90
-    projected_balance = total_savings_at_retirement
+    projected_balance = total_liquid_savings_at_retirement
     annual_withdrawal = safe_withdrawal_amount
     
     for year in range(remaining_years):
@@ -258,8 +262,8 @@ def calculate_deep_retirement_projection(input_data: Dict[str, Any]) -> Dict[str
             projected_balance = 0
             break
     
-    # Calculate withdrawal rate
-    withdrawal_rate = safe_withdrawal_amount / total_savings_at_retirement if total_savings_at_retirement > 0 else 0
+    # Calculate withdrawal rate based on liquid savings
+    withdrawal_rate = safe_withdrawal_amount / total_liquid_savings_at_retirement if total_liquid_savings_at_retirement > 0 else 0
     
     # Determine recommended strategy based on time horizon
     if years_to_retirement < 10:
@@ -270,11 +274,11 @@ def calculate_deep_retirement_projection(input_data: Dict[str, Any]) -> Dict[str
         strategy = "Aggressive: Focus on growth with room for higher early retirement spending"
     
     # Calculate inflation-adjusted savings
-    inflation_adjusted_savings = total_savings_at_retirement / ((1 + inflation_rate) ** years_to_retirement)
+    inflation_adjusted_savings = total_liquid_savings_at_retirement / ((1 + inflation_rate) ** years_to_retirement)
     
     # Calculate Monte Carlo success rate (simplified - using fewer simulations for performance)
     mc_success_rate = calculate_monte_carlo_success_rate(
-        total_savings=total_savings_at_retirement,
+        total_savings=total_liquid_savings_at_retirement,
         annual_withdrawal=safe_withdrawal_amount,
         annual_return_rate=annual_return_rate,
         volatility=0.12,
@@ -284,7 +288,8 @@ def calculate_deep_retirement_projection(input_data: Dict[str, Any]) -> Dict[str
     
     return {
         'years_to_retirement': years_to_retirement,
-        'total_savings_at_retirement': round(total_savings_at_retirement, 2),
+        'total_liquid_savings_at_retirement': round(total_liquid_savings_at_retirement, 2),
+        'total_net_worth_at_retirement': round(total_net_worth_at_retirement, 2),
         'monthly_income_at_retirement': round(monthly_income_at_retirement, 2),
         'social_security_benefit': round(social_security_benefit, 2),
         'withdrawal_rate': round(withdrawal_rate, 4),
@@ -313,7 +318,8 @@ def compare_scenarios(scenarios: List[Dict[str, Any]]) -> Dict[str, Any]:
     # Extract key metrics from each scenario
     comparison_metrics = {}
     metric_names = [
-        'total_savings_at_retirement',
+        'total_liquid_savings_at_retirement',
+        'total_net_worth_at_retirement',
         'monthly_income_at_retirement', 
         'social_security_benefit',
         'safe_withdrawal_amount',
