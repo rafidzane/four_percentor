@@ -34,7 +34,8 @@ class DeepRetirementInput(BaseModel):
     """Input parameters for deep retirement planning"""
     current_age: int = Field(..., ge=18, le=100)
     retirement_age: int = Field(..., ge=50, le=100)
-    current_savings: float = Field(..., ge=0)
+    liquid_assets: float = Field(..., ge=0)
+    illiquid_assets: Optional[float] = Field(default=0.0, ge=0)
     monthly_contribution: float = Field(..., ge=0)
     annual_return_rate: float = Field(..., ge=0, le=1)  # 0-1 (e.g., 0.07 for 7%)
     social_security_age: Optional[int] = Field(default=67, ge=62, le=70)
@@ -44,7 +45,8 @@ class DeepRetirementInput(BaseModel):
 class DeepRetirementProjection(BaseModel):
     """Deep retirement projection output"""
     years_to_retirement: int
-    total_savings_at_retirement: float
+    total_liquid_savings_at_retirement: float
+    total_net_worth_at_retirement: float
     monthly_income_at_retirement: float
     social_security_benefit: float
     withdrawal_rate: float
@@ -65,12 +67,12 @@ def calculate_deep_retirement_projection(input_data: DeepRetirementInput) -> Dee
             detail="Retirement age must be greater than current age"
         )
     
-    # Calculate compound growth with monthly contributions
+    # Calculate compound growth with monthly contributions (only on liquid assets)
     monthly_return_rate = input_data.annual_return_rate / 12
     total_months = years_to_retirement * 12
     
-    # Future value of current savings
-    future_value_current = input_data.current_savings * ((1 + monthly_return_rate) ** total_months)
+    # Future value of current liquid savings
+    future_value_current = input_data.liquid_assets * ((1 + monthly_return_rate) ** total_months)
     
     # Future value of monthly contributions (annuity formula)
     if monthly_return_rate > 0:
@@ -81,7 +83,10 @@ def calculate_deep_retirement_projection(input_data: DeepRetirementInput) -> Dee
     else:
         future_value_contributions = input_data.monthly_contribution * total_months
     
-    total_savings_at_retirement = future_value_current + future_value_contributions
+    total_liquid_savings_at_retirement = future_value_current + future_value_contributions
+    
+    # Total net worth includes illiquid assets
+    total_net_worth_at_retirement = total_liquid_savings_at_retirement + (input_data.illiquid_assets or 0)
     
     # Estimate Social Security benefit (simplified: ~$2,500/month at full retirement age 67)
     # Benefit increases ~8% per year for delaying past FRA
@@ -96,8 +101,8 @@ def calculate_deep_retirement_projection(input_data: DeepRetirementInput) -> Dee
         reduction_rate = 0.05 / 12  # 5% per year, divided by 12 months
         social_security_benefit = social_security_fra * max(0.3, (1 - reduction_rate * months_early))
     
-    # Calculate withdrawal amounts using 4% rule
-    safe_withdrawal_amount = total_savings_at_retirement * 0.04  # 4% rule
+    # Calculate withdrawal amounts using 4% rule on liquid savings
+    safe_withdrawal_amount = total_liquid_savings_at_retirement * 0.04  # 4% rule
     
     monthly_income_at_retirement = (
         (safe_withdrawal_amount / 12) + 
@@ -108,7 +113,7 @@ def calculate_deep_retirement_projection(input_data: DeepRetirementInput) -> Dee
     remaining_years = input_data.expected_lifespan - input_data.retirement_age
     annual_withdrawal = safe_withdrawal_amount
     
-    projected_balance = total_savings_at_retirement
+    projected_balance = total_liquid_savings_at_retirement
     for year in range(remaining_years):
         # Earn return on balance, then withdraw
         projected_balance = projected_balance * (1 + input_data.annual_return_rate) - annual_withdrawal
@@ -117,7 +122,7 @@ def calculate_deep_retirement_projection(input_data: DeepRetirementInput) -> Dee
             projected_balance = 0
             break
     
-    withdrawal_rate = safe_withdrawal_amount / total_savings_at_retirement if total_savings_at_retirement > 0 else 0
+    withdrawal_rate = safe_withdrawal_amount / total_liquid_savings_at_retirement if total_liquid_savings_at_retirement > 0 else 0
     
     # Determine recommended withdrawal strategy
     if years_to_retirement < 10:
@@ -129,7 +134,8 @@ def calculate_deep_retirement_projection(input_data: DeepRetirementInput) -> Dee
     
     return DeepRetirementProjection(
         years_to_retirement=years_to_retirement,
-        total_savings_at_retirement=round(total_savings_at_retirement, 2),
+        total_liquid_savings_at_retirement=round(total_liquid_savings_at_retirement, 2),
+        total_net_worth_at_retirement=round(total_net_worth_at_retirement, 2),
         monthly_income_at_retirement=round(monthly_income_at_retirement, 2),
         social_security_benefit=round(social_security_benefit, 2),
         withdrawal_rate=round(withdrawal_rate, 4),
@@ -149,8 +155,9 @@ async def calculate_deep_retirement_plan(request: DeepRetirementInput):
     Features:
     - Monthly contribution projections
     - Social Security benefit estimation
-    - 4% rule withdrawal planning
+    - 4% rule withdrawal planning (on liquid assets)
     - Balance projection to age 90
+    - Total net worth calculation (liquid + illiquid)
     - Personalized withdrawal strategy recommendation
     """
     try:

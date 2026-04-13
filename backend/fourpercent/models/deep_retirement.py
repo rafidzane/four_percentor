@@ -15,7 +15,9 @@ class DeepRetirementInput(BaseModel):
     
     current_age: int = Field(..., ge=18, le=100, description="Current age of the user")
     retirement_age: int = Field(..., ge=50, le=100, description="Desired retirement age")
-    current_savings: float = Field(..., ge=0, description="Current total savings")
+    liquid_assets: float = Field(..., ge=0, description="Liquid assets (savings, stocks, bonds)")
+    illiquid_assets: Optional[float] = Field(default=0.0, ge=0, 
+                                              description="Illiquid assets (real estate, private equity)")
     monthly_contribution: float = Field(..., ge=0, description="Monthly contribution to retirement")
     annual_return_rate: float = Field(..., ge=0, le=1, description="Expected annual return rate (0-1)")
     
@@ -37,7 +39,8 @@ class DeepRetirementProjection(BaseModel):
     """Deep retirement projection output"""
     
     years_to_retirement: int
-    total_savings_at_retirement: float
+    total_liquid_savings_at_retirement: float
+    total_net_worth_at_retirement: float
     monthly_income_at_retirement: float
     social_security_benefit: float
     withdrawal_rate: float
