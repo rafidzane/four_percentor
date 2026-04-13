@@ -1,17 +1,17 @@
 # Next.js Admin Template with TypeScript & Shadcn UI
 
-**Studio Admin** - Includes multiple dashboards, authentication layouts, customizable theme presets, and more.
+**FourPercentor** - Includes multiple dashboards, authentication layouts, customizable theme presets, and more.
 
 <img src="https://github.com/arhamkhnz/next-shadcn-admin-dashboard/blob/main/media/dashboard.png?version=5" alt="Dashboard Screenshot">
 
 Most admin templates I found, free or paid, felt cluttered, outdated, or too rigid. I built this as a cleaner alternative with features often missing in others, such as theme toggling and layout controls, while keeping the design modern, minimal, and flexible.
 
-I’ve taken design inspiration from various sources. If you’d like credit for something specific, feel free to open an issue or reach out.
+I've taken design inspiration from various sources. If you'd like credit for something specific, feel free to open an issue or reach out.
 
-> **View demo:** [studio admin](https://next-shadcn-admin-dashboard.vercel.app)
+> **View demo:** [fourpercentor](https://next-shadcn-admin-dashboard.vercel.app)
 
 > [!TIP]
-> I’m also working on Nuxt.js, Svelte, and React (Vite + TanStack Router) versions of this dashboard. They’ll be live soon.
+> I'm also working on Nuxt.js, Svelte, and React (Vite + TanStack Router) versions of this dashboard. They'll be live soon.
 
 ## Features
 
@@ -123,7 +123,7 @@ npx @biomejs/biome check --write
 ---
 
 > [!IMPORTANT]  
-> This project is updated frequently. If you’re working from a fork or an older clone, pull the latest changes before syncing. Some updates may include breaking changes.
+> This project is updated frequently. If you're working from a fork or an older clone, pull the latest changes before syncing. Some updates may include breaking changes.
 
 ---
 

@@ -1,6 +1,6 @@
-# Contributing to Studio Admin
+# Contributing to FourPercentor
 
-Thanks for showing interest in improving **Studio Admin** (repo: `next-shadcn-admin-dashboard`).  
+Thanks for showing interest in improving **FourPercentor** (repo: `next-shadcn-admin-dashboard`).  
 This guide will help you set up your environment and understand how to contribute.
 
 ---
@@ -34,7 +34,7 @@ src
 └── types             # TypeScript definitions
 ```
 
-If you’d like a more detailed example of this setup, check out the [Next Colocation Template](https://github.com/arhamkhnz/next-colocation-template), where the full structure is explained with examples.
+If you'd like a more detailed example of this setup, check out the [Next Colocation Template](https://github.com/arhamkhnz/next-colocation-template), where the full structure is explained with examples.
 
 ---
 
@@ -43,7 +43,7 @@ If you’d like a more detailed example of this setup, check out the [Next Coloc
 ### Fork and Clone the Repository
 
 1. Fork the Repository
-   
+  
    Click [here](https://github.com/arhamkhnz/next-shadcn-admin-dashboard/fork) to fork the repository.
 
 2. Clone the Repository  

@@ -1,0 +1,24 @@
+from fastapi import FastAPI
+import uvicorn
+from fourpercent.api.retirement_api import app as retirement_app
+from fourpercent.api.health_api import router as health_router
+
+# Create the main FastAPI app
+app = FastAPI(
+    title="Four Percentor API",
+    version="1.0.0",
+    root_path="/fourpercent"
+)
+
+# Include the retirement API routes
+app.mount("/fourpercent/api/v1/retirement", retirement_app, name="retirement")
+
+# Include the health API routes
+app.include_router(health_router, prefix="/fourpercent/api/v1")
+
+@app.get("/")
+async def root():
+    return {"message": "Four Percentor API is running"}
+
+if __name__ == "__main__":
+    uvicorn.run(app, host="0.0.0.0", port=8000)

@@ -4,6 +4,15 @@ const nextConfig = {
   compiler: {
     removeConsole: process.env.NODE_ENV === "production",
   },
+  async rewrites() {
+    return [
+      // Proxy all /fourpercent/api/* requests to backend
+      {
+        source: '/fourpercent/api/:path*',
+        destination: 'http://localhost:8000/fourpercent/api/:path*',
+      },
+    ];
+  },
   async redirects() {
     return [
       {
