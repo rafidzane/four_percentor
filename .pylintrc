@@ -1,0 +1,10 @@
+[MASTER]
+
+# Analysis options
+ignore=.venv,venv,.git,__pycache__,.opencode,node_modules
+
+# Source code directories
+source-roots=backend
+
+# Dead code detection
+disable=missing-module-docstring,missing-function-docstring,missing-class-docstring,too-few-public-methods,too-many-public-methods,too-many-arguments,too-many-locals,too-many-instance-attributes,too-many-branches,too-many-statements,invalid-name,bad-builtin,global-statement,unused-argument,unused-variable,wrong-import-order,wrong-import-position,protected-access,redefined-builtin,global-variable-not-assigned,attribute-defined-outside-init

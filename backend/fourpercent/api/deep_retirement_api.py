@@ -8,11 +8,10 @@ This module provides advanced retirement planning calculations including:
 - Tax optimization recommendations
 """
 
-from fastapi import FastAPI, HTTPException, status
+from fastapi import FastAPI, HTTPException, status, Request
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field, field_validator
-from typing import Optional, List
-import math
+from typing import Optional
 
 # Create a new app instance for deep retirement API
 app = FastAPI(
@@ -41,6 +40,20 @@ class DeepRetirementInput(BaseModel):
     social_security_age: Optional[int] = Field(default=67, ge=62, le=70)
     expected_lifespan: int = Field(default=90, ge=50, le=120)
 
+    @field_validator('current_age', 'retirement_age', 'social_security_age', 'expected_lifespan')
+    @classmethod
+    def validate_int_fields(cls, v):
+        if isinstance(v, str):
+            return int(float(v))
+        return int(v)
+    
+    @field_validator('liquid_assets', 'illiquid_assets', 'monthly_contribution', 'annual_return_rate')
+    @classmethod
+    def validate_float_fields(cls, v):
+        if isinstance(v, str):
+            return float(v)
+        return float(v)
+
 
 class DeepRetirementProjection(BaseModel):
     """Deep retirement projection output"""
@@ -53,6 +66,15 @@ class DeepRetirementProjection(BaseModel):
     projected_balance_at_age_90: float
     safe_withdrawal_amount: float
     recommended_withdrawal_strategy: str
+
+
+@app.exception_handler(Exception)
+async def generic_exception_handler(request: Request, exc: Exception):
+    """Handle all exceptions and return proper error responses"""
+    return JSONResponse(
+        status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        content={"detail": f"Internal server error: {str(exc)}"}
+    )
 
 
 def calculate_deep_retirement_projection(input_data: DeepRetirementInput) -> DeepRetirementProjection:

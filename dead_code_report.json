@@ -1,0 +1,603 @@
+{
+  "summary": {
+    "total_findings": 57,
+    "findings_by_severity": {
+      "critical": 0,
+      "high": 11,
+      "medium": 8,
+      "low": 38
+    }
+  },
+  "findings": [
+    {
+      "type": "import",
+      "severity": "low",
+      "confidence": "high",
+      "file_path": "backend/main.py",
+      "line_number": 0,
+      "name": "fourpercent.api.health_api",
+      "description": "Unused import: fourpercent.api.health_api",
+      "context": ""
+    },
+    {
+      "type": "import",
+      "severity": "low",
+      "confidence": "high",
+      "file_path": "backend/main.py",
+      "line_number": 0,
+      "name": "fastapi",
+      "description": "Unused import: fastapi",
+      "context": ""
+    },
+    {
+      "type": "import",
+      "severity": "low",
+      "confidence": "high",
+      "file_path": "backend/main.py",
+      "line_number": 0,
+      "name": "fourpercent.api.deep_retirement_api",
+      "description": "Unused import: fourpercent.api.deep_retirement_api",
+      "context": ""
+    },
+    {
+      "type": "import",
+      "severity": "low",
+      "confidence": "high",
+      "file_path": "backend/main.py",
+      "line_number": 0,
+      "name": "fastapi.middleware.cors",
+      "description": "Unused import: fastapi.middleware.cors",
+      "context": ""
+    },
+    {
+      "type": "import",
+      "severity": "low",
+      "confidence": "high",
+      "file_path": "backend/main.py",
+      "line_number": 0,
+      "name": "fourpercent.api.retirement_api",
+      "description": "Unused import: fourpercent.api.retirement_api",
+      "context": ""
+    },
+    {
+      "type": "import",
+      "severity": "low",
+      "confidence": "high",
+      "file_path": "backend/test_retirement_api.py",
+      "line_number": 0,
+      "name": "json",
+      "description": "Unused import: json",
+      "context": ""
+    },
+    {
+      "type": "import",
+      "severity": "low",
+      "confidence": "high",
+      "file_path": "backend/fourpercent/main.py",
+      "line_number": 0,
+      "name": "fourpercent.api.health_api",
+      "description": "Unused import: fourpercent.api.health_api",
+      "context": ""
+    },
+    {
+      "type": "import",
+      "severity": "low",
+      "confidence": "high",
+      "file_path": "backend/fourpercent/main.py",
+      "line_number": 0,
+      "name": "fastapi",
+      "description": "Unused import: fastapi",
+      "context": ""
+    },
+    {
+      "type": "import",
+      "severity": "low",
+      "confidence": "high",
+      "file_path": "backend/fourpercent/main.py",
+      "line_number": 0,
+      "name": "fourpercent.api.deep_retirement_api",
+      "description": "Unused import: fourpercent.api.deep_retirement_api",
+      "context": ""
+    },
+    {
+      "type": "import",
+      "severity": "low",
+      "confidence": "high",
+      "file_path": "backend/fourpercent/main.py",
+      "line_number": 0,
+      "name": "fourpercent.api.retirement_api",
+      "description": "Unused import: fourpercent.api.retirement_api",
+      "context": ""
+    },
+    {
+      "type": "import",
+      "severity": "low",
+      "confidence": "high",
+      "file_path": "backend/fourpercent/calculation/deep_retirement.py",
+      "line_number": 0,
+      "name": "typing",
+      "description": "Unused import: typing",
+      "context": ""
+    },
+    {
+      "type": "function",
+      "severity": "medium",
+      "confidence": "medium",
+      "file_path": "backend/fourpercent/calculation/deep_retirement.py",
+      "line_number": 0,
+      "name": "calculate_deep_retirement_projection",
+      "description": "Unused function: calculate_deep_retirement_projection",
+      "context": ""
+    },
+    {
+      "type": "function",
+      "severity": "medium",
+      "confidence": "medium",
+      "file_path": "backend/fourpercent/calculation/deep_retirement.py",
+      "line_number": 0,
+      "name": "compare_scenarios",
+      "description": "Unused function: compare_scenarios",
+      "context": ""
+    },
+    {
+      "type": "import",
+      "severity": "low",
+      "confidence": "high",
+      "file_path": "backend/fourpercent/api/__init__.py",
+      "line_number": 0,
+      "name": "retirement_api",
+      "description": "Unused import: retirement_api",
+      "context": ""
+    },
+    {
+      "type": "import",
+      "severity": "low",
+      "confidence": "high",
+      "file_path": "backend/fourpercent/api/__init__.py",
+      "line_number": 0,
+      "name": "health_api",
+      "description": "Unused import: health_api",
+      "context": ""
+    },
+    {
+      "type": "import",
+      "severity": "low",
+      "confidence": "high",
+      "file_path": "backend/fourpercent/api/retirement_api.py",
+      "line_number": 0,
+      "name": "fastapi",
+      "description": "Unused import: fastapi",
+      "context": ""
+    },
+    {
+      "type": "import",
+      "severity": "low",
+      "confidence": "high",
+      "file_path": "backend/fourpercent/api/retirement_api.py",
+      "line_number": 0,
+      "name": "fastapi.middleware.cors",
+      "description": "Unused import: fastapi.middleware.cors",
+      "context": ""
+    },
+    {
+      "type": "import",
+      "severity": "low",
+      "confidence": "high",
+      "file_path": "backend/fourpercent/api/retirement_api.py",
+      "line_number": 0,
+      "name": "typing",
+      "description": "Unused import: typing",
+      "context": ""
+    },
+    {
+      "type": "import",
+      "severity": "low",
+      "confidence": "high",
+      "file_path": "backend/fourpercent/api/retirement_api.py",
+      "line_number": 0,
+      "name": "pydantic",
+      "description": "Unused import: pydantic",
+      "context": ""
+    },
+    {
+      "type": "class",
+      "severity": "high",
+      "confidence": "medium",
+      "file_path": "backend/fourpercent/api/retirement_api.py",
+      "line_number": 0,
+      "name": "RetirementCalculationResponse",
+      "description": "Unused class: RetirementCalculationResponse",
+      "context": ""
+    },
+    {
+      "type": "class",
+      "severity": "high",
+      "confidence": "medium",
+      "file_path": "backend/fourpercent/api/retirement_api.py",
+      "line_number": 0,
+      "name": "RetirementCalculationRequest",
+      "description": "Unused class: RetirementCalculationRequest",
+      "context": ""
+    },
+    {
+      "type": "class",
+      "severity": "high",
+      "confidence": "medium",
+      "file_path": "backend/fourpercent/api/retirement_api.py",
+      "line_number": 0,
+      "name": "IncomeAssets",
+      "description": "Unused class: IncomeAssets",
+      "context": ""
+    },
+    {
+      "type": "import",
+      "severity": "low",
+      "confidence": "high",
+      "file_path": "backend/fourpercent/api/deep_retirement_api.py",
+      "line_number": 0,
+      "name": "fastapi",
+      "description": "Unused import: fastapi",
+      "context": ""
+    },
+    {
+      "type": "import",
+      "severity": "low",
+      "confidence": "high",
+      "file_path": "backend/fourpercent/api/deep_retirement_api.py",
+      "line_number": 0,
+      "name": "fastapi.middleware.cors",
+      "description": "Unused import: fastapi.middleware.cors",
+      "context": ""
+    },
+    {
+      "type": "import",
+      "severity": "low",
+      "confidence": "high",
+      "file_path": "backend/fourpercent/api/deep_retirement_api.py",
+      "line_number": 0,
+      "name": "typing",
+      "description": "Unused import: typing",
+      "context": ""
+    },
+    {
+      "type": "import",
+      "severity": "low",
+      "confidence": "high",
+      "file_path": "backend/fourpercent/api/deep_retirement_api.py",
+      "line_number": 0,
+      "name": "pydantic",
+      "description": "Unused import: pydantic",
+      "context": ""
+    },
+    {
+      "type": "function",
+      "severity": "medium",
+      "confidence": "medium",
+      "file_path": "backend/fourpercent/api/deep_retirement_api.py",
+      "line_number": 0,
+      "name": "validate_int_fields",
+      "description": "Unused function: validate_int_fields",
+      "context": ""
+    },
+    {
+      "type": "function",
+      "severity": "medium",
+      "confidence": "medium",
+      "file_path": "backend/fourpercent/api/deep_retirement_api.py",
+      "line_number": 0,
+      "name": "validate_float_fields",
+      "description": "Unused function: validate_float_fields",
+      "context": ""
+    },
+    {
+      "type": "class",
+      "severity": "high",
+      "confidence": "medium",
+      "file_path": "backend/fourpercent/api/deep_retirement_api.py",
+      "line_number": 0,
+      "name": "DeepRetirementInput",
+      "description": "Unused class: DeepRetirementInput",
+      "context": ""
+    },
+    {
+      "type": "import",
+      "severity": "low",
+      "confidence": "high",
+      "file_path": "backend/fourpercent/api/health_api.py",
+      "line_number": 0,
+      "name": "fastapi",
+      "description": "Unused import: fastapi",
+      "context": ""
+    },
+    {
+      "type": "import",
+      "severity": "low",
+      "confidence": "high",
+      "file_path": "backend/fourpercent/models/deep_retirement.py",
+      "line_number": 0,
+      "name": "datetime",
+      "description": "Unused import: datetime",
+      "context": ""
+    },
+    {
+      "type": "import",
+      "severity": "low",
+      "confidence": "high",
+      "file_path": "backend/fourpercent/models/deep_retirement.py",
+      "line_number": 0,
+      "name": "typing",
+      "description": "Unused import: typing",
+      "context": ""
+    },
+    {
+      "type": "import",
+      "severity": "low",
+      "confidence": "high",
+      "file_path": "backend/fourpercent/models/deep_retirement.py",
+      "line_number": 0,
+      "name": "pydantic",
+      "description": "Unused import: pydantic",
+      "context": ""
+    },
+    {
+      "type": "class",
+      "severity": "high",
+      "confidence": "medium",
+      "file_path": "backend/fourpercent/models/deep_retirement.py",
+      "line_number": 0,
+      "name": "DeepRetirementInput",
+      "description": "Unused class: DeepRetirementInput",
+      "context": ""
+    },
+    {
+      "type": "class",
+      "severity": "high",
+      "confidence": "medium",
+      "file_path": "backend/fourpercent/models/deep_retirement.py",
+      "line_number": 0,
+      "name": "DeepRetirementProjection",
+      "description": "Unused class: DeepRetirementProjection",
+      "context": ""
+    },
+    {
+      "type": "import",
+      "severity": "low",
+      "confidence": "high",
+      "file_path": "backend/dead_code_detector/__init__.py",
+      "line_number": 0,
+      "name": "config",
+      "description": "Unused import: config",
+      "context": ""
+    },
+    {
+      "type": "import",
+      "severity": "low",
+      "confidence": "high",
+      "file_path": "backend/dead_code_detector/__init__.py",
+      "line_number": 0,
+      "name": "detector",
+      "description": "Unused import: detector",
+      "context": ""
+    },
+    {
+      "type": "import",
+      "severity": "low",
+      "confidence": "high",
+      "file_path": "backend/dead_code_detector/__init__.py",
+      "line_number": 0,
+      "name": "reporter",
+      "description": "Unused import: reporter",
+      "context": ""
+    },
+    {
+      "type": "import",
+      "severity": "low",
+      "confidence": "high",
+      "file_path": "backend/dead_code_detector/main.py",
+      "line_number": 0,
+      "name": "pathlib",
+      "description": "Unused import: pathlib",
+      "context": ""
+    },
+    {
+      "type": "import",
+      "severity": "low",
+      "confidence": "high",
+      "file_path": "backend/dead_code_detector/detector.py",
+      "line_number": 0,
+      "name": "enum",
+      "description": "Unused import: enum",
+      "context": ""
+    },
+    {
+      "type": "import",
+      "severity": "low",
+      "confidence": "high",
+      "file_path": "backend/dead_code_detector/detector.py",
+      "line_number": 0,
+      "name": "dataclasses",
+      "description": "Unused import: dataclasses",
+      "context": ""
+    },
+    {
+      "type": "import",
+      "severity": "low",
+      "confidence": "high",
+      "file_path": "backend/dead_code_detector/detector.py",
+      "line_number": 0,
+      "name": "typing",
+      "description": "Unused import: typing",
+      "context": ""
+    },
+    {
+      "type": "import",
+      "severity": "low",
+      "confidence": "high",
+      "file_path": "backend/dead_code_detector/detector.py",
+      "line_number": 0,
+      "name": "pathlib",
+      "description": "Unused import: pathlib",
+      "context": ""
+    },
+    {
+      "type": "function",
+      "severity": "medium",
+      "confidence": "medium",
+      "file_path": "backend/dead_code_detector/detector.py",
+      "line_number": 0,
+      "name": "analyze",
+      "description": "Unused function: analyze",
+      "context": ""
+    },
+    {
+      "type": "class",
+      "severity": "high",
+      "confidence": "medium",
+      "file_path": "backend/dead_code_detector/detector.py",
+      "line_number": 0,
+      "name": "Severity",
+      "description": "Unused class: Severity",
+      "context": ""
+    },
+    {
+      "type": "class",
+      "severity": "high",
+      "confidence": "medium",
+      "file_path": "backend/dead_code_detector/detector.py",
+      "line_number": 0,
+      "name": "DeadCodeDetector",
+      "description": "Unused class: DeadCodeDetector",
+      "context": ""
+    },
+    {
+      "type": "class",
+      "severity": "high",
+      "confidence": "medium",
+      "file_path": "backend/dead_code_detector/detector.py",
+      "line_number": 0,
+      "name": "Confidence",
+      "description": "Unused class: Confidence",
+      "context": ""
+    },
+    {
+      "type": "import",
+      "severity": "low",
+      "confidence": "high",
+      "file_path": "backend/dead_code_detector/reporter.py",
+      "line_number": 0,
+      "name": "detector",
+      "description": "Unused import: detector",
+      "context": ""
+    },
+    {
+      "type": "import",
+      "severity": "low",
+      "confidence": "high",
+      "file_path": "backend/dead_code_detector/reporter.py",
+      "line_number": 0,
+      "name": "typing",
+      "description": "Unused import: typing",
+      "context": ""
+    },
+    {
+      "type": "import",
+      "severity": "low",
+      "confidence": "high",
+      "file_path": "backend/dead_code_detector/reporter.py",
+      "line_number": 0,
+      "name": "pathlib",
+      "description": "Unused import: pathlib",
+      "context": ""
+    },
+    {
+      "type": "function",
+      "severity": "medium",
+      "confidence": "medium",
+      "file_path": "backend/dead_code_detector/reporter.py",
+      "line_number": 0,
+      "name": "generate_json_report",
+      "description": "Unused function: generate_json_report",
+      "context": ""
+    },
+    {
+      "type": "function",
+      "severity": "medium",
+      "confidence": "medium",
+      "file_path": "backend/dead_code_detector/reporter.py",
+      "line_number": 0,
+      "name": "save_report",
+      "description": "Unused function: save_report",
+      "context": ""
+    },
+    {
+      "type": "function",
+      "severity": "medium",
+      "confidence": "medium",
+      "file_path": "backend/dead_code_detector/reporter.py",
+      "line_number": 0,
+      "name": "generate_markdown_report",
+      "description": "Unused function: generate_markdown_report",
+      "context": ""
+    },
+    {
+      "type": "class",
+      "severity": "high",
+      "confidence": "medium",
+      "file_path": "backend/dead_code_detector/reporter.py",
+      "line_number": 0,
+      "name": "Reporter",
+      "description": "Unused class: Reporter",
+      "context": ""
+    },
+    {
+      "type": "import",
+      "severity": "low",
+      "confidence": "high",
+      "file_path": "backend/dead_code_detector/config.py",
+      "line_number": 0,
+      "name": "typing",
+      "description": "Unused import: typing",
+      "context": ""
+    },
+    {
+      "type": "import",
+      "severity": "low",
+      "confidence": "high",
+      "file_path": "backend/dead_code_detector/config.py",
+      "line_number": 0,
+      "name": "dataclasses",
+      "description": "Unused import: dataclasses",
+      "context": ""
+    },
+    {
+      "type": "class",
+      "severity": "high",
+      "confidence": "medium",
+      "file_path": "backend/dead_code_detector/config.py",
+      "line_number": 0,
+      "name": "Config",
+      "description": "Unused class: Config",
+      "context": ""
+    }
+  ],
+  "metrics": {
+    "line_count": {
+      "name": "Total Lines",
+      "value": 43,
+      "threshold": null,
+      "status": "ok"
+    },
+    "function_count": {
+      "name": "Function Count",
+      "value": 1,
+      "threshold": null,
+      "status": "ok"
+    },
+    "complexity": {
+      "name": "Cyclomatic Complexity",
+      "value": 1.5,
+      "threshold": 10.0,
+      "status": "ok"
+    }
+  }
+}

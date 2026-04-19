@@ -54,45 +54,4 @@ class DeepRetirementProjection(BaseModel):
     Monte_carlo_success_rate: Optional[float] = None  # Probability savings last to age 90
 
 
-class RetirementScenario(BaseModel):
-    """A saved retirement scenario"""
-    
-    id: str = Field(..., description="Unique identifier for the scenario")
-    name: str = Field(..., description="User-friendly name for the scenario")
-    input_data: DeepRetirementInput
-    projection: DeepRetirementProjection
-    created_at: str = Field(..., description="ISO format timestamp")
-    is_default: bool = Field(default=False, description="Whether this is the default scenario")
 
-
-class ScenarioComparison(BaseModel):
-    """Comparison of multiple retirement scenarios"""
-    
-    scenarios: List[Dict[str, Any]]
-    comparison_metrics: Dict[str, Dict[str, float]]
-
-
-# Request/Response models for API endpoints
-class CalculateRequest(BaseModel):
-    """Request to calculate retirement projection"""
-    input_data: DeepRetirementInput
-
-
-class CalculateResponse(BaseModel):
-    """Response with retirement projection"""
-    success: bool = True
-    message: Optional[str] = None
-    projection: DeepRetirementProjection
-
-
-class SaveScenarioRequest(BaseModel):
-    """Request to save a retirement scenario"""
-    name: str
-    input_data: DeepRetirementInput
-    projection: DeepRetirementProjection
-
-
-class ListScenariosResponse(BaseModel):
-    """Response listing saved scenarios"""
-    scenarios: List[RetirementScenario]
-    total_count: int

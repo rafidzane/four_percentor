@@ -3,15 +3,20 @@
 import React, { useState, useEffect } from 'react';
 import { deepRetirementApi } from '@/lib/api';
 
+interface RetirementInputError {
+  field: string;
+  message: string;
+}
+
 const RetirementCalculator = () => {
-  const [currentAge, setCurrentAge] = useState<number>(30);
-  const [retirementAge, setRetirementAge] = useState<number>(65);
-  const [liquidAssets, setLiquidAssets] = useState<number>(50000);
-  const [illiquidAssets, setIlliquidAssets] = useState<number>(200000);
-  const [monthlyContribution, setMonthlyContribution] = useState<number>(1000);
-  const [annualReturnRate, setAnnualReturnRate] = useState<number>(7);
-  const [socialSecurityAge, setSocialSecurityAge] = useState<number>(67);
-  const [expectedLifespan, setExpectedLifespan] = useState<number>(90);
+  const [currentAge, setCurrentAge] = useState<number | ''>(30);
+  const [retirementAge, setRetirementAge] = useState<number | ''>(65);
+  const [liquidAssets, setLiquidAssets] = useState<number | ''>(50000);
+  const [illiquidAssets, setIlliquidAssets] = useState<number | ''>(200000);
+  const [monthlyContribution, setMonthlyContribution] = useState<number | ''>(1000);
+  const [annualReturnRate, setAnnualReturnRate] = useState<number | ''>(7);
+  const [socialSecurityAge, setSocialSecurityAge] = useState<number | ''>(67);
+  const [expectedLifespan, setExpectedLifespan] = useState<number | ''>(90);
   
   const [results, setResults] = useState<{
     yearsToRetirement: number;
@@ -27,15 +32,66 @@ const RetirementCalculator = () => {
   
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const [inputErrors, setInputErrors] = useState<RetirementInputError[]>([]);
 
   useEffect(() => {
     calculateDeepRetirement();
   }, [currentAge, retirementAge, liquidAssets, illiquidAssets, monthlyContribution, annualReturnRate, socialSecurityAge, expectedLifespan]);
 
+  const validateInputs = (): boolean => {
+    const errors: RetirementInputError[] = [];
+    
+    // Convert to numbers for comparison
+    const currentAgeNum = Number(currentAge);
+    const retirementAgeNum = Number(retirementAge);
+    const socialSecurityAgeNum = Number(socialSecurityAge);
+    const expectedLifespanNum = Number(expectedLifespan);
+    
+    // Current Age validation
+    if (currentAge === '' || currentAgeNum < 18 || currentAgeNum > 100) {
+      errors.push({ field: 'Current Age', message: 'Must be between 18 and 100' });
+    }
+    
+    // Retirement Age validation
+    if (retirementAge === '' || retirementAgeNum <= currentAgeNum || retirementAgeNum > 100) {
+      errors.push({ field: 'Retirement Age', message: `Must be greater than current age (${currentAge}) and less than or equal to 100` });
+    }
+    
+    // Social Security Age validation
+    if (socialSecurityAge === '' || socialSecurityAgeNum < 62 || socialSecurityAgeNum > 70) {
+      errors.push({ field: 'Social Security Age', message: 'Must be between 62 and 70' });
+    }
+    
+    // Expected Lifespan validation
+    if (expectedLifespan === '' || expectedLifespanNum <= retirementAgeNum || expectedLifespanNum > 120) {
+      errors.push({ field: 'Expected Lifespan', message: `Must be greater than retirement age (${retirementAge}) and less than or equal to 120` });
+    }
+    
+    // Financial inputs must be non-negative
+    if (liquidAssets !== '' && Number(liquidAssets) < 0) {
+      errors.push({ field: 'Liquid Assets', message: 'Cannot be negative' });
+    }
+    if (illiquidAssets !== '' && Number(illiquidAssets) < 0) {
+      errors.push({ field: 'Illiquid Assets', message: 'Cannot be negative' });
+    }
+    if (monthlyContribution !== '' && Number(monthlyContribution) < 0) {
+      errors.push({ field: 'Monthly Contribution', message: 'Cannot be negative' });
+    }
+    
+    // Return rate validation
+    if (annualReturnRate === '' || Number(annualReturnRate) < 0 || Number(annualReturnRate) > 100) {
+      errors.push({ field: 'Expected Annual Return (%)', message: 'Must be between 0% and 100%' });
+    }
+    
+    setInputErrors(errors);
+    return errors.length === 0;
+  };
+
   const formatCurrency = (value: number): string => {
     if (!value && value !== 0) return 'N/A';
     
     try {
+
       return new Intl.NumberFormat('en-US', {
         style: 'currency',
         currency: 'USD',
@@ -49,41 +105,101 @@ const RetirementCalculator = () => {
   };
 
   const calculateDeepRetirement = async () => {
+    if (!validateInputs()) {
+      setError('Please fix the validation errors below');
+      return;
+    }
+    
     setLoading(true);
     setError(null);
     
     try {
-      // Prepare data for API call
+
+      // Prepare data for API call - convert camelCase to snake_case
       const requestData = {
-        current_age: currentAge,
-        retirement_age: retirementAge,
-        liquid_assets: liquidAssets,
-        illiquid_assets: illiquidAssets,
-        monthly_contribution: monthlyContribution,
-        annual_return_rate: annualReturnRate / 100,  // Convert percentage to decimal
-        social_security_age: socialSecurityAge,
-        expected_lifespan: expectedLifespan
+        current_age: Number(currentAge),
+        retirement_age: Number(retirementAge),
+        liquid_assets: Number(liquidAssets),
+        illiquid_assets: Number(illiquidAssets),
+        monthly_contribution: Number(monthlyContribution),
+        annual_return_rate: Number(annualReturnRate) / 100,  // Convert percentage to decimal
+        social_security_age: Number(socialSecurityAge),
+        expected_lifespan: Number(expectedLifespan)
       };
       
       // Call the deep retirement API
+      console.log("Request data:", requestData);
       const response = await deepRetirementApi.calculateDeepRetirement(requestData);
       
       setResults(response);
     } catch (err: any) {
-      console.error('Error calculating deep retirement:', err);
+      console.error('Error calculating deep retirement:', err, 'Response data:', err.response?.data);
       setError('Failed to calculate retirement projections. Please check your inputs and try again.');
     } finally {
       setLoading(false);
     }
   };
 
+  const renderInput = (
+    label: string,
+    value: number | '',
+    onChange: (val: number | '') => void,
+    min?: number,
+    max?: number,
+    placeholder?: string,
+    helperText?: string
+  ) => {
+    const error = inputErrors.find(e => e.field === label);
+    
+    return (
+      <div>
+        <label className="block text-gray-700 text-sm font-bold mb-2">
+          {label}
+        </label>
+        <input
+          type="number"
+          value={value === '' ? '' : value}
+          onChange={(e) => {
+            const val = e.target.value;
+            onChange(val === '' ? '' : Number(val));
+          }}
+          className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 transition-colors ${
+            error 
+              ? 'border-red-500 focus:ring-red-500 bg-red-50' 
+              : 'focus:ring-blue-500'
+          }`}
+          min={min}
+          max={max}
+          placeholder={placeholder}
+        />
+        {error && (
+          <p className="text-red-600 text-xs mt-1">{error.message}</p>
+        )}
+        {!error && helperText && (
+          <p className="text-gray-500 text-xs mt-1">{helperText}</p>
+        )}
+      </div>
+    );
+  };
+
   return (
     <div className="p-6 max-w-5xl mx-auto">
       <h1 className="text-3xl font-bold mb-6 text-center">Deep Retirement Calculator</h1>
       
-      {error && (
+      {error && !inputErrors.length && (
         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
           {error}
+        </div>
+      )}
+      
+      {inputErrors.length > 0 && (
+        <div className="bg-yellow-50 border border-yellow-200 text-yellow-800 px-4 py-3 rounded mb-6">
+          <h3 className="font-bold mb-2">Please fix the following errors:</h3>
+          <ul className="list-disc list-inside">
+            {inputErrors.map((err, idx) => (
+              <li key={idx}>{err.field}: {err.message}</li>
+            ))}
+          </ul>
         </div>
       )}
       
@@ -93,116 +209,80 @@ const RetirementCalculator = () => {
           <h2 className="text-xl font-semibold mb-4">Your Inputs</h2>
           
           <div className="space-y-4">
-            <div>
-              <label className="block text-gray-700 text-sm font-bold mb-2">
-                Current Age
-              </label>
-              <input
-                type="number"
-                value={currentAge}
-                onChange={(e) => setCurrentAge(Number(e.target.value))}
-                className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                min="18"
-                max="100"
-              />
-            </div>
+            {renderInput(
+              'Current Age',
+              currentAge,
+              setCurrentAge,
+              18,
+              100,
+              'e.g. 30'
+            )}
             
-            <div>
-              <label className="block text-gray-700 text-sm font-bold mb-2">
-                Retirement Age
-              </label>
-              <input
-                type="number"
-                value={retirementAge}
-                onChange={(e) => setRetirementAge(Number(e.target.value))}
-                className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                min="50"
-                max="100"
-              />
-            </div>
+            {renderInput(
+              'Retirement Age',
+              retirementAge,
+              setRetirementAge,
+              Number(currentAge) + 1,
+              100,
+              'e.g. 65'
+            )}
             
-            <div>
-              <label className="block text-gray-700 text-sm font-bold mb-2">
-                Liquid Assets
-              </label>
-              <input
-                type="number"
-                value={liquidAssets}
-                onChange={(e) => setLiquidAssets(Number(e.target.value))}
-                className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                min="0"
-              />
-              <p className="text-xs text-gray-500 mt-1">Savings, stocks, bonds, and other easily accessible funds</p>
-            </div>
+            {renderInput(
+              'Liquid Assets',
+              liquidAssets,
+              setLiquidAssets,
+              0,
+              undefined,
+              'e.g. 50000',
+              'Savings, stocks, bonds, and other easily accessible funds'
+            )}
             
-            <div>
-              <label className="block text-gray-700 text-sm font-bold mb-2">
-                Illiquid Assets
-              </label>
-              <input
-                type="number"
-                value={illiquidAssets}
-                onChange={(e) => setIlliquidAssets(Number(e.target.value))}
-                className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                min="0"
-              />
-              <p className="text-xs text-gray-500 mt-1">Real estate, private equity, and other non-easily-accessible assets</p>
-            </div>
+            {renderInput(
+              'Illiquid Assets',
+              illiquidAssets,
+              setIlliquidAssets,
+              0,
+              undefined,
+              'e.g. 200000',
+              'Real estate, private equity, and other non-easily-accessible assets'
+            )}
             
-            <div>
-              <label className="block text-gray-700 text-sm font-bold mb-2">
-                Monthly Contribution
-              </label>
-              <input
-                type="number"
-                value={monthlyContribution}
-                onChange={(e) => setMonthlyContribution(Number(e.target.value))}
-                className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                min="0"
-              />
-            </div>
+            {renderInput(
+              'Monthly Contribution',
+              monthlyContribution,
+              setMonthlyContribution,
+              0,
+              undefined,
+              'e.g. 1000'
+            )}
             
-            <div>
-              <label className="block text-gray-700 text-sm font-bold mb-2">
-                Expected Annual Return (%)
-              </label>
-              <input
-                type="number"
-                value={annualReturnRate}
-                onChange={(e) => setAnnualReturnRate(Number(e.target.value))}
-                className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                min="0"
-                max="100"
-              />
-            </div>
+            {renderInput(
+              'Expected Annual Return (%)',
+              annualReturnRate,
+              setAnnualReturnRate,
+              0,
+              100,
+              'e.g. 7',
+              'Average annual return you expect (as a percentage)'
+            )}
             
-            <div>
-              <label className="block text-gray-700 text-sm font-bold mb-2">
-                Social Security Age
-              </label>
-              <input
-                type="number"
-                value={socialSecurityAge}
-                onChange={(e) => setSocialSecurityAge(Number(e.target.value))}
-                className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                min="62"
-                max="70"
-              />
-            </div>
+            {renderInput(
+              'Social Security Age',
+              socialSecurityAge,
+              setSocialSecurityAge,
+              62,
+              70,
+              'e.g. 67'
+            )}
             
-            <div>
-              <label className="block text-gray-700 text-sm font-bold mb-2">
-                Expected Lifespan
-              </label>
-              <input
-                type="number"
-                value={expectedLifespan}
-                onChange={(e) => setExpectedLifespan(Number(e.target.value))}
-                className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                min="50"
-                max="120"
-              />
-            </div>
+            {renderInput(
+              'Expected Lifespan',
+              expectedLifespan,
+              setExpectedLifespan,
+              Number(retirementAge) + 1,
+              120,
+              'e.g. 90'
+            )}
           </div>
         </div>
         
@@ -282,11 +362,13 @@ const RetirementCalculator = () => {
       
       <button
         onClick={calculateDeepRetirement}
-        disabled={loading}
+        disabled={loading || inputErrors.length > 0}
         className={`w-full py-3 px-6 rounded-lg font-bold text-white transition-colors ${
           loading 
             ? 'bg-gray-400 cursor-not-allowed' 
-            : 'bg-blue-500 hover:bg-blue-600'
+            : inputErrors.length > 0
+              ? 'bg-gray-400 cursor-not-allowed'
+              : 'bg-blue-500 hover:bg-blue-600'
         }`}
       >
         {loading ? 'Calculating...' : 'Calculate Retirement Plan'}

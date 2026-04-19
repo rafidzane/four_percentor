@@ -63,6 +63,6 @@ logs/
 tmp/
 temp/
 *.tmp
-**/.kara_code_chat_history.json/**
-**/openspec/**
 .kara_code_chat_history.json
+.aider*
+.env

@@ -1,0 +1,36 @@
+# Dependencies and virtual environments
+node_modules/
+.npm/
+.yarn/
+.venv/
+.env/
+.venv*/
+env*/
+venv*/
+
+# Build outputs
+dist/
+build/
+.out/
+.next/
+out/
+target/
+
+# IDE and editor files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Logs
+logs/
+*.log
+
+# Coverage reports
+coverage/
+
+# Generated files
+generated/
+*.gen.ts
+*.pb.go
