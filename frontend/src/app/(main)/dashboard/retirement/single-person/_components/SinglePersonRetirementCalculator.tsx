@@ -602,65 +602,6 @@ const RetirementCalculator = () => {
                   </div>
                 )}
 
-                {/* Withdrawal Rate */}
-                <div className="rounded-lg bg-gray-50 p-4">
-                  <p className="text-gray-600 text-sm">Withdrawal Rate</p>
-                  <p className="font-bold text-gray-800 text-xl">
-                    {(results.withdrawalRate * 100).toFixed(2)}%
-                  </p>
-                </div>
-
-                {/* Years to Retirement */}
-                <div className="rounded-lg border-yellow-500 border-l-4 bg-yellow-50 p-4">
-                  <p className="text-gray-600 text-sm">
-                    Years Until Retirement
-                  </p>
-                  <p className="font-bold text-xl text-yellow-700">
-                    {results.yearsToRetirement} years
-                  </p>
-                </div>
-
-                {/* Recommended Strategy */}
-                <div className="rounded-lg border-pink-500 border-l-4 bg-pink-50 p-4">
-                  <p className="font-semibold text-gray-600 text-sm">
-                    Recommended Strategy
-                  </p>
-                  <p className="mt-1 text-base text-pink-800">
-                    {results.recommendedWithdrawalStrategy}
-                  </p>
-                </div>
-
-                {/* Additional Metrics */}
-                {results.inflationAdjustedSavings !== undefined && (
-                  <div className="rounded-lg border-cyan-500 border-l-4 bg-cyan-50 p-4">
-                    <p className="text-gray-600 text-sm">
-                      Inflation-Adjusted Savings (Today's Dollars)
-                    </p>
-                    <p className="font-bold text-cyan-700 text-xl">
-                      {formatCurrency(results.inflationAdjustedSavings)}
-                    </p>
-                  </div>
-                )}
-
-                {results.yearsToDepletion !== undefined && (
-                  <div className="rounded-lg border-lime-500 border-l-4 bg-lime-50 p-4">
-                    <p className="text-gray-600 text-sm">Years to Depletion</p>
-                    <p className="font-bold text-lime-700 text-xl">
-                      {results.yearsToDepletion.toFixed(2)} years
-                    </p>
-                  </div>
-                )}
-
-                {results.monteCarloSuccessRate !== undefined && (
-                  <div className="rounded-lg border-amber-500 border-l-4 bg-amber-50 p-4">
-                    <p className="text-gray-600 text-sm">
-                      Monte Carlo Success Rate
-                    </p>
-                    <p className="font-bold text-amber-700 text-xl">
-                      {results.monteCarloSuccessRate.toFixed(2)}%
-                    </p>
-                  </div>
-                )}
               </div>
             ) : (
               <div className="flex h-64 items-center justify-center">

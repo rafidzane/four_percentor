@@ -366,13 +366,14 @@ const RetirementCalculator = () => {
           <div className="mb-6 rounded-lg border border-yellow-400 bg-yellow-50 px-4 py-3 text-yellow-800 shadow-sm">
             <h3 className="mb-2 font-bold">Please fix the following errors:</h3>
             <ul className="list-inside list-disc space-y-1">
-               {inputErrors.map((err, idx) => (
-                 <li key={idx} className="text-sm">
-                   <span className="font-medium">{err.field}:</span>{" "}
-                   {err.message}
-                 </li>
-               ))}
-          </ul>
+              {inputErrors.map((err, idx) => (
+                <li key={idx} className="text-sm">
+                  <span className="font-medium">{err.field}:</span>{" "}
+                  {err.message}
+                </li>
+              ))}
+            </ul>
+          </div>
         )}
 
         {/* Chart Placeholder - embedded in results section */}
@@ -479,207 +480,150 @@ const RetirementCalculator = () => {
                 </div>
               ) : results ? (
                 <div className="space-y-4">
-                {/* Total Net Worth at Retirement */}
-                <div className="rounded-lg border-green-500 border-l-4 bg-green-50 p-3">
-                  <p className="text-gray-600 text-xs">
-                    Total Net Worth at Retirement
-                  </p>
-                  <p className="font-bold text-base text-green-700">
-                    {formatCurrency(results.totalNetWorthAtRetirement)}
-                  </p>
-                </div>
-
-                {/* Total Liquid Savings */}
-                <div className="rounded-lg border-blue-500 border-l-4 bg-blue-50 p-3">
-                  <p className="text-gray-600 text-xs">
-                    Total Liquid Savings at Retirement
-                  </p>
-                  <p className="font-bold text-base text-blue-700">
-                    {formatCurrency(results.totalLiquidSavingsAtRetirement)}
-                  </p>
-                </div>
-
-                {/* Monthly Income */}
-                <div className="rounded-lg border-purple-500 border-l-4 bg-purple-50 p-3">
-                  <p className="text-gray-600 text-xs">
-                    Monthly Income at Retirement
-                  </p>
-                  <p className="font-bold text-base text-purple-700">
-                    {formatCurrency(results.monthlyIncomeAtRetirement)}
-                  </p>
-                </div>
-
-                {/* Social Security Benefit */}
-                <div className="rounded-lg border-teal-500 border-l-4 bg-teal-50 p-3">
-                  <p className="text-gray-600 text-xs">
-                    Social Security Benefit (Monthly)
-                  </p>
-                  <p className="font-bold text-base text-teal-700">
-                    {formatCurrency(results.socialSecurityBenefit)}
-                  </p>
-                </div>
-
-                {/* Safe Withdrawal Amount */}
-                <div className="rounded-lg border-orange-500 border-l-4 bg-orange-50 p-3">
-                  <p className="text-gray-600 text-xs">
-                    Safe Annual Withdrawal (4% Rule)
-                  </p>
-                  <p className="font-bold text-base text-orange-700">
-                    {formatCurrency(results.safeWithdrawalAmount)}
-                  </p>
-                </div>
-
-                {/* Projected Balance at 90 */}
-                {results.projectedBalanceAtAge90 !== undefined &&
-                  results.projectedBalanceAtAge90 > 0 && (
-                    <div className="rounded-lg border-indigo-500 border-l-4 bg-indigo-50 p-3">
+                  <div className="grid grid-cols-3 lg:grid-cols-1 gap-4">
+                    {/* Total Net Worth at Retirement */}
+                    <div className="rounded-lg border-green-500 border-l-4 bg-green-50 p-3">
                       <p className="text-gray-600 text-xs">
-                        Projected Balance at Age 90
+                        Total Net Worth at Retirement
                       </p>
-                      <p className="font-bold text-base text-indigo-700">
-                        {formatCurrency(results.projectedBalanceAtAge90)}
+                      <p className="font-bold text-base text-green-700">
+                        {formatCurrency(results.totalNetWorthAtRetirement)}
+                      </p>
+                    </div>
+
+                    {/* Total Liquid Savings */}
+                    <div className="rounded-lg border-blue-500 border-l-4 bg-blue-50 p-3">
+                      <p className="text-gray-600 text-xs">
+                        Total Liquid Savings at Retirement
+                      </p>
+                      <p className="font-bold text-base text-blue-700">
+                        {formatCurrency(results.totalLiquidSavingsAtRetirement)}
+                      </p>
+                    </div>
+
+                    {/* Monthly Income */}
+                    <div className="rounded-lg border-purple-500 border-l-4 bg-purple-50 p-3">
+                      <p className="text-gray-600 text-xs">
+                        Monthly Income at Retirement
+                      </p>
+                      <p className="font-bold text-base text-purple-700">
+                        {formatCurrency(results.monthlyIncomeAtRetirement)}
+                      </p>
+                    </div>
+
+                    {/* Social Security Benefit */}
+                    <div className="rounded-lg border-teal-500 border-l-4 bg-teal-50 p-3">
+                      <p className="text-gray-600 text-xs">
+                        Social Security Benefit (Monthly)
+                      </p>
+                      <p className="font-bold text-base text-teal-700">
+                        {formatCurrency(results.socialSecurityBenefit)}
+                      </p>
+                    </div>
+
+                    {/* Safe Withdrawal Amount */}
+                    <div className="rounded-lg border-orange-500 border-l-4 bg-orange-50 p-3">
+                      <p className="text-gray-600 text-xs">
+                        Safe Annual Withdrawal (4% Rule)
+                      </p>
+                      <p className="font-bold text-base text-orange-700">
+                        {formatCurrency(results.safeWithdrawalAmount)}
+                      </p>
+                    </div>
+
+                    {/* Years to Retirement */}
+                    <div className="rounded-lg border-yellow-500 border-l-4 bg-yellow-50 p-3">
+                      <p className="text-gray-600 text-xs">
+                        Years Until Retirement
+                      </p>
+                      <p className="font-bold text-base text-yellow-700">
+                        {results.yearsToRetirement} years
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Projected Balance at 90 */}
+                  {results.projectedBalanceAtAge90 !== undefined &&
+                    results.projectedBalanceAtAge90 > 0 && (
+                      <div className="rounded-lg border-indigo-500 border-l-4 bg-indigo-50 p-3">
+                        <p className="text-gray-600 text-xs">
+                          Projected Balance at Age 90
+                        </p>
+                        <p className="font-bold text-base text-indigo-700">
+                          {formatCurrency(results.projectedBalanceAtAge90)}
+                        </p>
+                      </div>
+                    )}
+
+                  {/* Withdrawal Rate */}
+                  <div className="rounded-lg bg-gray-50 p-3">
+                    <p className="text-gray-600 text-xs">Withdrawal Rate</p>
+                    <p className="font-bold text-base text-gray-800">
+                      {(results.withdrawalRate * 100).toFixed(2)}%
+                    </p>
+                  </div>
+
+                  {/* Recommended Strategy */}
+                  <div className="rounded-lg border-pink-500 border-l-4 bg-pink-50 p-3">
+                    <p className="font-semibold text-gray-600 text-xs">
+                      Recommended Strategy
+                    </p>
+                    <p className="mt-1 text-base text-pink-800">
+                      {results.recommendedWithdrawalStrategy}
+                    </p>
+                  </div>
+
+                  {/* Additional Metrics */}
+                  {results.inflationAdjustedSavings !== undefined && (
+                    <div className="rounded-lg border-cyan-500 border-l-4 bg-cyan-50 p-3">
+                      <p className="text-gray-600 text-xs">
+                        Inflation-Adjusted Savings (Today's Dollars)
+                      </p>
+                      <p className="font-bold text-base text-cyan-700">
+                        {formatCurrency(results.inflationAdjustedSavings)}
                       </p>
                     </div>
                   )}
 
-                {/* Withdrawal Rate */}
-                <div className="rounded-lg bg-gray-50 p-3">
-                  <p className="text-gray-600 text-xs">Withdrawal Rate</p>
-                  <p className="font-bold text-base text-gray-800">
-                    {(results.withdrawalRate * 100).toFixed(2)}%
+                  {results.yearsToDepletion !== undefined && (
+                    <div className="rounded-lg border-lime-500 border-l-4 bg-lime-50 p-3">
+                      <p className="text-gray-600 text-xs">Years to Depletion</p>
+                      <p className="font-bold text-base text-lime-700">
+                        {results.yearsToDepletion.toFixed(2)} years
+                      </p>
+                    </div>
+                  )}
+
+                  {results.monteCarloSuccessRate !== undefined && (
+                    <div className="rounded-lg border-amber-500 border-l-4 bg-amber-50 p-3">
+                      <p className="text-gray-600 text-xs">
+                        Monte Carlo Success Rate
+                      </p>
+                      <p className="font-bold text-base text-amber-700">
+                        {results.monteCarloSuccessRate.toFixed(2)}%
+                      </p>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <div className="flex h-64 items-center justify-center">
+                  <p className="text-gray-500">
+                    Enter your information to see projections
                   </p>
                 </div>
-
-                {/* Years to Retirement */}
-                <div className="rounded-lg border-yellow-500 border-l-4 bg-yellow-50 p-3">
-                  <p className="text-gray-600 text-xs">
-                    Years Until Retirement
-                  </p>
-                  <p className="font-bold text-base text-yellow-700">
-                    {results.yearsToRetirement} years
-                  </p>
-                </div>
-
-                {/* Recommended Strategy */}
-                <div className="rounded-lg border-pink-500 border-l-4 bg-pink-50 p-3">
-                  <p className="font-semibold text-gray-600 text-xs">
-                    Recommended Strategy
-                  </p>
-                  <p className="mt-1 text-base text-pink-800">
-                    {results.recommendedWithdrawalStrategy}
-                  </p>
-                </div>
-
-                {/* Additional Metrics */}
-                {results.inflationAdjustedSavings !== undefined && (
-                  <div className="rounded-lg border-cyan-500 border-l-4 bg-cyan-50 p-3">
-                    <p className="text-gray-600 text-xs">
-                      Inflation-Adjusted Savings (Today's Dollars)
-                    </p>
-                    <p className="font-bold text-base text-cyan-700">
-                      {formatCurrency(results.inflationAdjustedSavings)}
-                    </p>
-                  </div>
-                )}
-
-                {results.yearsToDepletion !== undefined && (
-                  <div className="rounded-lg border-lime-500 border-l-4 bg-lime-50 p-3">
-                    <p className="text-gray-600 text-xs">Years to Depletion</p>
-                    <p className="font-bold text-base text-lime-700">
-                      {results.yearsToDepletion.toFixed(2)} years
-                    </p>
-                  </div>
-                )}
-
-                {results.monteCarloSuccessRate !== undefined && (
-                  <div className="rounded-lg border-amber-500 border-l-4 bg-amber-50 p-3">
-                    <p className="text-gray-600 text-xs">
-                      Monte Carlo Success Rate
-                    </p>
-                    <p className="font-bold text-base text-amber-700">
-                      {results.monteCarloSuccessRate.toFixed(2)}%
-                    </p>
-                  </div>
-                )}
-
-                {/* Withdrawal Rate */}
-                <div className="rounded-lg bg-gray-50 p-4">
-                  <p className="text-gray-600 text-sm">Withdrawal Rate</p>
-                  <p className="font-bold text-gray-800 text-xl">
-                    {(results.withdrawalRate * 100).toFixed(2)}%
-                  </p>
-                </div>
-
-                {/* Years to Retirement */}
-                <div className="rounded-lg border-yellow-500 border-l-4 bg-yellow-50 p-4">
-                  <p className="text-gray-600 text-sm">
-                    Years Until Retirement
-                  </p>
-                  <p className="font-bold text-xl text-yellow-700">
-                    {results.yearsToRetirement} years
-                  </p>
-                </div>
-
-                {/* Recommended Strategy */}
-                <div className="rounded-lg border-pink-500 border-l-4 bg-pink-50 p-4">
-                  <p className="font-semibold text-gray-600 text-sm">
-                    Recommended Strategy
-                  </p>
-                  <p className="mt-1 text-base text-pink-800">
-                    {results.recommendedWithdrawalStrategy}
-                  </p>
-                </div>
-
-                {/* Additional Metrics */}
-                {results.inflationAdjustedSavings !== undefined && (
-                  <div className="rounded-lg border-cyan-500 border-l-4 bg-cyan-50 p-4">
-                    <p className="text-gray-600 text-sm">
-                      Inflation-Adjusted Savings (Today's Dollars)
-                    </p>
-                    <p className="font-bold text-cyan-700 text-xl">
-                      {formatCurrency(results.inflationAdjustedSavings)}
-                    </p>
-                  </div>
-                )}
-
-                {results.yearsToDepletion !== undefined && (
-                  <div className="rounded-lg border-lime-500 border-l-4 bg-lime-50 p-4">
-                    <p className="text-gray-600 text-sm">Years to Depletion</p>
-                    <p className="font-bold text-lime-700 text-xl">
-                      {results.yearsToDepletion.toFixed(2)} years
-                    </p>
-                  </div>
-                )}
-
-                {results.monteCarloSuccessRate !== undefined && (
-                  <div className="rounded-lg border-amber-500 border-l-4 bg-amber-50 p-4">
-                    <p className="text-gray-600 text-sm">
-                      Monte Carlo Success Rate
-                    </p>
-                    <p className="font-bold text-amber-700 text-xl">
-                      {results.monteCarloSuccessRate.toFixed(2)}%
-                    </p>
-                  </div>
-                )}
-              </div>
-            ) : (
-              <div className="flex h-64 items-center justify-center">
-                <p className="text-gray-500">
-                  Enter your information to see projections
-                </p>
-              </div>
-            )}
-          </CollapsibleSection>
-
-          {/* Chart Placeholder - embedded in results section */}
-          <div className="space-y-4">
-            <CollapsibleSection sectionId="charts" title="Projection Charts">
-              <div className="rounded-lg border border-gray-200 bg-gray-50 p-8 text-center">
-                <p className="text-gray-500">
-                  Chart visualization coming soon...
-                </p>
-              </div>
+              )}
             </CollapsibleSection>
+
+            {/* Chart Placeholder - embedded in results section */}
+            <div className="space-y-4">
+              <CollapsibleSection sectionId="charts" title="Projection Charts">
+                <div className="rounded-lg border border-gray-200 bg-gray-50 p-8 text-center">
+                  <p className="text-gray-500">
+                    Chart visualization coming soon...
+                  </p>
+                </div>
+              </CollapsibleSection>
+            </div>
           </div>
         </div>
 
