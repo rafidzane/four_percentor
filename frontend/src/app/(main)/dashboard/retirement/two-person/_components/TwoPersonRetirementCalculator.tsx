@@ -58,9 +58,9 @@ const TwoPersonRetirementCalculator = () => {
   }, [husband.retirementAge, sameRetirementAge]);
 
   const [results, setResults] = useState<{
-    husband_projection: any;
-    spouse_projection: any;
-    household_projection: any;
+    husbandProjection: any;
+    spouseProjection: any;
+    householdProjection: any;
   } | null>(null);
 
   const [loading, setLoading] = useState<boolean>(false);
@@ -417,7 +417,7 @@ const TwoPersonRetirementCalculator = () => {
                <div className="rounded-lg border-green-500 border-l-4 bg-green-50 p-3">
                  <p className="text-gray-600 text-xs">Total Household Net Worth at Retirement</p>
                  <p className="font-bold text-base text-green-700">
-                   {formatCurrency(results.household_projection?.total_net_worth_at_retirement)}
+                    {formatCurrency(results.householdProjection?.totalNetWorthAtRetirement)}
                  </p>
                </div>
 
@@ -425,7 +425,7 @@ const TwoPersonRetirementCalculator = () => {
                <div className="rounded-lg border-blue-500 border-l-4 bg-blue-50 p-3">
                  <p className="text-gray-600 text-xs">Total Household Liquid Savings</p>
                  <p className="font-bold text-base text-blue-700">
-                   {formatCurrency(results.household_projection?.total_liquid_savings_at_retirement)}
+                    {formatCurrency(results.householdProjection?.totalLiquidSavingsAtRetirement)}
                  </p>
                </div>
 
@@ -433,7 +433,7 @@ const TwoPersonRetirementCalculator = () => {
                <div className="rounded-lg border-purple-500 border-l-4 bg-purple-50 p-3">
                  <p className="text-gray-600 text-xs">Total Monthly Income at Retirement</p>
                  <p className="font-bold text-base text-purple-700">
-                   {formatCurrency(results.household_projection?.monthly_income_at_retirement)}
+                    {formatCurrency(results.householdProjection?.monthlyIncomeAtRetirement)}
                  </p>
                </div>
 
@@ -441,7 +441,7 @@ const TwoPersonRetirementCalculator = () => {
                <div className="rounded-lg border-teal-500 border-l-4 bg-teal-50 p-3">
                  <p className="text-gray-600 text-xs">Combined Social Security (Monthly)</p>
                  <p className="font-bold text-base text-teal-700">
-                   {formatCurrency(results.household_projection?.combined_social_security_benefit)}
+                    {formatCurrency(results.householdProjection?.combinedSocialSecurityBenefit)}
                  </p>
                </div>
 
@@ -449,7 +449,7 @@ const TwoPersonRetirementCalculator = () => {
                <div className="rounded-lg border-orange-500 border-l-4 bg-orange-50 p-3">
                  <p className="text-gray-600 text-xs">Safe Annual Withdrawal (4% Rule)</p>
                  <p className="font-bold text-base text-orange-700">
-                   {formatCurrency(results.household_projection?.safe_withdrawal_amount)}
+                    {formatCurrency(results.householdProjection?.safeWithdrawalAmount)}
                  </p>
                </div>
 
@@ -457,27 +457,27 @@ const TwoPersonRetirementCalculator = () => {
                <div className="rounded-lg border-yellow-500 border-l-4 bg-yellow-50 p-3">
                  <p className="text-gray-600 text-xs">Years Until Retirement</p>
                  <p className="font-bold text-base text-yellow-700">
-                   {results.household_projection?.years_to_retirement} years
+                    {results.householdProjection?.yearsToRetirement} years
                  </p>
                </div>
 
                {/* Individual Projections */}
-               {results.husband_projection && (
+                {results.husbandProjection && (
                   <CollapsibleSection sectionId="husband-details" title="Husband's Projection">
                    <div className="space-y-2 text-sm pl-4">
-                     <p>Retirement Age: {results.husband_projection?.retirement_age}</p>
-                     <p>Liquid Savings: {formatCurrency(results.husband_projection?.total_liquid_savings_at_retirement)}</p>
-                     <p>Social Security: {formatCurrency(results.husband_projection?.social_security_benefit)}/month</p>
+                      <p>Retirement Age: {results.husbandProjection?.retirementAge}</p>
+                      <p>Liquid Savings: {formatCurrency(results.husbandProjection?.totalLiquidSavingsAtRetirement)}</p>
+                      <p>Social Security: {formatCurrency(results.husbandProjection?.socialSecurityBenefit)}/month</p>
                    </div>
                  </CollapsibleSection>
                )}
 
-               {results.spouse_projection && (
+                {results.spouseProjection && (
                   <CollapsibleSection sectionId="spouse-details" title="Spouse's Projection">
                    <div className="space-y-2 text-sm pl-4">
-                     <p>Retirement Age: {results.spouse_projection?.retirement_age}</p>
-                     <p>Liquid Savings: {formatCurrency(results.spouse_projection?.total_liquid_savings_at_retirement)}</p>
-                     <p>Social Security: {formatCurrency(results.spouse_projection?.social_security_benefit)}/month</p>
+                      <p>Retirement Age: {results.spouseProjection?.retirementAge}</p>
+                      <p>Liquid Savings: {formatCurrency(results.spouseProjection?.totalLiquidSavingsAtRetirement)}</p>
+                      <p>Social Security: {formatCurrency(results.spouseProjection?.socialSecurityBenefit)}/month</p>
                    </div>
                  </CollapsibleSection>
                )}
