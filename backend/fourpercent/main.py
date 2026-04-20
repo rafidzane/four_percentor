@@ -13,7 +13,7 @@ app = FastAPI(
 # Mount the retirement app at /fourpercent/api/v1/retirement
 app.mount("/fourpercent/api/v1/retirement", retirement_app)
 
-# Mount the deep retirement app at /fourpercent/api/v2/deep_retirement
+# Mount the deep retirement app at https://fourpercentrule.com/calculator/fourpercent/api/v2/deep_retirement
 app.mount("/fourpercent/api/v2/deep_retirement", deep_retirement_app)
 
 # Include the health API routes
