@@ -4,8 +4,6 @@ import { useEffect, useState } from "react";
 
 import { twoPersonRetirementApi } from "@/lib/api";
 import { CalculatorErrorBoundary } from "@/components/retirement-calculator/CalculatorErrorBoundary";
-import { CollapsibleSectionProvider } from "@/components/retirement-calculator/CollapsibleSectionContext";
-import CollapsibleSection from "@/components/retirement-calculator/CollapsibleSection";
 
 interface PersonInputs {
   currentAge: number | "";
@@ -344,8 +342,7 @@ const TwoPersonRetirementCalculator = () => {
   };
 
   return (
-    <CollapsibleSectionProvider>
-      <div className="p-6">
+    <div className="p-6">
         <h1 className="mb-4 w-full font-bold text-2xl">
           Two-Person Retirement Calculator
         </h1>
@@ -395,135 +392,122 @@ const TwoPersonRetirementCalculator = () => {
           `}</style>
           {/* Inputs Section - 1 column */}
           <div className="col-span-1 space-y-6">
-            <CollapsibleSection
-              sectionId="husband-inputs"
-              title="Husband Details"
-            >
-              {renderPersonInputs("Husband", husband, setHusband, inputErrors.husband || [])}
-            </CollapsibleSection>
+          <h3 className="font-semibold text-sm mb-2">Husband Details</h3>
+          {renderPersonInputs("Husband", husband, setHusband, inputErrors.husband || [])}
 
-            {/* Spouse Inputs - Conditional */}
-            <div className={`transition-all duration-300 ease-in-out ${showSpouseInputs ? 'opacity-100' : 'opacity-0 h-0 overflow-hidden'}`}>
-              <div className="flex items-center gap-2 mb-2">
-                <input
-                  type="checkbox"
-                  id="same-as-husband"
-                  checked={!showSpouseInputs}
-                  onChange={toggleSpouseInputs}
-                  className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                />
-                <label htmlFor="same-as-husband" className="text-sm font-medium cursor-pointer">
-                  Same as husband
-                </label>
-              </div>
-              
-              {showSpouseInputs && (
-                <CollapsibleSection
-                  sectionId="spouse-inputs"
-                  title="Spouse Details"
-                >
-                  {renderPersonInputs("Spouse", spouse, setSpouse, inputErrors.spouse || [])}
-                </CollapsibleSection>
-              )}
+          {/* Spouse Inputs - Conditional */}
+          <div className={`transition-all duration-300 ease-in-out ${showSpouseInputs ? 'opacity-100' : 'opacity-0 h-0 overflow-hidden'}`}>
+            <div className="flex items-center gap-2 mb-2">
+              <input
+                type="checkbox"
+                id="same-as-husband"
+                checked={!showSpouseInputs}
+                onChange={toggleSpouseInputs}
+                className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+              />
+              <label htmlFor="same-as-husband" className="text-sm font-medium cursor-pointer">
+                Same as husband
+              </label>
             </div>
+            
+            {showSpouseInputs && (
+              <>
+                <h3 className="font-semibold text-sm mb-2">Spouse Details</h3>
+                {renderPersonInputs("Spouse", spouse, setSpouse, inputErrors.spouse || [])}
+              </>
+            )}
+          </div>
           </div>
 
           {/* Results Section - 3 columns */}
           <div className="col-span-3 two-person-projections-section">
-
-        <CollapsibleSection sectionId="household-results" title="Household Results">
-          {loading ? (
-            <div className="flex h-64 items-center justify-center">
-              <div className="h-12 w-12 animate-spin rounded-full border-blue-500 border-b-2" />
-            </div>
-           ) : results ? (
-              <div className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  {/* Combined Net Worth */}
-                  <div className="rounded-lg border-green-500 border-l-4 bg-green-50 p-3">
-                    <p className="text-gray-600 text-sm">Total Household Net Worth at Retirement</p>
-                    <p className="font-bold text-xl text-green-700">
-                      {formatCurrency(results.householdProjection?.totalNetWorthAtRetirement)}
-                    </p>
-                  </div>
-
-                  {/* Combined Liquid Savings */}
-                  <div className="rounded-lg border-blue-500 border-l-4 bg-blue-50 p-3">
-                    <p className="text-gray-600 text-sm">Total Household Liquid Savings</p>
-                    <p className="font-bold text-xl text-blue-700">
-                      {formatCurrency(results.householdProjection?.totalLiquidSavingsAtRetirement)}
-                    </p>
-                  </div>
-
-                  {/* Combined Monthly Income */}
-                  <div className="rounded-lg border-purple-500 border-l-4 bg-purple-50 p-3">
-                    <p className="text-gray-600 text-sm">Total Monthly Income at Retirement</p>
-                    <p className="font-bold text-xl text-purple-700">
-                      {formatCurrency(results.householdProjection?.monthlyIncomeAtRetirement)}
-                    </p>
-                  </div>
-
-                  {/* Combined Social Security */}
-                  <div className="rounded-lg border-teal-500 border-l-4 bg-teal-50 p-3">
-                    <p className="text-gray-600 text-sm">Combined Social Security (Monthly)</p>
-                    <p className="font-bold text-xl text-teal-700">
-                      {formatCurrency(results.householdProjection?.combinedSocialSecurityBenefit)}
-                    </p>
-                  </div>
-
-                  {/* Safe Withdrawal Amount */}
-                  <div className="rounded-lg border-orange-500 border-l-4 bg-orange-50 p-3">
-                    <p className="text-gray-600 text-sm">Safe Annual Withdrawal (4% Rule)</p>
-                    <p className="font-bold text-xl text-orange-700">
-                      {formatCurrency(results.householdProjection?.safeWithdrawalAmount)}
-                    </p>
-                  </div>
-
-                  {/* Years to Retirement */}
-                  <div className="rounded-lg border-yellow-500 border-l-4 bg-yellow-50 p-3">
-                    <p className="text-gray-600 text-sm">Years Until Retirement</p>
-                    <p className="font-bold text-xl text-yellow-700">
-                      {results.householdProjection?.yearsToRetirement} years
-                    </p>
-                  </div>
+            {loading ? (
+          <div className="flex h-64 items-center justify-center">
+            <div className="h-12 w-12 animate-spin rounded-full border-blue-500 border-b-2" />
+          </div>
+          ) : results ? (
+            <div className="rounded-lg border border-gray-200 bg-white p-6">
+              <h3 className="mb-4 text-center font-semibold text-gray-700">Household Results</h3>
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-x-8 gap-y-2">
+                {/* Combined Net Worth */}
+                <div>
+                  <p className="text-xs text-gray-500">Total Household Net Worth at Retirement</p>
+                  <p className="font-bold text-lg text-gray-900">
+                    {formatCurrency(results.householdProjection?.totalNetWorthAtRetirement)}
+                  </p>
                 </div>
 
-                {/* Individual Projections */}
-                <div className="grid grid-cols-2 gap-4">
-                  <style>{`
-                    @media (max-width: 768px) {
-                      .grid-cols-2-individual-projections {
-                        grid-template-columns: repeat(1, 1fr);
-                      }
-                    }
-                  `}</style>
-                  {results.husbandProjection && (
-                    <CollapsibleSection sectionId="husband-details" title="Husband's Projection" className="chevron-hidden">
-                     <div className="space-y-2 text-sm pl-4">
-                        <p>Retirement Age: {results.husbandProjection?.retirementAge}</p>
-                        <p>Liquid Savings: {formatCurrency(results.husbandProjection?.totalLiquidSavingsAtRetirement)}</p>
-                        <p>Social Security: {formatCurrency(results.husbandProjection?.socialSecurityBenefit)}/month</p>
-                     </div>
-                   </CollapsibleSection>
-                  )}
+                {/* Combined Liquid Savings */}
+                <div>
+                  <p className="text-xs text-gray-500">Total Household Liquid Savings</p>
+                  <p className="font-bold text-lg text-blue-600">
+                    {formatCurrency(results.householdProjection?.totalLiquidSavingsAtRetirement)}
+                  </p>
+                </div>
 
-                  {results.spouseProjection && (
-                    <CollapsibleSection sectionId="spouse-details" title="Spouse's Projection" className="chevron-hidden">
-                      <div className="space-y-2 text-sm pl-4">
-                         <p>Retirement Age: {results.spouseProjection?.retirementAge}</p>
-                         <p>Liquid Savings: {formatCurrency(results.spouseProjection?.totalLiquidSavingsAtRetirement)}</p>
-                         <p>Social Security: {formatCurrency(results.spouseProjection?.socialSecurityBenefit)}/month</p>
-                      </div>
-                    </CollapsibleSection>
-                  )}
+                {/* Combined Monthly Income */}
+                <div>
+                  <p className="text-xs text-gray-500">Total Monthly Income at Retirement</p>
+                  <p className="font-bold text-lg text-purple-600">
+                    {formatCurrency(results.householdProjection?.monthlyIncomeAtRetirement)}
+                  </p>
+                </div>
+
+                {/* Combined Social Security */}
+                <div>
+                  <p className="text-xs text-gray-500">Combined Social Security (Monthly)</p>
+                  <p className="font-bold text-lg text-teal-600">
+                    {formatCurrency(results.householdProjection?.combinedSocialSecurityBenefit)}
+                  </p>
+                </div>
+
+                {/* Safe Withdrawal Amount */}
+                <div>
+                  <p className="text-xs text-gray-500">Safe Annual Withdrawal (4% Rule)</p>
+                  <p className="font-bold text-lg text-orange-600">
+                    {formatCurrency(results.householdProjection?.safeWithdrawalAmount)}
+                  </p>
+                </div>
+
+                {/* Years to Retirement */}
+                <div>
+                  <p className="text-xs text-gray-500">Years Until Retirement</p>
+                  <p className="font-bold text-lg text-yellow-600">
+                    {results.householdProjection?.yearsToRetirement} years
+                  </p>
                 </div>
               </div>
-             ) : (
-               <div className="flex h-64 items-center justify-center">
-                 <p className="text-gray-500">Enter your information to see projections</p>
-               </div>
-             )}
-            </CollapsibleSection>
+
+              {/* Individual Projections */}
+              <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6 border-t border-gray-100 pt-6">
+                {results.husbandProjection && (
+                  <div>
+                    <h4 className="mb-3 font-semibold text-sm text-gray-700">Husband's Projection</h4>
+                    <div className="space-y-2 text-xs">
+                      <p><span className="text-gray-500">Retirement Age:</span> {results.husbandProjection?.retirementAge}</p>
+                      <p><span className="text-gray-500">Liquid Savings:</span> {formatCurrency(results.husbandProjection?.totalLiquidSavingsAtRetirement)}</p>
+                      <p><span className="text-gray-500">Social Security:</span> {formatCurrency(results.husbandProjection?.socialSecurityBenefit)}/month</p>
+                    </div>
+                  </div>
+                )}
+
+                {results.spouseProjection && (
+                  <div>
+                    <h4 className="mb-3 font-semibold text-sm text-gray-700">Spouse's Projection</h4>
+                    <div className="space-y-2 text-xs">
+                      <p><span className="text-gray-500">Retirement Age:</span> {results.spouseProjection?.retirementAge}</p>
+                      <p><span className="text-gray-500">Liquid Savings:</span> {formatCurrency(results.spouseProjection?.totalLiquidSavingsAtRetirement)}</p>
+                      <p><span className="text-gray-500">Social Security:</span> {formatCurrency(results.spouseProjection?.socialSecurityBenefit)}/month</p>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+           ) : (
+             <div className="flex h-64 items-center justify-center">
+               <p className="text-gray-500">Enter your information to see projections</p>
+             </div>
+           )}
           </div>
         </div>
 
@@ -541,7 +525,6 @@ const TwoPersonRetirementCalculator = () => {
           {loading ? "Calculating..." : "Calculate Retirement Plan"}
         </button>
       </div>
-    </CollapsibleSectionProvider>
   );
 };
 
