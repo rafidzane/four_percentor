@@ -366,25 +366,15 @@ const RetirementCalculator = () => {
           <div className="mb-6 rounded-lg border border-yellow-400 bg-yellow-50 px-4 py-3 text-yellow-800 shadow-sm">
             <h3 className="mb-2 font-bold">Please fix the following errors:</h3>
             <ul className="list-inside list-disc space-y-1">
-               {inputErrors.map((err, idx) => (
-                 <li key={idx} className="text-sm">
-                   <span className="font-medium">{err.field}:</span>{" "}
-                   {err.message}
-                 </li>
-               ))}
-          </ul>
+              {inputErrors.map((err, idx) => (
+                <li key={idx} className="text-sm">
+                  <span className="font-medium">{err.field}:</span>{" "}
+                  {err.message}
+                </li>
+              ))}
+            </ul>
+          </div>
         )}
-
-        {/* Chart Placeholder - embedded in results section */}
-        <div className="space-y-4 lg:hidden">
-          <CollapsibleSection sectionId="charts" title="Projection Charts">
-            <div className="rounded-lg border border-gray-200 bg-gray-50 p-8 text-center">
-              <p className="text-gray-500">
-                Chart visualization coming soon...
-              </p>
-            </div>
-          </CollapsibleSection>
-        </div>
 
         <div className="mb-8 grid grid-cols-1 gap-8 lg:grid-cols-3">
           {/* Retirement Parameters - Column 1 */}
@@ -470,15 +460,14 @@ const RetirementCalculator = () => {
             </div>
           </CollapsibleSection>
 
-          {/* Results Section - Column 2 (spans 2 columns) */}
-          <div className="lg:col-span-2">
-            <CollapsibleSection sectionId="results" title="Results">
-              {loading ? (
-                <div className="flex h-64 items-center justify-center">
-                  <div className="h-12 w-12 animate-spin rounded-full border-blue-500 border-b-2" />
-                </div>
-              ) : results ? (
-                <div className="space-y-4">
+          {/* Results Section - Column 2 */}
+          <CollapsibleSection sectionId="results" title="Results">
+            {loading ? (
+              <div className="flex h-64 items-center justify-center">
+                <div className="h-12 w-12 animate-spin rounded-full border-blue-500 border-b-2" />
+              </div>
+            ) : results ? (
+              <div className="space-y-4">
                 {/* Total Net Worth at Retirement */}
                 <div className="rounded-lg border-green-500 border-l-4 bg-green-50 p-3">
                   <p className="text-gray-600 text-xs">
@@ -671,13 +660,15 @@ const RetirementCalculator = () => {
             )}
           </CollapsibleSection>
 
-          {/* Chart Placeholder - embedded in results section */}
-          <div className="space-y-4">
+          {/* Chart Placeholder - Column 3 */}
+          <div className="lg:col-span-1">
             <CollapsibleSection sectionId="charts" title="Projection Charts">
-              <div className="rounded-lg border border-gray-200 bg-gray-50 p-8 text-center">
-                <p className="text-gray-500">
-                  Chart visualization coming soon...
-                </p>
+              <div className="space-y-4">
+                <div className="rounded-lg border border-gray-200 bg-gray-50 p-8 text-center">
+                  <p className="text-gray-500">
+                    Chart visualization coming soon...
+                  </p>
+                </div>
               </div>
             </CollapsibleSection>
           </div>

@@ -65,8 +65,9 @@ export const sidebarItems: NavGroup[] = [
       },
       {
         title: "Retirement",
-        url: "/dashboard/retirement", // Updated path to match new location
+        url: "/dashboard/retirement/two-person",
         icon: GraduationCap,
+        isNew: true,
       },
       {
         title: "Analytics",

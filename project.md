@@ -252,11 +252,11 @@ python main.py
    - frontend
    - data
    - infrastructure
-   - testing
-   - documentation
+  
 
 38. Execute each stream incrementally.
 39. Use checkpoints and summaries between streams.
+40. Mark things complete as you finish them
 
 ---
 

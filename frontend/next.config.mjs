@@ -8,8 +8,8 @@ const nextConfig = {
     return [
       // Proxy all /fourpercent/api/* requests to backend
       {
-        source: '/fourpercent/api/:path*',
-        destination: 'http://localhost:8000/fourpercent/api/:path*',
+        source: "/fourpercent/api/:path*",
+        destination: "http://localhost:8000/fourpercent/api/:path*",
       },
     ];
   },
