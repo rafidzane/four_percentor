@@ -56,3 +56,22 @@ export interface CalculatorState {
   isLoading: boolean;
   error: string | null;
 }
+
+export interface TwoPersonCalculationResults {
+  person1: RetirementResults;
+  person2: RetirementResults;
+  combined: {
+    totalMonthlyIncome: number;
+    totalNetWorthAtRetirement: number;
+    jointLifeExpectancy: number;
+    withdrawalRate: number;
+    safeWithdrawalAmount: number;
+  };
+}
+
+export interface SharedRetirementSettingsState {
+  inflationRate: number;
+  marketReturnAssumption: number;
+  riskTolerance: "low" | "medium" | "high";
+  withdrawalStrategy: "fixed" | "variable" | "systematic";
+}
