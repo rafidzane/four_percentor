@@ -43,7 +43,7 @@ export interface PortfolioAllocation {
 }
 
 export interface IncomeSource {
-  type: 'socialSecurity' | 'pension' | 'other';
+  type: "socialSecurity" | "pension" | "other";
   monthlyAmount: number;
   startingAge: number;
   inflationAdjustment: number;

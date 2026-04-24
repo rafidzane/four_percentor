@@ -7,7 +7,7 @@ This module provides retirement planning calculations for couples/households.
 from fastapi import FastAPI, HTTPException, status, Request
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field, field_validator
-from typing import Optional, Dict, Any
+from typing import Optional, Dict, Any, List
 import math
 
 
@@ -62,6 +62,13 @@ class IndividualProjection(BaseModel):
     social_security_benefit: float
 
 
+class YearlyProjection(BaseModel):
+    age: int
+    person1_liquid_savings: float
+    person2_liquid_savings: float
+    household_total_liquid_savings: float
+
+
 class HouseholdProjection(BaseModel):
     years_to_retirement: int
     total_liquid_savings_at_retirement: float
@@ -74,6 +81,7 @@ class HouseholdProjection(BaseModel):
     inflation_adjusted_savings: Optional[float] = Field(default=0.0)
     years_to_depletion: Optional[float] = Field(default=0.0)
     monte_carlo_success_rate: Optional[float] = Field(default=0.0)
+    yearly_projections: List[YearlyProjection]
 
 
 def calculate_compound_growth(
@@ -99,6 +107,62 @@ def calculate_compound_growth(
         future_value_contributions = monthly_contribution * total_months
 
     return future_value_current + future_value_contributions
+
+
+def calculate_yearly_projections(
+    current_age: int,
+    retirement_age: int,
+    liquid_assets: float,
+    monthly_contribution: float,
+    annual_return_rate: float,
+    end_age: int = 90
+) -> List[YearlyProjection]:
+    projections = []
+    
+    current_savings = liquid_assets
+    current_year_age = current_age
+    
+    while current_year_age <= end_age:
+        projections.append(YearlyProjection(
+            age=current_year_age,
+            person1_liquid_savings=round(current_savings, 2),
+            person2_liquid_savings=0.0,
+            household_total_liquid_savings=round(current_savings, 2)
+        ))
+        
+        years_since_retirement = current_year_age - retirement_age
+        if years_since_retirement > 0:
+            monthly_return_rate = annual_return_rate / 12
+            total_months = years_since_retirement * 12
+            
+            current_savings = (
+                liquid_assets * ((1 + monthly_return_rate) ** total_months)
+            )
+            
+            projected_balance = calculate_withdrawal_projection(
+                total_savings=current_savings,
+                annual_withdrawal=current_savings * 0.04,
+                annual_return_rate=annual_return_rate,
+                years=years_since_retirement
+            )
+            current_savings = projected_balance
+        else:
+            months_since_start = current_year_age - current_age
+            monthly_return_rate = annual_return_rate / 12
+            
+            if monthly_return_rate > 0:
+                future_value_contributions = (
+                    monthly_contribution * 
+                    (((1 + monthly_return_rate) ** (months_since_start * 12) - 1) / monthly_return_rate)
+                )
+            else:
+                future_value_contributions = monthly_contribution * (months_since_start * 12)
+            
+            current_savings = liquid_assets * ((1 + monthly_return_rate) ** (months_since_start * 12)) + future_value_contributions
+        
+        current_year_age += 1
+    
+    return projections
 
 
 def calculate_withdrawal_projection(
@@ -163,6 +227,74 @@ def calculate_individual_projection(person_data: PersonInput) -> IndividualProje
     )
 
 
+def calculate_yearly_projections_for_person(
+    current_age: int,
+    retirement_age: int,
+    liquid_assets: float,
+    monthly_contribution: float,
+    annual_return_rate: float,
+    end_age: int = 90
+) -> List[Dict[str, Any]]:
+    projections = []
+    
+    current_savings = liquid_assets
+    
+    for age in range(current_age, end_age + 1):
+        if age < retirement_age:
+            years_since_start = age - current_age
+            monthly_return_rate = annual_return_rate / 12
+            
+            if monthly_return_rate > 0:
+                future_value_contributions = (
+                    monthly_contribution * 
+                    (((1 + monthly_return_rate) ** (years_since_start * 12) - 1) / monthly_return_rate)
+                )
+            else:
+                future_value_contributions = monthly_contribution * (years_since_start * 12)
+            
+            current_savings = (
+                liquid_assets * ((1 + monthly_return_rate) ** (years_since_start * 12)) 
+                + future_value_contributions
+            )
+        else:
+            years_since_retirement = age - retirement_age
+            
+            projected_balance = calculate_withdrawal_projection(
+                total_savings=liquid_assets,
+                annual_withdrawal=liquid_assets * 0.04,
+                annual_return_rate=annual_return_rate,
+                years=years_since_retirement
+            )
+            current_savings = projected_balance
+        
+        projections.append({
+            "age": age,
+            "person_liquid_savings": round(current_savings, 2)
+        })
+    
+    return projections
+
+
+def merge_person_projections(
+    person1_projections: List[Dict[str, Any]],
+    person2_projections: List[Dict[str, Any]]
+) -> List[YearlyProjection]:
+    merged = []
+    
+    for i in range(len(person1_projections)):
+        p1 = person1_projections[i]
+        p2 = person2_projections[i] if i < len(person2_projections) else {"age": p1["age"], "person_liquid_savings": 0.0}
+        
+        merged.append(YearlyProjection(
+            age=p1["age"],
+            person1_liquid_savings=p1["person_liquid_savings"],
+            person2_liquid_savings=p2["person_liquid_savings"],
+            household_total_liquid_savings=round(p1["person_liquid_savings"] + p2["person_liquid_savings"], 2)
+        ))
+    
+    return merged
+
+
 def calculate_two_person_projection(input_data: TwoPersonRetirementInput) -> dict:
     try:
         husband_projection = calculate_individual_projection(input_data.husband)
@@ -194,6 +326,24 @@ def calculate_two_person_projection(input_data: TwoPersonRetirementInput) -> dic
             husband_projection.years_to_retirement,
             spouse_projection.years_to_retirement
         )
+
+        person1_projections = calculate_yearly_projections_for_person(
+            current_age=input_data.husband.current_age,
+            retirement_age=input_data.husband.retirement_age,
+            liquid_assets=input_data.husband.liquid_assets,
+            monthly_contribution=input_data.husband.monthly_contribution,
+            annual_return_rate=input_data.husband.annual_return_rate
+        )
+
+        person2_projections = calculate_yearly_projections_for_person(
+            current_age=input_data.spouse.current_age,
+            retirement_age=input_data.spouse.retirement_age,
+            liquid_assets=input_data.spouse.liquid_assets,
+            monthly_contribution=input_data.spouse.monthly_contribution,
+            annual_return_rate=input_data.spouse.annual_return_rate
+        )
+
+        yearly_projections = merge_person_projections(person1_projections, person2_projections)
 
         remaining_years = 90 - years_to_retirement - input_data.husband.current_age
         if remaining_years < 0:
@@ -235,7 +385,8 @@ def calculate_two_person_projection(input_data: TwoPersonRetirementInput) -> dic
             projected_balance_at_age_90=round(projected_balance, 2),
             inflation_adjusted_savings=round(inflation_adjusted_savings, 2),
             years_to_depletion=years_to_depletion,
-            monte_carlo_success_rate=monte_carlo_success_rate
+            monte_carlo_success_rate=monte_carlo_success_rate,
+            yearly_projections=yearly_projections
         )
 
         return {

@@ -2,7 +2,7 @@
  * Core calculation functions for retirement calculator
  */
 
-import { RetirementInput, RetirementResults, PortfolioAllocation, IncomeSource } from '../types';
+import { IncomeSource, type PortfolioAllocation, RetirementInput, RetirementResults } from "../types";
 
 /**
  * Calculate 4% rule safe withdrawal amount
@@ -10,10 +10,7 @@ import { RetirementInput, RetirementResults, PortfolioAllocation, IncomeSource }
  * @param withdrawalRate - Annual withdrawal rate (as decimal)
  * @returns Safe annual withdrawal amount
  */
-export function calculateSafeWithdrawal(
-  portfolioValue: number,
-  withdrawalRate: number
-): number {
+export function calculateSafeWithdrawal(portfolioValue: number, withdrawalRate: number): number {
   return portfolioValue * withdrawalRate;
 }
 
@@ -31,7 +28,7 @@ export function calculatePortfolioLongevity(
   annualExpenses: number,
   withdrawalRate: number,
   inflationRate: number,
-  portfolioAllocation: PortfolioAllocation
+  portfolioAllocation: PortfolioAllocation,
 ): number {
   let remainingPortfolio = portfolioValue;
   let years = 0;
@@ -48,7 +45,7 @@ export function calculatePortfolioLongevity(
     const totalReturn = equityReturnAmount + fixedIncomeReturnAmount;
 
     // Adjust for inflation
-    const inflationAdjustedExpenses = annualExpenses * Math.pow(1 + inflationRate, years);
+    const inflationAdjustedExpenses = annualExpenses * (1 + inflationRate) ** years;
 
     // Update portfolio
     remainingPortfolio = remainingPortfolio + totalReturn - withdrawal;
@@ -65,10 +62,7 @@ export function calculatePortfolioLongevity(
  * @param illiquidAssets - Illiquid assets
  * @returns Total net worth
  */
-export function calculateNetWorthAtRetirement(
-  liquidAssets: number,
-  illiquidAssets: number
-): number {
+export function calculateNetWorthAtRetirement(liquidAssets: number, illiquidAssets: number): number {
   return liquidAssets + illiquidAssets;
 }
 
@@ -84,12 +78,13 @@ export function calculateLiquidSavingsAtRetirement(
   currentAssets: number,
   monthlyContribution: number,
   yearsToRetirement: number,
-  annualReturnRate: number
+  annualReturnRate: number,
 ): number {
   const monthlyReturnRate = annualReturnRate / 12;
   const totalContributions = monthlyContribution * 12 * yearsToRetirement;
-  const futureValue = currentAssets * Math.pow(1 + annualReturnRate, yearsToRetirement);
-  const contributionsFutureValue = monthlyContribution * 12 * ((Math.pow(1 + monthlyReturnRate, yearsToRetirement * 12) - 1) / monthlyReturnRate);
+  const futureValue = currentAssets * (1 + annualReturnRate) ** yearsToRetirement;
+  const contributionsFutureValue =
+    monthlyContribution * 12 * (((1 + monthlyReturnRate) ** (yearsToRetirement * 12) - 1) / monthlyReturnRate);
 
   return futureValue + contributionsFutureValue;
 }
@@ -99,9 +94,7 @@ export function calculateLiquidSavingsAtRetirement(
  * @param safeWithdrawalAmount - Safe annual withdrawal amount
  * @returns Monthly income
  */
-export function calculateMonthlyIncomeAtRetirement(
-  safeWithdrawalAmount: number
-): number {
+export function calculateMonthlyIncomeAtRetirement(safeWithdrawalAmount: number): number {
   return safeWithdrawalAmount / 12;
 }
 
@@ -110,9 +103,7 @@ export function calculateMonthlyIncomeAtRetirement(
  * @param monthlyAmount - Monthly Social Security amount
  * @returns Annual Social Security benefit
  */
-export function calculateSocialSecurityBenefit(
-  monthlyAmount: number
-): number {
+export function calculateSocialSecurityBenefit(monthlyAmount: number): number {
   return monthlyAmount * 12;
 }
 
@@ -128,10 +119,10 @@ export function calculateProjectedBalanceAtAge90(
   currentAge: number,
   retirementAge: number,
   portfolioValue: number,
-  annualReturnRate: number
+  annualReturnRate: number,
 ): number {
   const yearsFromRetirementTo90 = 90 - retirementAge;
-  return portfolioValue * Math.pow(1 + annualReturnRate, yearsFromRetirementTo90);
+  return portfolioValue * (1 + annualReturnRate) ** yearsFromRetirementTo90;
 }
 
 /**
@@ -144,19 +135,20 @@ export function calculateProjectedBalanceAtAge90(
 export function calculateRecommendedStrategy(
   portfolioValue: number,
   annualExpenses: number,
-  inflationRate: number
+  inflationRate: number,
 ): string {
   const withdrawalRate = annualExpenses / portfolioValue;
 
   if (withdrawalRate <= 0.04) {
     return "Conservative: 4% rule is appropriate. Your portfolio should last 30+ years.";
-  } else if (withdrawalRate <= 0.05) {
-    return "Moderate: 5% withdrawal rate may be sustainable with careful planning.";
-  } else if (withdrawalRate <= 0.06) {
-    return "Aggressive: 6% withdrawal rate requires careful monitoring and flexibility.";
-  } else {
-    return "High Risk: 6%+ withdrawal rate is not recommended. Consider reducing expenses or increasing portfolio size.";
   }
+  if (withdrawalRate <= 0.05) {
+    return "Moderate: 5% withdrawal rate may be sustainable with careful planning.";
+  }
+  if (withdrawalRate <= 0.06) {
+    return "Aggressive: 6% withdrawal rate requires careful monitoring and flexibility.";
+  }
+  return "High Risk: 6%+ withdrawal rate is not recommended. Consider reducing expenses or increasing portfolio size.";
 }
 
 /**
@@ -165,10 +157,7 @@ export function calculateRecommendedStrategy(
  * @param years - Number of years
  * @returns Total withdrawals
  */
-export function calculateTotalWithdrawals(
-  safeWithdrawalAmount: number,
-  years: number
-): number {
+export function calculateTotalWithdrawals(safeWithdrawalAmount: number, years: number): number {
   return safeWithdrawalAmount * years;
 }
 
@@ -178,9 +167,6 @@ export function calculateTotalWithdrawals(
  * @param totalWithdrawals - Total withdrawals
  * @returns Final portfolio value
  */
-export function calculateFinalPortfolioValue(
-  portfolioValue: number,
-  totalWithdrawals: number
-): number {
+export function calculateFinalPortfolioValue(portfolioValue: number, totalWithdrawals: number): number {
   return portfolioValue - totalWithdrawals;
 }
