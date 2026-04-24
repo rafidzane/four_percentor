@@ -113,6 +113,17 @@ python main.py
 - Use `.env.example` as template
 - Never commit `.env` files
 
+## Ignore Rules
+
+OpenCode should skip reading files from the following directories to improve performance and reduce context window usage:
+
+- `node_modules` - Third-party dependencies
+- `.next` - Next.js build artifacts
+- `.opencode/node_modules` - OpenCode's own dependencies
+- `dist`, `build` - General build output directories
+
+These directories contain generated files that are never needed for code review or implementation tasks.
+
 ## Project Rules
 
 ### Feature Development

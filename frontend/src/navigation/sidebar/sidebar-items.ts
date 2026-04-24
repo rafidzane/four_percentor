@@ -64,12 +64,6 @@ export const sidebarItems: NavGroup[] = [
         icon: Banknote,
       },
       {
-        title: "Retirement",
-        url: "/dashboard/retirement/two-person",
-        icon: GraduationCap,
-        isNew: true,
-      },
-      {
         title: "Analytics",
         url: "/dashboard/coming-soon",
         icon: Gauge,

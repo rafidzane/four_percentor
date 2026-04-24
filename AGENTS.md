@@ -113,3 +113,14 @@ Never commit `.env` files.
 - Frontend uses colocation-based architecture (feature folders with pages, components, logic)
 - Backend has three separate API apps mounted under different paths
 - Use Husky pre-commit hooks (lint-staged) for code quality
+
+## Ignore Rules
+
+OpenCode should skip reading files from the following directories to improve performance and reduce context window usage:
+
+- `node_modules` - Third-party dependencies
+- `.next` - Next.js build artifacts
+- `.opencode/node_modules` - OpenCode's own dependencies
+- `dist`, `build` - General build output directories
+
+These directories contain generated files that are never needed for code review or implementation tasks.
