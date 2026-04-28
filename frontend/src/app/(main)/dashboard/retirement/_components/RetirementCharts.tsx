@@ -147,11 +147,11 @@ export function RetirementCharts() {
   }
 
   return (
-    <div className="h-full flex flex-col space-y-4">
+    <div className="h-full flex flex-col space-y-4 overflow-hidden">
       <h3 className="text-xl font-semibold">Retirement Projection</h3>
-      
+
       {/* Portfolio Value Chart */}
-      <div className="flex-1 min-h-[200px] max-h-[250px]">
+      <div className="flex-1 min-h-[200px] max-h-[250px] overflow-hidden">
         <h4 className="text-lg font-medium mb-2">Portfolio Value Over Time</h4>
         <div className="h-full w-full">
           <ResponsiveContainer width="100%" height="100%">
@@ -160,24 +160,24 @@ export function RetirementCharts() {
               margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
             >
               <CartesianGrid strokeDasharray="3 3" />
-              <XAxis 
-                dataKey="year" 
+              <XAxis
+                dataKey="year"
                 tick={{ fontSize: 12 }}
               />
-              <YAxis 
+              <YAxis
                 tick={{ fontSize: 12 }}
                 tickFormatter={(value) => `$${(value / 1000000).toFixed(1)}M`}
               />
-              <Tooltip 
+              <Tooltip
                 formatter={(value) => [`$${Number(value).toLocaleString()}`, 'Portfolio Value']}
                 labelFormatter={(label) => `Year: ${label}`}
               />
               <Legend />
-              <Area 
-                type="monotone" 
-                dataKey="portfolioValue" 
-                stroke="#3b82f6" 
-                fill="#93c5fd" 
+              <Area
+                type="monotone"
+                dataKey="portfolioValue"
+                stroke="#3b82f6"
+                fill="#93c5fd"
                 name="Portfolio Value"
               />
             </AreaChart>
@@ -186,7 +186,7 @@ export function RetirementCharts() {
       </div>
 
       {/* Income vs Expenses Chart */}
-      <div className="flex-1 min-h-[200px] max-h-[250px]">
+      <div className="flex-1 min-h-[200px] max-h-[250px] overflow-hidden">
         <h4 className="text-lg font-medium mb-2">Income vs Expenses</h4>
         <div className="h-full w-full">
           <ResponsiveContainer width="100%" height="100%">
@@ -195,15 +195,15 @@ export function RetirementCharts() {
               margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
             >
               <CartesianGrid strokeDasharray="3 3" />
-              <XAxis 
-                dataKey="year" 
+              <XAxis
+                dataKey="year"
                 tick={{ fontSize: 12 }}
               />
-              <YAxis 
+              <YAxis
                 tick={{ fontSize: 12 }}
                 tickFormatter={(value) => `$${(value / 1000).toFixed(0)}K`}
               />
-              <Tooltip 
+              <Tooltip
                 formatter={(value) => [`$${Number(value).toLocaleString()}`, 'Amount']}
                 labelFormatter={(label) => `Year: ${label}`}
               />
@@ -216,7 +216,7 @@ export function RetirementCharts() {
       </div>
 
       {/* Withdrawal Rates Chart */}
-      <div className="flex-1 min-h-[200px] max-h-[250px]">
+      <div className="flex-1 min-h-[200px] max-h-[250px] overflow-hidden">
         <h4 className="text-lg font-medium mb-2">Withdrawal Rate Over Time</h4>
         <div className="h-full w-full">
           <ResponsiveContainer width="100%" height="100%">
@@ -225,25 +225,25 @@ export function RetirementCharts() {
               margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
             >
               <CartesianGrid strokeDasharray="3 3" />
-              <XAxis 
-                dataKey="year" 
+              <XAxis
+                dataKey="year"
                 tick={{ fontSize: 12 }}
               />
-              <YAxis 
+              <YAxis
                 tick={{ fontSize: 12 }}
                 domain={[0, 6]}
                 tickFormatter={(value) => `${value}%`}
               />
-              <Tooltip 
+              <Tooltip
                 formatter={(value) => [`${Number(value).toFixed(1)}%`, 'Withdrawal Rate']}
                 labelFormatter={(label) => `Year: ${label}`}
               />
               <Legend />
-              <Line 
-                type="monotone" 
-                dataKey="withdrawalRate" 
-                stroke="#8b5cf6" 
-                activeDot={{ r: 8 }} 
+              <Line
+                type="monotone"
+                dataKey="withdrawalRate"
+                stroke="#8b5cf6"
+                activeDot={{ r: 8 }}
                 name="Withdrawal Rate"
               />
             </LineChart>

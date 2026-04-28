@@ -12,14 +12,14 @@ export default function Page() {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 h-[calc(100vh-200px)]">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Left Column - Inputs */}
-        <div className="lg:col-span-1 h-full">
+        <div className="lg:col-span-1 flex flex-col">
           <RetirementForm />
         </div>
-        
+
         {/* Right Column - Charts */}
-        <div className="lg:col-span-1 h-full">
+        <div className="lg:col-span-1 flex flex-col">
           <RetirementCharts />
         </div>
       </div>

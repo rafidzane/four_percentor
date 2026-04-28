@@ -230,7 +230,7 @@ export const RetirementForm: FC<RetirementFormProps> = ({ className }) => {
     <FormProvider {...form}>
       <form onSubmit={form.handleSubmit(handleSubmit)} className={`space-y-8 ${className}`}>
         {/* Section: Personal Information & Portfolio */}
-      <section className="rounded-xl border p-6">
+      <section className="rounded-xl border p-6 min-h-[200px]">
         <h3 className="text-lg font-semibold mb-4">Personal Information</h3>
         <div className="grid grid-cols-1 gap-4">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -331,7 +331,7 @@ export const RetirementForm: FC<RetirementFormProps> = ({ className }) => {
       </section>
 
       {/* Section: Contributions */}
-      <section className="rounded-xl border p-6">
+      <section className="rounded-xl border p-6 min-h-[200px]">
         <h3 className="text-lg font-semibold mb-4">Contributions</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           <div className="space-y-1">
@@ -379,7 +379,7 @@ export const RetirementForm: FC<RetirementFormProps> = ({ className }) => {
       <ReturnsSection />
 
       {/* Section: Withdrawal Strategy */}
-      <section className="rounded-xl border p-6">
+      <section className="rounded-xl border p-6 min-h-[200px]">
         <h3 className="text-lg font-semibold mb-4">Withdrawal Strategy</h3>
 
         <div className="space-y-1 mb-4">
@@ -568,7 +568,7 @@ export const RetirementForm: FC<RetirementFormProps> = ({ className }) => {
       </section>
 
       {/* Section: Income Sources */}
-      <section className="rounded-xl border p-6">
+      <section className="rounded-xl border p-6 min-h-[200px]">
         <h3 className="text-lg font-semibold mb-4">Income Sources</h3>
 
         <div className="space-y-6">
@@ -747,7 +747,7 @@ export const RetirementForm: FC<RetirementFormProps> = ({ className }) => {
       </section>
 
       {/* Section: Real Estate */}
-      <section className="rounded-xl border p-6">
+      <section className="rounded-xl border p-6 min-h-[200px]">
         <h3 className="text-lg font-semibold mb-4">Real Estate</h3>
 
         {/* Primary Home */}
