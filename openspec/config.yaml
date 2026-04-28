@@ -1,0 +1,96 @@
+schema: spec-driven
+
+context: |
+  Project: four_percentor
+  Domain: Personal finance — retirement planning calculator
+  Goal: The best retirement calculator on the market. Focused on accuracy,
+  clarity, and helping users understand if they can retire and stay retired.
+  Core concept: The 4% rule (Bengen/Trinity study) — a retiree can withdraw
+  4% of their portfolio annually and survive 30+ years with high probability.
+
+  Structure:
+    - Backend code lives in /backend — FastAPI app, domains, models, config
+    - Frontend code lives in /frontend — Next.js app, components, hooks, pages
+    - Never mix backend and frontend code across these directories
+
+  Backend:
+    - Python 3.12+
+    - FastAPI with Pydantic v2 for all request/response models
+    - Annotated style for all parameters and dependencies
+    - Async endpoints by default
+    - Domain-driven structure: one package per feature area
+      (e.g. simulator/, portfolio/, projections/, auth/, users/)
+    - Each domain has: router.py, schemas.py, service.py, dependencies.py, constants.py, exceptions.py
+    - No business logic in routers — all logic lives in service.py
+    - Return types always declared for serialization/validation
+    - Database: PostgreSQL + SQLAlchemy 2.0 async — migrations managed via raw SQL scripts
+    - No auth yet — stub with placeholder user context where needed
+
+  Frontend:
+    - Next.js 14+ App Router (Server Components by default)
+    - TypeScript strict mode
+    - Tailwind CSS for all styling — no inline styles
+    - shadcn/ui for all component primitives — never build from scratch
+    - React Query (TanStack) for all client-side data fetching and caching
+    - Minimize 'use client' — only when interactivity requires it
+    - next/image for all images, next/font for fonts
+    - Dark mode supported from day one
+
+  Design philosophy:
+    - Financial data must be crystal clear — no ambiguity in numbers
+    - Favor clean, refined, editorial aesthetic — not generic SaaS
+    - Charts and projections are first-class UI — invest in visualization quality
+    - Mobile-first but desktop is primary use case
+    - Accessibility: WCAG AA minimum
+
+  Conventions:
+    - Conventional commits (feat:, fix:, chore:, docs:)
+    - All monetary values in cents (integer) internally, formatted on display
+    - Percentages stored as decimals (0.04 = 4%)
+    - Dates as ISO 8601 strings in API, Date objects in frontend
+    - Never expose raw database IDs in public APIs — use UUIDs
+    - Every API endpoint has a corresponding Pydantic response schema
+    - No TODOs in committed code — use GitHub issues instead
+
+  Key domains:
+    - Retirement simulator (Monte Carlo + historical sequence of returns)
+    - Portfolio input (assets, allocation, contributions)
+    - Withdrawal strategy modeling (4% rule, dynamic, fixed)
+    - Projection charts (success rate, portfolio value over time)
+    - User scenarios (save/compare multiple retirement plans)
+
+rules:
+  proposal:
+    - Keep proposals under 600 words
+    - Always include Goals, Non-goals, and Success Metrics sections
+    - Explicitly call out any assumptions about financial calculations
+    - Flag if a feature requires actuarial or regulatory consideration
+    - Identify whether the change is backend-only, frontend-only, or full-stack
+    - Note any API contract changes that affect both layers
+
+  specs:
+    - Each spec must specify which layer it applies to: backend, frontend, or both
+    - Backend specs must define request/response schemas using Pydantic field names
+    - Frontend specs must reference the shadcn/ui component used where applicable
+    - Financial calculation specs must include example inputs and expected outputs
+    - Include error scenarios and edge cases for all requirements
+
+  design:
+    - Backend designs must include FastAPI router structure and service method signatures
+    - Frontend designs must include component hierarchy and React Query key structure
+    - Call out any new database models or schema changes required — document as raw SQL migration scripts
+    - Identify any new environment variables or config changes needed
+    - Flag if a chart or visualization is involved — describe the data shape
+
+  tasks:
+    - Separate backend and frontend tasks into distinct sections
+    - Backend tasks must reference paths under /backend/
+    - Frontend tasks must reference paths under /frontend/
+    - Backend tasks must include: schema, service, router, and SQL migration steps where applicable
+    - Frontend tasks must include: component, hook, and page steps where applicable
+    - Each task must be a single, discrete unit of work with a clear completion condition
+    - Tasks must be completable in under 2 hours — if a task would take longer, break it into subtasks
+    - No task should touch more than one domain area (e.g. simulator and portfolio are separate tasks)
+    - No task should span both backend and frontend — split into two linked tasks instead
+    - Include a smoke test step at the end of each major task group
+    - Database migration tasks must always be listed before the service tasks that depend on them
