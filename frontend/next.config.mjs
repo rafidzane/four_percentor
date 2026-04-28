@@ -11,6 +11,11 @@ const nextConfig = {
         source: "/fourpercent/api/:path*",
         destination: "http://localhost:8000/fourpercent/api/:path*",
       },
+      // Proxy all /api/* requests to backend
+      {
+        source: "/api/:path*",
+        destination: "http://localhost:8000/:path*",
+      },
     ];
   },
   async redirects() {

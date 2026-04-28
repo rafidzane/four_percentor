@@ -1,0 +1,883 @@
+"use client";
+
+import { FC, useState } from "react";
+import { useForm, useWatch } from "react-hook-form";
+
+// Form Data Types (matching backend Pydantic models)
+interface TimelineData {
+  current_age: number;
+  retirement_age: number;
+  spouse_age?: number;
+  years_in_retirement: number;
+}
+
+interface AssetsData {
+  investment_portfolio: number;
+  your_401k_ira: number;
+  spouse_401k_ira: number;
+  yearly_contribution: number;
+  yearly_contribution_increase_pct: number;
+  catch_up_eligible: boolean;
+}
+
+interface PortfolioData {
+  equity_pct: number;
+  fixed_income_pct: number;
+  equity_return_pre_retirement_pct: number;
+  equity_return_post_retirement_pct: number;
+  fixed_income_return_pct: number;
+  inflation_rate_pct: number;
+  simulation_mode: "historical_all" | "single_year" | "manual";
+  historical_year?: number;
+}
+
+interface SpendingData {
+  spending_mode: "four_pct_rule" | "manual_withdrawal";
+  first_year_expenses: number;
+  withdrawal_pct: number;
+  age_range_start: number;
+  age_range_end: number;
+  adjust_for_inflation: boolean;
+  two_period_mode: boolean;
+}
+
+interface FormData {
+  timeline: TimelineData;
+  current_assets: AssetsData;
+  portfolio_allocation: PortfolioData;
+  retirement_spending: SpendingData;
+  income_streams?: {
+    social_security_you?: { claim_age: number; yearly_amount_today_dollars: number };
+    social_security_spouse?: { claim_age: number; yearly_amount_today_dollars: number };
+    pension_1?: { starting_age: number; yearly_amount: number };
+    pension_2?: { starting_age: number; yearly_amount: number };
+    rental_properties?: Array<{ property_name: string; net_annual_income: number; until_age: number }>;
+  };
+  real_estate?: {
+    total_property_value: number;
+    total_outstanding_mortgages: number;
+    annual_appreciation_pct: number;
+    model_property_sale?: boolean;
+    age_of_sale?: number;
+    amount_rolled_into_portfolio?: number;
+  };
+}
+
+interface RetirementResponse {
+  age: number[];
+  portfolio_balance: number[];
+  income: number[];
+  expenses: number[];
+  net_income: number[];
+  success: boolean;
+  final_balance: number;
+  avg_balance: number;
+  max_balance: number;
+  min_balance: number;
+}
+
+const defaultValues: FormData = {
+  timeline: { current_age: 35, retirement_age: 65, years_in_retirement: 30 },
+  current_assets: {
+    investment_portfolio: 100000,
+    your_401k_ira: 150000,
+    spouse_401k_ira: 0,
+    yearly_contribution: 10000,
+    yearly_contribution_increase_pct: 3,
+    catch_up_eligible: false,
+  },
+  portfolio_allocation: {
+    equity_pct: 70,
+    fixed_income_pct: 30,
+    equity_return_pre_retirement_pct: 7,
+    equity_return_post_retirement_pct: 5.5,
+    fixed_income_return_pct: 3.5,
+    inflation_rate_pct: 3,
+    simulation_mode: "historical_all",
+    historical_year: 1929,
+  },
+  retirement_spending: {
+    spending_mode: "four_pct_rule",
+    first_year_expenses: 0,
+    withdrawal_pct: 4,
+    age_range_start: 62,
+    age_range_end: 92,
+    adjust_for_inflation: true,
+    two_period_mode: false,
+  },
+};
+
+interface RetirementFormProps {
+  className?: string;
+}
+
+export const RetirementForm: FC<RetirementFormProps> = ({ className }) => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [result, setResult] = useState<RetirementResponse | null>(null);
+
+  const form = useForm<FormData>({
+    defaultValues,
+    mode: "onChange",
+  });
+
+  // Watch values for conditional rendering
+  const equityPct = useWatch({ control: form.control, name: "portfolio_allocation.equity_pct", defaultValue: 70 });
+  const simulationMode = useWatch({ control: form.control, name: "portfolio_allocation.simulation_mode", defaultValue: "historical_all" });
+  const spendingMode = useWatch({ control: form.control, name: "retirement_spending.spending_mode", defaultValue: "four_pct_rule" });
+
+  const handleSubmit = async (data: FormData) => {
+    setIsLoading(true);
+    try {
+      // Call the backend API
+      const response = await fetch("http://localhost:8000/fourpercent/api/v4/retirement", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+
+      if (!response.ok) {
+        throw new Error(`API error: ${response.statusText}`);
+      }
+
+      const apiResult = await response.json();
+      setResult(apiResult);
+    } catch (error) {
+      console.error("Error calculating retirement:", error);
+      alert("Failed to calculate. Check backend is running at http://localhost:8000");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const inputClass = "w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-xs focus:border-ring focus:ring-ring/50 outline-none";
+  const labelClass = "block font-medium text-sm mb-1";
+
+  return (
+    <form onSubmit={form.handleSubmit(handleSubmit)} className={`space-y-8 ${className}`}>
+      {/* Section: Personal Information */}
+      <section className="rounded-xl border p-6">
+        <h3 className="text-lg font-semibold mb-4">Personal Information</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="space-y-2">
+            <label htmlFor="timeline.current_age" className={labelClass}>Current age</label>
+            <input
+              id="timeline.current_age"
+              type="number"
+              min={18}
+              max={100}
+              {...form.register("timeline.current_age", { valueAsNumber: true })}
+              className={inputClass}
+            />
+          </div>
+
+          <div className="space-y-2">
+            <label htmlFor="timeline.retirement_age" className={labelClass}>Retirement age</label>
+            <input
+              id="timeline.retirement_age"
+              type="number"
+              min={18}
+              max={100}
+              {...form.register("timeline.retirement_age", { valueAsNumber: true })}
+              className={inputClass}
+            />
+          </div>
+
+          <div className="space-y-2">
+            <label htmlFor="timeline.spouse_age" className={labelClass}>Spouse age (optional)</label>
+            <input
+              id="timeline.spouse_age"
+              type="number"
+              min={18}
+              max={100}
+              {...form.register("timeline.spouse_age", { valueAsNumber: true })}
+              className={inputClass}
+            />
+          </div>
+
+          <div className="space-y-2">
+            <label htmlFor="timeline.years_in_retirement" className={labelClass}>Years in retirement</label>
+            <input
+              id="timeline.years_in_retirement"
+              type="number"
+              min={1}
+              max={50}
+              {...form.register("timeline.years_in_retirement", { valueAsNumber: true })}
+              className={inputClass}
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* Section: Portfolio */}
+      <section className="rounded-xl border p-6">
+        <h3 className="text-lg font-semibold mb-4">Portfolio</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="space-y-2">
+            <label htmlFor="current_assets.investment_portfolio" className={labelClass}>Investment portfolio</label>
+            <input
+              id="current_assets.investment_portfolio"
+              type="number"
+              min={0}
+              step={1000}
+              {...form.register("current_assets.investment_portfolio", { valueAsNumber: true })}
+              className={inputClass}
+            />
+          </div>
+
+          <div className="space-y-2">
+            <label htmlFor="current_assets.your_401k_ira" className={labelClass}>Your 401(k) / IRA</label>
+            <input
+              id="current_assets.your_401k_ira"
+              type="number"
+              min={0}
+              step={1000}
+              {...form.register("current_assets.your_401k_ira", { valueAsNumber: true })}
+              className={inputClass}
+            />
+          </div>
+
+          <div className="space-y-2">
+            <label htmlFor="current_assets.spouse_401k_ira" className={labelClass}>Spouse 401(k) / IRA</label>
+            <input
+              id="current_assets.spouse_401k_ira"
+              type="number"
+              min={0}
+              step={1000}
+              {...form.register("current_assets.spouse_401k_ira", { valueAsNumber: true })}
+              className={inputClass}
+            />
+          </div>
+        </div>
+
+        <div className="mt-6 space-y-3">
+          <label className={labelClass}>Asset Allocation (equity % = {equityPct}%, fixed income = {100 - equityPct}%)</label>
+          <input
+            id="portfolio_allocation.equity_pct"
+            type="range"
+            min={0}
+            max={100}
+            step={1}
+            value={equityPct}
+            onChange={(e) => form.setValue("portfolio_allocation.equity_pct", Number(e.target.value), { shouldValidate: true })}
+            className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+          />
+          <div className="flex items-center gap-3">
+            <span className="text-sm text-muted-foreground">Equity:</span>
+            <input
+              id="portfolio_allocation.equity_pct_display"
+              type="number"
+              min={0}
+              max={100}
+              value={equityPct}
+              readOnly
+              className="w-24 px-2 py-1 rounded border bg-gray-50 text-center"
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* Section: Contributions */}
+      <section className="rounded-xl border p-6">
+        <h3 className="text-lg font-semibold mb-4">Contributions</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="space-y-2">
+            <label htmlFor="current_assets.yearly_contribution" className={labelClass}>Yearly contribution</label>
+            <input
+              id="current_assets.yearly_contribution"
+              type="number"
+              min={0}
+              step={500}
+              {...form.register("current_assets.yearly_contribution", { valueAsNumber: true })}
+              className={inputClass}
+            />
+          </div>
+
+          <div className="space-y-2">
+            <label htmlFor="current_assets.yearly_contribution_increase_pct" className={labelClass}>
+              Yearly contribution increase %
+            </label>
+            <input
+              id="current_assets.yearly_contribution_increase_pct"
+              type="number"
+              min={0}
+              max={100}
+              step={0.5}
+              {...form.register("current_assets.yearly_contribution_increase_pct", { valueAsNumber: true })}
+              className={inputClass}
+            />
+          </div>
+
+          <div className="flex items-center space-x-2 mt-6 pt-4">
+            <input
+              id="current_assets.catch_up_eligible"
+              type="checkbox"
+              {...form.register("current_assets.catch_up_eligible")}
+              className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
+            />
+            <label htmlFor="current_assets.catch_up_eligible" className="text-sm">
+              Catch-up eligible (age 50+)
+            </label>
+          </div>
+        </div>
+      </section>
+
+      {/* Section: Returns */}
+      <section className="rounded-xl border p-6">
+        <h3 className="text-lg font-semibold mb-4">Returns & Inflation</h3>
+
+        <div className="space-y-2 mb-4">
+          <label htmlFor="portfolio_allocation.simulation_mode" className={labelClass}>Simulation mode</label>
+          <select
+            id="portfolio_allocation.simulation_mode"
+            {...form.register("portfolio_allocation.simulation_mode")}
+            className={inputClass}
+          >
+            <option value="historical_all">Historical (S&P since 1871)</option>
+            <option value="single_year">Single historical year</option>
+            <option value="manual">Manual inputs</option>
+          </select>
+        </div>
+
+        {simulationMode === "manual" && (
+          <>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <label htmlFor="portfolio_allocation.equity_return_pre_retirement_pct" className={labelClass}>
+                  Pre-retirement equity return %
+                </label>
+                <input
+                  id="portfolio_allocation.equity_return_pre_retirement_pct"
+                  type="number"
+                  min={0}
+                  max={100}
+                  step={0.5}
+                  {...form.register("portfolio_allocation.equity_return_pre_retirement_pct", { valueAsNumber: true })}
+                  className={inputClass}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label htmlFor="portfolio_allocation.equity_return_post_retirement_pct" className={labelClass}>
+                  Post-retirement equity return %
+                </label>
+                <input
+                  id="portfolio_allocation.equity_return_post_retirement_pct"
+                  type="number"
+                  min={0}
+                  max={100}
+                  step={0.5}
+                  {...form.register("portfolio_allocation.equity_return_post_retirement_pct", { valueAsNumber: true })}
+                  className={inputClass}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label htmlFor="portfolio_allocation.fixed_income_return_pct" className={labelClass}>Fixed income return %</label>
+                <input
+                  id="portfolio_allocation.fixed_income_return_pct"
+                  type="number"
+                  min={0}
+                  max={100}
+                  step={0.5}
+                  {...form.register("portfolio_allocation.fixed_income_return_pct", { valueAsNumber: true })}
+                  className={inputClass}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label htmlFor="portfolio_allocation.inflation_rate_pct" className={labelClass}>Inflation rate %</label>
+                <input
+                  id="portfolio_allocation.inflation_rate_pct"
+                  type="number"
+                  min={0}
+                  max={100}
+                  step={0.1}
+                  {...form.register("portfolio_allocation.inflation_rate_pct", { valueAsNumber: true })}
+                  className={inputClass}
+                />
+              </div>
+            </div>
+          </>
+        )}
+
+        {simulationMode === "single_year" && (
+          <div className="space-y-2">
+            <label htmlFor="portfolio_allocation.historical_year" className={labelClass}>Historical year</label>
+            <input
+              id="portfolio_allocation.historical_year"
+              type="number"
+              min={1871}
+              max={2025}
+              {...form.register("portfolio_allocation.historical_year", { valueAsNumber: true })}
+              className={inputClass}
+            />
+          </div>
+        )}
+      </section>
+
+      {/* Section: Withdrawal Strategy */}
+      <section className="rounded-xl border p-6">
+        <h3 className="text-lg font-semibold mb-4">Withdrawal Strategy</h3>
+
+        <div className="space-y-2 mb-4">
+          <label htmlFor="retirement_spending.spending_mode" className={labelClass}>Spending mode</label>
+          <select
+            id="retirement_spending.spending_mode"
+            {...form.register("retirement_spending.spending_mode")}
+            className={inputClass}
+          >
+            <option value="four_pct_rule">4% Rule (safe withdrawal rate)</option>
+            <option value="manual_withdrawal">Manual Withdrawal Amount</option>
+          </select>
+        </div>
+
+        {spendingMode === "manual_withdrawal" && (
+          <div className="space-y-2 mb-4">
+            <label htmlFor="retirement_spending.first_year_expenses" className={labelClass}>First year expenses</label>
+            <input
+              id="retirement_spending.first_year_expenses"
+              type="number"
+              min={0}
+              step={1000}
+              {...form.register("retirement_spending.first_year_expenses", { valueAsNumber: true })}
+              className={inputClass}
+            />
+          </div>
+        )}
+
+        <div className="space-y-2 mb-4">
+          <label htmlFor="retirement_spending.withdrawal_pct" className={labelClass}>Withdrawal %</label>
+          <input
+            id="retirement_spending.withdrawal_pct"
+            type="number"
+            min={0}
+            max={100}
+            step={0.5}
+            {...form.register("retirement_spending.withdrawal_pct", { valueAsNumber: true })}
+            className={inputClass}
+          />
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
+          <div className="space-y-2">
+            <label htmlFor="retirement_spending.age_range_start" className={labelClass}>Age range start</label>
+            <input
+              id="retirement_spending.age_range_start"
+              type="number"
+              min={18}
+              max={100}
+              {...form.register("retirement_spending.age_range_start", { valueAsNumber: true })}
+              className={inputClass}
+            />
+          </div>
+
+          <div className="space-y-2">
+            <label htmlFor="retirement_spending.age_range_end" className={labelClass}>Age range end</label>
+            <input
+              id="retirement_spending.age_range_end"
+              type="number"
+              min={18}
+              max={120}
+              {...form.register("retirement_spending.age_range_end", { valueAsNumber: true })}
+              className={inputClass}
+            />
+          </div>
+        </div>
+
+        <div className="space-y-3">
+          <label className="flex items-center space-x-3 cursor-pointer">
+            <input
+              id="retirement_spending.adjust_for_inflation"
+              type="checkbox"
+              {...form.register("retirement_spending.adjust_for_inflation")}
+              className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
+            />
+            <span>Adjust for inflation</span>
+          </label>
+
+          <label className="flex items-center space-x-3 cursor-pointer">
+            <input
+              id="retirement_spending.two_period_mode"
+              type="checkbox"
+              {...form.register("retirement_spending.two_period_mode")}
+              className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
+            />
+            <span>Two-period spending mode (different pre/post 65)</span>
+          </label>
+        </div>
+      </section>
+
+      {/* Section: Income Sources */}
+      <section className="rounded-xl border p-6">
+        <h3 className="text-lg font-semibold mb-4">Income Sources</h3>
+
+        <div className="space-y-6">
+          {/* Social Security - You */}
+          <div className="rounded-lg border p-4 space-y-4">
+            <h4 className="font-medium text-sm">Social Security (You)</h4>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <label htmlFor="income_streams.social_security_you.claim_age" className={labelClass}>Claim age</label>
+                <input
+                  id="income_streams.social_security_you.claim_age"
+                  type="number"
+                  min={62}
+                  max={70}
+                  {...form.register("income_streams.social_security_you.claim_age", { valueAsNumber: true })}
+                  className={inputClass}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label htmlFor="income_streams.social_security_you.yearly_amount_today_dollars" className={labelClass}>
+                  Yearly amount (today's dollars)
+                </label>
+                <input
+                  id="income_streams.social_security_you.yearly_amount_today_dollars"
+                  type="number"
+                  min={0}
+                  step={100}
+                  {...form.register("income_streams.social_security_you.yearly_amount_today_dollars", { valueAsNumber: true })}
+                  className={inputClass}
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Social Security - Spouse */}
+          <div className="rounded-lg border p-4 space-y-4">
+            <h4 className="font-medium text-sm">Social Security (Spouse)</h4>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <label htmlFor="income_streams.social_security_spouse.claim_age" className={labelClass}>Claim age</label>
+                <input
+                  id="income_streams.social_security_spouse.claim_age"
+                  type="number"
+                  min={62}
+                  max={70}
+                  {...form.register("income_streams.social_security_spouse.claim_age", { valueAsNumber: true })}
+                  className={inputClass}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label htmlFor="income_streams.social_security_spouse.yearly_amount_today_dollars" className={labelClass}>
+                  Yearly amount (today's dollars)
+                </label>
+                <input
+                  id="income_streams.social_security_spouse.yearly_amount_today_dollars"
+                  type="number"
+                  min={0}
+                  step={100}
+                  {...form.register("income_streams.social_security_spouse.yearly_amount_today_dollars", { valueAsNumber: true })}
+                  className={inputClass}
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Pension 1 */}
+          <div className="rounded-lg border p-4 space-y-4">
+            <h4 className="font-medium text-sm">Pension 1</h4>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <label htmlFor="income_streams.pension_1.starting_age" className={labelClass}>Starting age</label>
+                <input
+                  id="income_streams.pension_1.starting_age"
+                  type="number"
+                  min={18}
+                  max={100}
+                  {...form.register("income_streams.pension_1.starting_age", { valueAsNumber: true })}
+                  className={inputClass}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label htmlFor="income_streams.pension_1.yearly_amount" className={labelClass}>Yearly amount</label>
+                <input
+                  id="income_streams.pension_1.yearly_amount"
+                  type="number"
+                  min={0}
+                  step={100}
+                  {...form.register("income_streams.pension_1.yearly_amount", { valueAsNumber: true })}
+                  className={inputClass}
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Pension 2 */}
+          <div className="rounded-lg border p-4 space-y-4">
+            <h4 className="font-medium text-sm">Pension 2 (optional)</h4>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <label htmlFor="income_streams.pension_2.starting_age" className={labelClass}>Starting age</label>
+                <input
+                  id="income_streams.pension_2.starting_age"
+                  type="number"
+                  min={18}
+                  max={100}
+                  {...form.register("income_streams.pension_2.starting_age", { valueAsNumber: true })}
+                  className={inputClass}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label htmlFor="income_streams.pension_2.yearly_amount" className={labelClass}>Yearly amount</label>
+                <input
+                  id="income_streams.pension_2.yearly_amount"
+                  type="number"
+                  min={0}
+                  step={100}
+                  {...form.register("income_streams.pension_2.yearly_amount", { valueAsNumber: true })}
+                  className={inputClass}
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Rental Properties */}
+          <div className="rounded-lg border p-4 space-y-4">
+            <h4 className="font-medium text-sm">Rental Income (up to 3 properties)</h4>
+
+ {[0, 1, 2].map((index) => (
+              <div key={index} className="space-y-3 border-t pt-4">
+                <h5 className="text-xs font-semibold uppercase text-gray-500">Property {index + 1}</h5>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="space-y-2">
+                    <label htmlFor={`income_streams.rental_properties.${index}.property_name`} className={labelClass}>Name</label>
+                    <input
+                      id={`income_streams.rental_properties.${index}.property_name`}
+                      {...form.register(`income_streams.rental_properties.${index}.property_name`)}
+                      className={inputClass}
+                      placeholder="Property A"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <label htmlFor={`income_streams.rental_properties.${index}.net_annual_income`} className={labelClass}>
+                      Net annual income
+                    </label>
+                    <input
+                      id={`income_streams.rental_properties.${index}.net_annual_income`}
+                      type="number"
+                      min={0}
+                      step={500}
+                      {...form.register(`income_streams.rental_properties.${index}.net_annual_income`, { valueAsNumber: true })}
+                      className={inputClass}
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <label htmlFor={`income_streams.rental_properties.${index}.until_age`} className={labelClass}>Until age</label>
+                    <input
+                      id={`income_streams.rental_properties.${index}.until_age`}
+                      type="number"
+                      min={18}
+                      max={120}
+                      {...form.register(`income_streams.rental_properties.${index}.until_age`, { valueAsNumber: true })}
+                      className={inputClass}
+                    />
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Section: Real Estate */}
+      <section className="rounded-xl border p-6">
+        <h3 className="text-lg font-semibold mb-4">Real Estate</h3>
+
+        {/* Primary Home */}
+        <div className="space-y-4 mb-6">
+          <h4 className="font-medium text-sm">Primary Home</h4>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="space-y-2">
+              <label htmlFor="real_estate.total_property_value" className={labelClass}>Total property value</label>
+              <input
+                id="real_estate.total_property_value"
+                type="number"
+                min={0}
+                step={5000}
+                {...form.register("real_estate.total_property_value", { valueAsNumber: true })}
+                className={inputClass}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <label htmlFor="real_estate.total_outstanding_mortgages" className={labelClass}>Outstanding mortgage(s)</label>
+              <input
+                id="real_estate.total_outstanding_mortgages"
+                type="number"
+                min={0}
+                step={1000}
+                {...form.register("real_estate.total_outstanding_mortgages", { valueAsNumber: true })}
+                className={inputClass}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <label htmlFor="real_estate.annual_appreciation_pct" className={labelClass}>Annual appreciation %</label>
+              <input
+                id="real_estate.annual_appreciation_pct"
+                type="number"
+                min={0}
+                max={20}
+                step={0.1}
+                {...form.register("real_estate.annual_appreciation_pct", { valueAsNumber: true })}
+                className={inputClass}
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Rental Properties */}
+        <div className="space-y-4 mb-6">
+          <h4 className="font-medium text-sm">Rental Properties (up to 3)</h4>
+
+ {[0, 1, 2].map((index) => (
+            <div key={index} className="space-y-3 border-t pt-4">
+              <h5 className="text-xs font-semibold uppercase text-gray-500">Property {index + 1}</h5>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="space-y-2">
+                  <label htmlFor={`real_estate.rental_properties.${index}.property_name`} className={labelClass}>Name</label>
+                  <input
+                    id={`real_estate.rental_properties.${index}.property_name`}
+                    {...form.register(`real_estate.rental_properties.${index}.property_name`)}
+                    className={inputClass}
+                    placeholder="Rental A"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <label htmlFor={`real_estate.rental_properties.${index}.value`} className={labelClass}>Property value</label>
+                  <input
+                    id={`real_estate.rental_properties.${index}.value`}
+                    type="number"
+                    min={0}
+                    step={5000}
+                    {...form.register(`real_estate.rental_properties.${index}.value`, { valueAsNumber: true })}
+                    className={inputClass}
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <label htmlFor={`real_estate.rental_properties.${index}.net_annual_income`} className={labelClass}>
+                    Net annual income
+                  </label>
+                  <input
+                    id={`real_estate.rental_properties.${index}.net_annual_income`}
+                    type="number"
+                    min={0}
+                    step={500}
+                    {...form.register(`real_estate.rental_properties.${index}.net_annual_income`, { valueAsNumber: true })}
+                    className={inputClass}
+                  />
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Downsizing Plan */}
+        <div className="space-y-4">
+          <h4 className="font-medium text-sm">Downsizing Plan</h4>
+
+          <label className="flex items-center space-x-3 cursor-pointer mb-4">
+            <input
+              id="real_estate.model_property_sale"
+              type="checkbox"
+              {...form.register("real_estate.model_property_sale")}
+              className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
+            />
+            <span>Model planned property sale (downsizing in retirement)</span>
+          </label>
+
+          {form.watch("real_estate.model_property_sale") && (
+            <>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <label htmlFor="real_estate.age_of_sale" className={labelClass}>Age of sale</label>
+                  <input
+                    id="real_estate.age_of_sale"
+                    type="number"
+                    min={18}
+                    max={100}
+                    {...form.register("real_estate.age_of_sale", { valueAsNumber: true })}
+                    className={inputClass}
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <label htmlFor="real_estate.amount_rolled_into_portfolio" className={labelClass}>
+                    Amount rolled into portfolio
+                  </label>
+                  <input
+                    id="real_estate.amount_rolled_into_portfolio"
+                    type="number"
+                    min={0}
+                    step={5000}
+                    {...form.register("real_estate.amount_rolled_into_portfolio", { valueAsNumber: true })}
+                    className={inputClass}
+                  />
+                </div>
+              </div>
+            </>
+          )}
+        </div>
+      </section>
+
+      {/* Submit Button */}
+      <div className="pt-4">
+        <button
+          type="submit"
+          disabled={isLoading}
+          className="w-full bg-primary text-primary-foreground px-6 py-3 rounded-lg font-medium hover:bg-primary/90 disabled:opacity-50 transition-colors"
+        >
+          {isLoading ? "Calculating..." : "Calculate Retirement Projection"}
+        </button>
+      </div>
+
+      {/* Results Display */}
+      {result && (
+        <section className="rounded-xl border p-6 bg-green-50 dark:bg-green-900/20">
+          <h3 className="text-lg font-semibold mb-4">Results</h3>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+            <div className="bg-white dark:bg-gray-800 p-3 rounded-lg">
+              <p className="text-xs text-muted-foreground">Final Balance</p>
+              <p className="font-bold">${result.final_balance.toLocaleString()}</p>
+            </div>
+            <div className="bg-white dark:bg-gray-800 p-3 rounded-lg">
+              <p className="text-xs text-muted-foreground">Average Balance</p>
+              <p className="font-bold">${result.avg_balance.toLocaleString()}</p>
+            </div>
+            <div className="bg-white dark:bg-gray-800 p-3 rounded-lg">
+              <p className="text-xs text-muted-foreground">Max Balance</p>
+              <p className="font-bold">${result.max_balance.toLocaleString()}</p>
+            </div>
+            <div className="bg-white dark:bg-gray-800 p-3 rounded-lg">
+              <p className="text-xs text-muted-foreground">Min Balance</p>
+              <p className="font-bold">${result.min_balance.toLocaleString()}</p>
+            </div>
+          </div>
+
+          <div className="flex items-center space-x-4 mb-4">
+            <span className={`px-3 py-1 rounded-full font-medium ${result.success ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}`}>
+              Success: {result.success ? "Yes" : "No"}
+            </span>
+          </div>
+
+          <p className="text-sm text-muted-foreground">
+            This projection is based on the inputs provided and assumes constant returns over time.
+            Actual results may vary significantly due to market fluctuations, changing spending patterns,
+            and other factors.
+          </p>
+        </section>
+      )}
+    </form>
+  );
+};
+
+export default RetirementForm;

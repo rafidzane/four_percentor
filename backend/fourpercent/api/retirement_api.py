@@ -1,113 +1,62 @@
-from fastapi import FastAPI, HTTPException, status
-from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel, Field
-from typing import Optional
-import uvicorn
+from fastapi import APIRouter, HTTPException
+from pydantic import BaseModel
 
-# Create a new app instance for retirement API
-app = FastAPI(
-    title="Four Percentor Retirement API",
-    version="1.0.0"
-)
+from fourpercent.models.root import RetirementInput, RetirementResponse
+from fourpercent.calculation.retirement_v4 import calculate_retirement
 
-# Add CORS middleware to allow frontend requests
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],  # In production, specify exact origins
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+router = APIRouter()
 
-# Pydantic models for request and response
-class IncomeAssets(BaseModel):
-    social_security: bool = Field(default=False)
-    spouse_social_security: bool = Field(default=False)
-    real_estate_primary: bool = Field(default=False)
-    real_estate_investment: bool = Field(default=False)
 
-class RetirementCalculationRequest(BaseModel):
-    current_age: int = Field(..., ge=0, le=150)
-    retirement_age: int = Field(..., ge=0, le=150)
-    current_savings: float = Field(..., ge=0)
-    annual_contribution: float = Field(..., ge=0)
-    annual_return: float = Field(..., ge=0, le=20)
-    inflation_rate: float = Field(..., ge=0, le=10)
-    monthly_withdrawal: float = Field(..., ge=0)
+class HealthCheck(BaseModel):
+    status: str
 
-class RetirementCalculationResponse(BaseModel):
-    final_savings: float
-    annual_withdrawal: float
-    withdrawal_with_inflation: float
-    years_to_depletion: Optional[float]
 
-# API endpoint for retirement calculation
-@app.post("/fourpercentor/calculate", response_model=RetirementCalculationResponse)
-async def calculate_retirement_plan(request: RetirementCalculationRequest):
+@router.get("/health", response_model=HealthCheck)
+async def health_check():
+    """Health check endpoint"""
+    return {"status": "ok"}
+
+
+@router.post("/retirement", response_model=RetirementResponse)
+async def calculate_retirement_v4(input_data: RetirementInput):
     """
-    Calculate retirement plan based on user inputs
+    Calculate comprehensive retirement projection.
+
+    This endpoint accepts a comprehensive input specification with:
+    - Timeline information (current age, retirement age, years in retirement)
+    - Current assets (portfolio balances, contributions)
+    - Portfolio allocation and returns settings
+    - Spending strategy (4% rule or manual withdrawal)
+    - Optional income streams (Social Security, pensions, benefits)
+    - Optional real estate equity
+    - Optional education expenses
+
+    Returns detailed projection results including:
+    - Annual portfolio balance projections
+    - Income vs expenses timeline
+    - Success metrics
+    - Key statistics
     """
     try:
-        # Validate age relationships
-        if request.current_age > request.retirement_age:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Current age cannot be greater than retirement age"
-            )
-        
-        # Simple retirement calculation logic
-        years_to_retirement = max(0, request.retirement_age - request.current_age)
-        
-        if years_to_retirement <= 0:
-            # If already retired or age is invalid, return basic values
-            final_savings = request.current_savings
-            annual_withdrawal = request.monthly_withdrawal * 12
-            withdrawal_with_inflation = annual_withdrawal
-            years_to_depletion = None
-        else:
-            # Future value of current savings with compound interest
-            future_value_savings = request.current_savings * (1 + request.annual_return / 100) ** years_to_retirement
-            
-            # Future value of annuity (annual contributions)
-            if request.annual_return > 0:
-                future_value_contributions = request.annual_contribution * \
-                    ((1 + request.annual_return / 100) ** years_to_retirement - 1) / (request.annual_return / 100)
-            else:
-                # If no return, just add contributions
-                future_value_contributions = request.annual_contribution * years_to_retirement
-            
-            final_savings = future_value_savings + future_value_contributions
-            
-            # Calculate annual withdrawal amount
-            annual_withdrawal = request.monthly_withdrawal * 12
-            
-            # Adjust for inflation
-            withdrawal_with_inflation = annual_withdrawal * (1 + request.inflation_rate / 100) ** years_to_retirement
-            
-            # Simple calculation for years to depletion (simplified)
-            years_to_depletion = None
-            if final_savings > 0 and annual_withdrawal > 0:
-                # Simplified calculation - in reality this would be more complex
-                years_to_depletion = max(0, final_savings / annual_withdrawal)
-
-        result = {
-            "final_savings": final_savings,
-            "annual_withdrawal": annual_withdrawal,
-            "withdrawal_with_inflation": withdrawal_with_inflation,
-            "years_to_depletion": years_to_depletion
-        }
-        
+        result = calculate_retirement(input_data)
         return result
-        
+    except ValueError as e:
+        # Provide more specific error details for validation issues
+        raise HTTPException(status_code=422, detail=f"Validation error: {str(e)}")
     except Exception as e:
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Error processing retirement calculation: {str(e)}"
-        )
+        # Log the full exception for debugging
+        print(f"Calculation error: {e}")
+        raise HTTPException(status_code=500, detail=f"Calculation error: {str(e)}")
 
-@app.get("/")
-async def root():
-    return {"message": "Four Percentor Retirement API is running"}
 
-if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+@router.get("/retirement/schema")
+async def get_retirement_schema():
+    """
+    Get the retirement input schema for documentation purposes.
+
+    Returns Pydantic model schemas for all input and output types.
+    """
+    return {
+        "input_schema": RetirementInput.schema(),
+        "output_schema": RetirementResponse.schema()
+    }

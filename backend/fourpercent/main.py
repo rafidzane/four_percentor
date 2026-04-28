@@ -1,27 +1,30 @@
 from fastapi import FastAPI
 import uvicorn
-from fourpercent.api.retirement_api import app as retirement_app
+from fastapi.middleware.cors import CORSMiddleware
 from fourpercent.api.health_api import router as health_router
-from fourpercent.api.deep_retirement_api import app as deep_retirement_app
-from fourpercent.api.two_person_retirement_api import app as two_person_retirement_app
+from fourpercent.api.retirement_api import router as retirement_v4_router
 
 # Create the main FastAPI app
 app = FastAPI(
     title="Four Percentor API",
-    version="3.0.0"
+    version="4.0.0"
 )
 
-# Mount the retirement app at /fourpercent/api/v1/retirement
-app.mount("/fourpercent/api/v1/retirement", retirement_app)
+# Add CORS middleware to allow requests from the frontend
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
-# Mount the deep retirement app at https://fourpercentrule.com/calculator/fourpercent/api/v2/deep_retirement
-app.mount("/fourpercent/api/v2/deep_retirement", deep_retirement_app)
-
-# Mount the two-person retirement app at /fourpercent/api/v3/retirement
-app.mount("/fourpercent/api/v3/retirement", two_person_retirement_app)
-
+# Include the v1/v2/v3 routes from other modules (mounted)
 # Include the health API routes
 app.include_router(health_router, prefix="/fourpercent/api/v1")
+
+# Mount the new retirement_v4 endpoint at /fourpercent/api/v4/retirement
+app.include_router(retirement_v4_router, prefix="/fourpercent/api/v4")
 
 # Debug endpoint to list all registered routes
 @app.get("/debug/routes")
@@ -43,11 +46,10 @@ async def list_routes():
 async def root():
     return {
         "message": "Four Percentor API is running",
-        "version": "3.0.0",
+        "version": "4.0.0",
         "endpoints": [
-            "/fourpercent/api/v1/retirement - Basic retirement calculator",
-            "/fourpercent/api/v2/deep_retirement - Advanced retirement planner (single person)",
-            "/fourpercent/api/v3/retirement - Two-person retirement calculator"
+            "/fourpercent/api/v1 - Health check",
+            "/fourpercent/api/v4/retirement - Comprehensive retirement calculator (v4)"
         ]
     }
 

@@ -12,6 +12,7 @@ import {
   type LucideIcon,
   Mail,
   MessageSquare,
+  PiggyBank,
   ReceiptText,
   ShoppingBag,
   SquareArrowUpRight,
@@ -57,6 +58,11 @@ export const sidebarItems: NavGroup[] = [
         title: "CRM",
         url: "/dashboard/crm",
         icon: ChartBar,
+      },
+      {
+        title: "Retirement",
+        url: "/dashboard/retirement",
+        icon: PiggyBank,
       },
       {
         title: "Finance",
