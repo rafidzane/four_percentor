@@ -1,43 +1,53 @@
-# Project Guidelines
+# Project Structure and Guidelines
 
-## OpenSpec Change Workflow
+## API Endpoints
+All API endpoints should be implemented under `backend/fourpercent/api`
 
-This project uses the **OpenSpec** workflow for tracking and implementing changes. Before any implementation begins, the following artifacts must be created:
+## Code Flow Architecture
+The project follows a clear architectural flow:
+1. **API Layer** - Handles HTTP requests and responses
+2. **Service Layer** - Contains business logic 
+3. **Data Access Layer** - Manages database operations
 
-1. **`proposal.md`** - What the change is and why it's needed
-2. **`design.md`** - How the change will be implemented (architecture decisions)
-3. **`specs/**/*.md`** - Detailed requirements with testable scenarios
-4. **`tasks.md`** - Checklist of implementation tasks
+## Module Organization
 
-### When to Use OpenSpec
+### Models
+All data models should be placed in the `models` module
 
-Use `/opsx:propose` when:
-- Adding new features or capabilities
-- Modifying existing API endpoints or data models
-- Changing UI layouts or user flows
-- Any non-trivial change that benefits from planning
+### Utilities
+Utility functions and helper methods should be organized under the `util` module
 
-### Workflow
+## Implementation Principles
+- Maintain clear separation of concerns between layers
+- Ensure all API endpoints properly validate input data
+- Follow existing code patterns and conventions
+- All database operations should go through the service layer
 
-```bash
-# Propose a new change
-/opsx:propose <change-name>
+## OpenSpec Guidelines
 
-# After artifacts are created, apply the change
-/opsx:apply
-```
+### Change Management
+- All changes should be tracked using OpenSpec workflow
+- Each change should have a dedicated directory in `openspec/changes/`
+- Changes should follow the spec-driven approach with proposal, design, specs, and tasks artifacts
 
-### Location
+### Artifact Requirements
+- Every change must include: proposal.md, design.md, specs/**/*.md, and tasks.md
+- Artifacts should be comprehensive and clearly explain what is being implemented
+- Each artifact should be created before implementation begins
 
-All OpenSpec changes are stored in `openspec/changes/<change-name>/` with:
-- `proposal.md` - Problem statement and impact
-- `design.md` - Technical approach
-- `specs/` - Detailed requirements per capability
-- `tasks.md` - Implementation checklist
+### Implementation Process
+- Changes should be implemented in a staged manner using the tasks file
+- Each task should be marked as complete when finished
+- All changes must be tested and validated before marking tasks complete
+- After all tasks are complete, changes can be archived using `/opsx:archive`
 
-## Code Style
+### Testing Requirements
+- Unit tests should be written for all new functionality
+- Integration tests should validate end-to-end workflows
+- All existing tests must continue to pass after implementation
 
-- Follow existing patterns in the codebase
-- Use TypeScript for all new frontend components
-- Type all API responses with Pydantic models
-- Test-drive development where applicable
+## Code Quality Standards
+- All code should follow TypeScript/Python best practices
+- Proper type definitions and validation should be used
+- Documentation should be clear and comprehensive
+- Code should be maintainable and readable

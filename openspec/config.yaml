@@ -61,7 +61,7 @@ context: |
 
 rules:
   proposal:
-    - Keep proposals under 600 words
+    - Keep proposals under 1000 words
     - Always include Goals, Non-goals, and Success Metrics sections
     - Explicitly call out any assumptions about financial calculations
     - Flag if a feature requires actuarial or regulatory consideration

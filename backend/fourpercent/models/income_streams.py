@@ -25,9 +25,10 @@ class OneTimeBenefitInput(BaseModel):
 class RentalPropertyInput(BaseModel):
     """Rental property income stream"""
     property_name: str = Field(description="Property name/label")
-    net_annual_income: float = Field(ge=0, description="Net annual income after expenses")
+    net_annual_income: Optional[float] = Field(default=None, ge=0, description="Net annual income after expenses")
     annual_growth_pct: float = Field(default=0.0, ge=0, le=100, description="Annual growth percentage")
-    until_age: int = Field(description="Age at which rental income stops")
+    until_age: Optional[int] = Field(default=None, description="Age at which rental income stops")
+    # Note: These fields default to None to handle frontend behavior where optional fields are sent as null
 
 
 class IncomeStreamsInput(BaseModel):
@@ -37,4 +38,4 @@ class IncomeStreamsInput(BaseModel):
     pension_1: Optional[PensionInput] = Field(None, description="Pension 1")
     pension_2: Optional[PensionInput] = Field(None, description="Pension 2")
     one_time_benefits: list[OneTimeBenefitInput] = Field(default_factory=list, description="List of one-time benefits")
-    rental_properties: list[RentalPropertyInput] = Field(default_factory=lambda: [RentalPropertyInput(property_name="", net_annual_income=0, until_age=65) for _ in range(3)], description="Rental properties (min 3)")
+    rental_properties: list[RentalPropertyInput] = Field(default_factory=list, description="Rental properties (min 3)")

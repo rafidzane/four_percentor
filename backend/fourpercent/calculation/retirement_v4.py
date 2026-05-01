@@ -313,8 +313,10 @@ class RetirementCalculator:
         # Calculate rental income (simplified - would need actual growth logic)
         if self.input.income_streams and self.input.income_streams.rental_properties:
             for prop in self.input.income_streams.rental_properties:
-                if age <= prop.until_age:
-                    total_income += prop.net_annual_income
+                # Skip properties with None values to avoid validation errors
+                if prop.until_age is not None and prop.net_annual_income is not None:
+                    if age <= prop.until_age:
+                        total_income += prop.net_annual_income
 
         return total_income
     
