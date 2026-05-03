@@ -234,7 +234,8 @@ export const RetirementForm: FC<RetirementFormProps> = ({ className, onResult })
     <FormProvider {...form}>
       <form onSubmit={form.handleSubmit(handleSubmit)} className={`space-y-8 ${className}`}>
         {/* Section: Personal Information & Portfolio */}
-      <section className="rounded-xl border p-6 min-h-[200px]">
+      {/* Enhanced Personal Information section with Contributions and Returns */}
+      <section className="rounded-xl border p-4 min-h-[200px]">
         <h3 className="text-lg font-semibold mb-4">Personal Information</h3>
         <div className="grid grid-cols-1 gap-4">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -332,55 +333,58 @@ export const RetirementForm: FC<RetirementFormProps> = ({ className, onResult })
             </div>
           </div>
         </div>
-      </section>
 
-      {/* Section: Contributions */}
-      <section className="rounded-xl border p-6 min-h-[200px]">
-        <h3 className="text-lg font-semibold mb-4">Contributions</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          <div className="space-y-1">
-            <label htmlFor="current_assets.yearly_contribution" className="block font-medium text-xs mb-0.5">Yearly contribution</label>
-            <input
-              id="current_assets.yearly_contribution"
-              type="number"
-              min={0}
-              step={500}
-              {...form.register("current_assets.yearly_contribution", { valueAsNumber: true })}
-              className="w-full rounded-md border border-input bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none"
-            />
-          </div>
+        {/* Contributions Section */}
+        <div className="mt-6 border rounded-lg p-4">
+          <h4 className="font-medium mb-3">Contributions</h4>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="space-y-1">
+              <label htmlFor="current_assets.yearly_contribution" className="block font-medium text-xs mb-0.5">Yearly contribution</label>
+              <input
+                id="current_assets.yearly_contribution"
+                type="number"
+                min={0}
+                step={500}
+                {...form.register("current_assets.yearly_contribution", { valueAsNumber: true })}
+                className="w-full rounded-md border border-input bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none"
+              />
+            </div>
 
-          <div className="space-y-1">
-            <label htmlFor="current_assets.yearly_contribution_increase_pct" className="block font-medium text-xs mb-0.5">
-              Yearly contribution increase %
-            </label>
-            <input
-              id="current_assets.yearly_contribution_increase_pct"
-              type="number"
-              min={0}
-              max={100}
-              step={0.5}
-              {...form.register("current_assets.yearly_contribution_increase_pct", { valueAsNumber: true })}
-              className="w-full rounded-md border border-input bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none"
-            />
-          </div>
+            <div className="space-y-1">
+              <label htmlFor="current_assets.yearly_contribution_increase_pct" className="block font-medium text-xs mb-0.5">
+                Yearly contribution increase %
+              </label>
+              <input
+                id="current_assets.yearly_contribution_increase_pct"
+                type="number"
+                min={0}
+                max={100}
+                step={0.5}
+                {...form.register("current_assets.yearly_contribution_increase_pct", { valueAsNumber: true })}
+                className="w-full rounded-md border border-input bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none"
+              />
+            </div>
 
-          <div className="flex items-center space-x-2 mt-6 pt-4">
-            <input
-              id="current_assets.catch_up_eligible"
-              type="checkbox"
-              {...form.register("current_assets.catch_up_eligible")}
-              className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
-            />
-            <label htmlFor="current_assets.catch_up_eligible" className="text-xs">
-              Catch-up eligible (age 50+)
-            </label>
+            <div className="flex items-center space-x-2 mt-6 pt-4">
+              <input
+                id="current_assets.catch_up_eligible"
+                type="checkbox"
+                {...form.register("current_assets.catch_up_eligible")}
+                className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
+              />
+              <label htmlFor="current_assets.catch_up_eligible" className="text-xs">
+                Catch-up eligible (age 50+)
+              </label>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Section: Returns */}
-      <ReturnsSection />
+      {/* Section: Returns - now integrated into Personal section */}
+      <div className="border rounded-lg p-4">
+        <h4 className="font-medium mb-3">Returns Simulation</h4>
+        <ReturnsSection />
+      </div>
 
       {/* Section: Withdrawal Strategy */}
       <section className="rounded-xl border p-6 min-h-[200px]">
