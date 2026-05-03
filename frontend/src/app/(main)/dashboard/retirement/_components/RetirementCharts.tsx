@@ -31,6 +31,20 @@ interface RetirementChartData {
   withdrawalRates: RetirementDataPoint[];
 }
 
+// Define the type for retirement response
+interface RetirementResponse {
+  age: number[];
+  portfolio_balance: number[];
+  income: number[];
+  expenses: number[];
+  net_income: number[];
+  success: boolean;
+  final_balance: number;
+  avg_balance: number;
+  max_balance: number;
+  min_balance: number;
+}
+
 // Mock data for demonstration
 const mockChartData: RetirementChartData = {
   portfolio: [
@@ -125,7 +139,10 @@ const mockChartData: RetirementChartData = {
   ]
 };
 
-export function RetirementCharts() {
+// Import the results component
+import { RetirementResultsSummary } from "@/components/retirement-dashboard/ui/RetirementResultsSummary";
+
+export function RetirementCharts({ result }: { result?: RetirementResponse }) {
   const [chartData, setChartData] = useState<RetirementChartData>(mockChartData);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -134,7 +151,7 @@ export function RetirementCharts() {
     const timer = setTimeout(() => {
       setIsLoading(false);
     }, 500);
-    
+
     return () => clearTimeout(timer);
   }, []);
 
@@ -148,6 +165,9 @@ export function RetirementCharts() {
 
   return (
     <div className="h-full flex flex-col space-y-4 overflow-hidden">
+      {/* Results section positioned above charts */}
+      {result && <RetirementResultsSummary result={result} />}
+      
       <h3 className="text-xl font-semibold">Retirement Projection</h3>
 
       {/* Portfolio Value Chart */}

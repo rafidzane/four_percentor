@@ -123,9 +123,10 @@ const defaultValues: FormData = {
 
 interface RetirementFormProps {
   className?: string;
+  onResult?: (result: RetirementResponse) => void;
 }
 
-export const RetirementForm: FC<RetirementFormProps> = ({ className }) => {
+export const RetirementForm: FC<RetirementFormProps> = ({ className, onResult }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [result, setResult] = useState<RetirementResponse | null>(null);
 
@@ -213,6 +214,9 @@ export const RetirementForm: FC<RetirementFormProps> = ({ className }) => {
 
       const apiResult = await response.json();
       setResult(apiResult);
+      if (onResult) {
+        onResult(apiResult);
+      }
     } catch (error: any) {
       console.error("Error calculating retirement:", error);
       // Show more specific error messages to user
@@ -899,43 +903,6 @@ export const RetirementForm: FC<RetirementFormProps> = ({ className }) => {
           {isLoading ? "Calculating..." : "Calculate Retirement Projection"}
         </button>
       </div>
-
-      {/* Results Display */}
-      {result && (
-        <section className="rounded-xl border p-6 bg-green-50 dark:bg-green-900/20">
-          <h3 className="text-lg font-semibold mb-4">Results</h3>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
-            <div className="bg-white dark:bg-gray-800 p-3 rounded-lg">
-              <p className="text-xs text-muted-foreground">Final Balance</p>
-              <p className="font-bold">${result.final_balance.toLocaleString()}</p>
-            </div>
-            <div className="bg-white dark:bg-gray-800 p-3 rounded-lg">
-              <p className="text-xs text-muted-foreground">Average Balance</p>
-              <p className="font-bold">${result.avg_balance.toLocaleString()}</p>
-            </div>
-            <div className="bg-white dark:bg-gray-800 p-3 rounded-lg">
-              <p className="text-xs text-muted-foreground">Max Balance</p>
-              <p className="font-bold">${result.max_balance.toLocaleString()}</p>
-            </div>
-            <div className="bg-white dark:bg-gray-800 p-3 rounded-lg">
-              <p className="text-xs text-muted-foreground">Min Balance</p>
-              <p className="font-bold">${result.min_balance.toLocaleString()}</p>
-            </div>
-          </div>
-
-          <div className="flex items-center space-x-4 mb-4">
-            <span className={`px-3 py-1 rounded-full font-medium ${result.success ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}`}>
-              Success: {result.success ? "Yes" : "No"}
-            </span>
-          </div>
-
-          <p className="text-xs text-muted-foreground">
-            This projection is based on the inputs provided and assumes constant returns over time.
-            Actual results may vary significantly due to market fluctuations, changing spending patterns,
-            and other factors.
-          </p>
-        </section>
-      )}
       </form>
     </FormProvider>
   );
