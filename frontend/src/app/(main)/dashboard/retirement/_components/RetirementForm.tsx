@@ -402,20 +402,6 @@ export const RetirementForm: FC<RetirementFormProps> = ({ className, onResult })
           </select>
         </div>
 
-        {spendingMode === "manual_withdrawal" && (
-          <div className="space-y-1 mb-4">
-            <label htmlFor="retirement_spending.first_year_expenses" className="block font-medium text-xs mb-0.5">First year expenses</label>
-            <input
-              id="retirement_spending.first_year_expenses"
-              type="number"
-              min={0}
-              step={1000}
-              {...form.register("retirement_spending.first_year_expenses", { valueAsNumber: true })}
-              className="w-full rounded-md border border-input bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none"
-            />
-          </div>
-        )}
-
         <div className="flex items-center space-x-3 mb-4">
           <label className="flex items-center space-x-3 cursor-pointer">
             <input
@@ -431,6 +417,19 @@ export const RetirementForm: FC<RetirementFormProps> = ({ className, onResult })
         {/* Period 1 Configuration - Always visible */}
         <div className="mb-4">
           <h4 className="font-medium mb-3">Period 1 Configuration</h4>
+          {spendingMode === "manual_withdrawal" && (
+            <div className="space-y-1 mb-4">
+              <label htmlFor="retirement_spending.period_1_first_year_expenses" className="block font-medium text-xs mb-0.5">Period 1 yearly expenses</label>
+              <input
+                id="retirement_spending.period_1_first_year_expenses"
+                type="number"
+                min={0}
+                step={1000}
+                {...form.register("retirement_spending.period_1_first_year_expenses", { valueAsNumber: true })}
+                className="w-full rounded-md border border-input bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none"
+              />
+            </div>
+          )}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
             <div className="space-y-1">
               <label htmlFor="retirement_spending.period_1_start_age" className="block font-medium text-xs mb-0.5">Period 1 start age</label>
@@ -488,6 +487,19 @@ export const RetirementForm: FC<RetirementFormProps> = ({ className, onResult })
         {form.watch("retirement_spending.two_period_mode") && (
           <div className="mb-4">
             <h4 className="font-medium mb-3">Period 2 Configuration</h4>
+            {spendingMode === "manual_withdrawal" && (
+              <div className="space-y-1 mb-4">
+                <label htmlFor="retirement_spending.period_2_first_year_expenses" className="block font-medium text-xs mb-0.5">Period 2 yearly expenses</label>
+                <input
+                  id="retirement_spending.period_2_first_year_expenses"
+                  type="number"
+                  min={0}
+                  step={1000}
+                  {...form.register("retirement_spending.period_2_first_year_expenses", { valueAsNumber: true })}
+                  className="w-full rounded-md border border-input bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none"
+                />
+              </div>
+            )}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
               <div className="space-y-1">
                 <label htmlFor="retirement_spending.period_2_start_age" className="block font-medium text-xs mb-0.5">Period 2 start age</label>
