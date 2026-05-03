@@ -416,7 +416,7 @@ export const RetirementForm: FC<RetirementFormProps> = ({ className, onResult })
           </div>
         )}
 
-        <div className="space-y-3 mb-4">
+        <div className="flex items-center space-x-3 mb-4">
           <label className="flex items-center space-x-3 cursor-pointer">
             <input
               id="retirement_spending.adjust_for_inflation"
@@ -429,7 +429,7 @@ export const RetirementForm: FC<RetirementFormProps> = ({ className, onResult })
         </div>
 
         {/* Period 1 Configuration - Always visible */}
-        <div className="border rounded-lg p-4 mb-4">
+        <div className="mb-4">
           <h4 className="font-medium mb-3">Period 1 Configuration</h4>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
             <div className="space-y-1">
@@ -471,20 +471,22 @@ export const RetirementForm: FC<RetirementFormProps> = ({ className, onResult })
           </div>
         </div>
 
-        {/* Toggle for Period 2 */}
-        <label className="flex items-center space-x-3 cursor-pointer mb-4">
+        {/* Toggle for Period 2 - next to inflation */}
+        <div className="flex items-center space-x-3 mb-4">
           <input
             id="retirement_spending.two_period_mode"
             type="checkbox"
             {...form.register("retirement_spending.two_period_mode")}
             className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
           />
-          <span>Configure Period 2 spending</span>
-        </label>
+          <label htmlFor="retirement_spending.two_period_mode" className="text-xs">
+            Configure Period 2 spending
+          </label>
+        </div>
 
         {/* Period 2 Configuration - Only shown when enabled */}
         {form.watch("retirement_spending.two_period_mode") && (
-          <div className="border rounded-lg p-4 mb-4">
+          <div className="mb-4">
             <h4 className="font-medium mb-3">Period 2 Configuration</h4>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
               <div className="space-y-1">
