@@ -236,9 +236,9 @@ export const RetirementForm: FC<RetirementFormProps> = ({ className, onResult })
         {/* Section: Personal Information & Portfolio */}
       {/* Enhanced Personal Information section with Contributions and Returns */}
       <section className="rounded-xl border p-4 min-h-[200px]">
-        <h3 className="text-lg font-semibold mb-4">Personal Information</h3>
-        <div className="grid grid-cols-1 gap-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <h3 className="text-lg font-semibold mb-3">Personal Information</h3>
+        <div className="grid grid-cols-1 gap-3">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
             <div className="space-y-1">
               <label htmlFor="timeline.current_age" className="block font-medium text-xs mb-0.5">Current age</label>
               <input
@@ -290,9 +290,9 @@ export const RetirementForm: FC<RetirementFormProps> = ({ className, onResult })
         </div>
 
         {/* Portfolio Assets in Single Card */}
-        <div className="mt-6">
+        <div className="mt-4">
           <h4 className="font-medium mb-3">Portfolio Assets</h4>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
             <div className="space-y-1">
               <label htmlFor="current_assets.investment_portfolio" className="block font-medium text-xs mb-0.5">Investment portfolio</label>
               <input
@@ -335,9 +335,9 @@ export const RetirementForm: FC<RetirementFormProps> = ({ className, onResult })
         </div>
 
         {/* Contributions Section */}
-        <div className="mt-6 border rounded-lg p-4">
+        <div className="mt-4 border rounded-lg p-3">
           <h4 className="font-medium mb-3">Contributions</h4>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
             <div className="space-y-1">
               <label htmlFor="current_assets.yearly_contribution" className="block font-medium text-xs mb-0.5">Yearly contribution</label>
               <input
@@ -365,7 +365,7 @@ export const RetirementForm: FC<RetirementFormProps> = ({ className, onResult })
               />
             </div>
 
-            <div className="flex items-center space-x-2 mt-6 pt-4">
+            <div className="flex items-center space-x-2 mt-4 pt-3">
               <input
                 id="current_assets.catch_up_eligible"
                 type="checkbox"
@@ -381,7 +381,7 @@ export const RetirementForm: FC<RetirementFormProps> = ({ className, onResult })
       </section>
 
       {/* Section: Returns - now integrated into Personal section */}
-      <div className="border rounded-lg p-4">
+      <div className="border rounded-lg p-3">
         <h4 className="font-medium mb-3">Returns Simulation</h4>
         <ReturnsSection />
       </div>
