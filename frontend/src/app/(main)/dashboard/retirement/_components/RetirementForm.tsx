@@ -332,49 +332,49 @@ export const RetirementForm: FC<RetirementFormProps> = ({ className, onResult })
               <p className="text-xs text-muted-foreground mt-1">Spouse retirement account balance</p>
             </div>
           </div>
-        </div>
 
-        {/* Contributions Section */}
-        <div className="mt-4 border rounded-lg p-3">
-          <h4 className="font-medium mb-3">Contributions</h4>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-            <div className="space-y-1">
-              <label htmlFor="current_assets.yearly_contribution" className="block font-medium text-xs mb-0.5">Yearly contribution</label>
-              <input
-                id="current_assets.yearly_contribution"
-                type="number"
-                min={0}
-                step={500}
-                {...form.register("current_assets.yearly_contribution", { valueAsNumber: true })}
-                className="w-full rounded-md border border-input bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none"
-              />
-            </div>
+          {/* Contributions Section - moved into Portfolio Assets */}
+          <div className="mt-4">
+            <h4 className="font-medium mb-3">Contributions</h4>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+              <div className="space-y-1">
+                <label htmlFor="current_assets.yearly_contribution" className="block font-medium text-xs mb-0.5">Yearly contribution</label>
+                <input
+                  id="current_assets.yearly_contribution"
+                  type="number"
+                  min={0}
+                  step={500}
+                  {...form.register("current_assets.yearly_contribution", { valueAsNumber: true })}
+                  className="w-full rounded-md border border-input bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none"
+                />
+              </div>
 
-            <div className="space-y-1">
-              <label htmlFor="current_assets.yearly_contribution_increase_pct" className="block font-medium text-xs mb-0.5">
-                Yearly contribution increase %
-              </label>
-              <input
-                id="current_assets.yearly_contribution_increase_pct"
-                type="number"
-                min={0}
-                max={100}
-                step={0.5}
-                {...form.register("current_assets.yearly_contribution_increase_pct", { valueAsNumber: true })}
-                className="w-full rounded-md border border-input bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none"
-              />
-            </div>
+              <div className="space-y-1">
+                <label htmlFor="current_assets.yearly_contribution_increase_pct" className="block font-medium text-xs mb-0.5">
+                  Yearly contribution increase %
+                </label>
+                <input
+                  id="current_assets.yearly_contribution_increase_pct"
+                  type="number"
+                  min={0}
+                  max={100}
+                  step={0.5}
+                  {...form.register("current_assets.yearly_contribution_increase_pct", { valueAsNumber: true })}
+                  className="w-full rounded-md border border-input bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none"
+                />
+              </div>
 
-            <div className="flex items-center space-x-2 mt-4 pt-3">
-              <input
-                id="current_assets.catch_up_eligible"
-                type="checkbox"
-                {...form.register("current_assets.catch_up_eligible")}
-                className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
-              />
-              <label htmlFor="current_assets.catch_up_eligible" className="text-xs">
-                Catch-up eligible (age 50+)
-              </label>
+              <div className="flex items-center space-x-2 mt-4 pt-3">
+                <input
+                  id="current_assets.catch_up_contributions"
+                  type="checkbox"
+                  {...form.register("current_assets.catch_up_contributions")}
+                  className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
+                />
+                <label htmlFor="current_assets.catch_up_contributions" className="text-xs">
+                  Catch-up contributions (age 50+)
+                </label>
+              </div>
             </div>
           </div>
         </div>

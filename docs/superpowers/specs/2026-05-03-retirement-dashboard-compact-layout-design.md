@@ -31,11 +31,11 @@ The main Personal Information card will maintain its consolidated approach but w
 
 #### Personal Information Section
 - Current age
-- Retirement age  
+- Retirement age
 - Spouse age (optional)
 - Years in retirement
 
-#### Portfolio Assets Section  
+#### Portfolio Assets Section
 - Investment portfolio
 - Your 401(k) / IRA
 - Spouse 401(k) / IRA
@@ -64,7 +64,7 @@ The main Personal Information card will maintain its consolidated approach but w
 1. **PersonalSection** - Enhanced with:
    - All personal information fields in a compact layout
    - Portfolio assets section with proper grouping
-   - Contributions section with visual emphasis on key fields
+   - Contributions section integrated into Portfolio Assets section (moved from separate card)
    - Returns section with conditional rendering based on simulation mode
    - Consistent spacing and padding (p-4)
 
@@ -77,7 +77,7 @@ The main Personal Information card will maintain its consolidated approach but w
 
 ### Padding and Spacing Strategy
 
-1. **Internal spacing**: Use p-4 consistently for all components 
+1. **Internal spacing**: Use p-4 consistently for all components
 2. **Section separation**: Add subtle borders or background colors to visually separate sections
 3. **Field grouping**: Group related fields closely together while maintaining readability
 4. **Visual hierarchy**: Emphasize important fields like yearly contribution through spacing and layout
@@ -107,7 +107,7 @@ The main Personal Information card will maintain its consolidated approach but w
 
 ## Implementation Plan
 
-1. Modify PersonalSection.tsx to implement the compact layout
+1. Modify PersonalSection.tsx to implement the compact layout with Contributions integrated into Portfolio Assets section
 2. Adjust spacing and grouping of fields within the card
 3. Maintain all existing react-hook-form integration and validation
 4. Test form submission with all data flows intact

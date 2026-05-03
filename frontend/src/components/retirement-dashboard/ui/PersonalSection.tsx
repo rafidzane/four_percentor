@@ -132,66 +132,66 @@ export const PersonalSection: FC<PersonalSectionProps> = ({ className }) => {
             <FormMessage />
           </FormItem>
         </div>
-      </div>
 
-      {/* Contributions Section */}
-      <div className="border rounded-lg p-3">
-        <h4 className="font-medium mb-3">Contributions</h4>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-          <FormItem>
-            <FormLabel htmlFor="current_assets.yearly_contribution">Yearly contribution</FormLabel>
-            <FormControl>
-              <Input
-                id="current_assets.yearly_contribution"
-                type="number"
-                min={0}
-                step={500}
-                {...register("current_assets.yearly_contribution", { valueAsNumber: true })}
-                placeholder="0"
-              />
-            </FormControl>
-            <FormDescription>Amount you contribute to retirement accounts each year</FormDescription>
-            <FormMessage />
-          </FormItem>
+        {/* Contributions Section - moved into Portfolio Assets */}
+        <div className="mt-4">
+          <h4 className="font-medium mb-3">Contributions</h4>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+            <FormItem>
+              <FormLabel htmlFor="current_assets.yearly_contribution">Yearly contribution</FormLabel>
+              <FormControl>
+                <Input
+                  id="current_assets.yearly_contribution"
+                  type="number"
+                  min={0}
+                  step={500}
+                  {...register("current_assets.yearly_contribution", { valueAsNumber: true })}
+                  placeholder="0"
+                />
+              </FormControl>
+              <FormDescription>Amount you contribute to retirement accounts each year</FormDescription>
+              <FormMessage />
+            </FormItem>
 
-          <FormItem>
-            <FormLabel htmlFor="current_assets.yearly_contribution_increase_pct">
-              Yearly contribution increase %
-            </FormLabel>
-            <FormControl>
-              <Input
-                id="current_assets.yearly_contribution_increase_pct"
-                type="number"
-                min={0}
-                max={100}
-                step={0.5}
-                {...register("current_assets.yearly_contribution_increase_pct", { valueAsNumber: true })}
-                placeholder="0"
-              />
-            </FormControl>
-            <FormDescription>Expected annual increase in contributions (e.g., 3% for raises)</FormDescription>
-            <FormMessage />
-          </FormItem>
+            <FormItem>
+              <FormLabel htmlFor="current_assets.yearly_contribution_increase_pct">
+                Yearly contribution increase %
+              </FormLabel>
+              <FormControl>
+                <Input
+                  id="current_assets.yearly_contribution_increase_pct"
+                  type="number"
+                  min={0}
+                  max={100}
+                  step={0.5}
+                  {...register("current_assets.yearly_contribution_increase_pct", { valueAsNumber: true })}
+                  placeholder="0"
+                />
+              </FormControl>
+              <FormDescription>Expected annual increase in contributions (e.g., 3% for raises)</FormDescription>
+              <FormMessage />
+            </FormItem>
 
-          <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-3">
-            <FormControl>
-              <input
-                id="current_assets.catch_up_contributions"
-                type="checkbox"
-                {...register("current_assets.catch_up_contributions")}
-                disabled={currentAge < 50}
-                className="mt-1 h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary disabled:opacity-50"
-              />
-            </FormControl>
-            <div className="space-y-1 leading-none">
-              <FormLabel htmlFor="current_assets.catch_up_contributions">Catch-up contributions (age 50+)</FormLabel>
-              <FormDescription>
-                {currentAge >= 50
-                  ? "Eligible to make additional catch-up contributions"
-                  : "Not eligible until age 50"}
-              </FormDescription>
-            </div>
-          </FormItem>
+            <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-3">
+              <FormControl>
+                <input
+                  id="current_assets.catch_up_contributions"
+                  type="checkbox"
+                  {...register("current_assets.catch_up_contributions")}
+                  disabled={currentAge < 50}
+                  className="mt-1 h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary disabled:opacity-50"
+                />
+              </FormControl>
+              <div className="space-y-1 leading-none">
+                <FormLabel htmlFor="current_assets.catch_up_contributions">Catch-up contributions (age 50+)</FormLabel>
+                <FormDescription>
+                  {currentAge >= 50
+                    ? "Eligible to make additional catch-up contributions"
+                    : "Not eligible until age 50"}
+                </FormDescription>
+              </div>
+            </FormItem>
+          </div>
         </div>
       </div>
 
