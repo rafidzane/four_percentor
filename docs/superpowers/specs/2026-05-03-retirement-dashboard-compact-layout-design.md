@@ -114,4 +114,14 @@ The main Personal Information card will maintain its consolidated approach but w
 5. Verify that all existing validation continues to work properly
 6. Ensure responsive design works across different screen sizes
 
-This approach maintains full functionality while significantly improving the UI's visual efficiency and user experience through better field organization and spacing.
+## Withdrawal Strategy Improvements
+
+The two-period spending mode has been improved to be more intuitive:
+- Period 1 configuration is always visible 
+- A toggle checkbox allows enabling of Period 2 configuration
+- Each period has start age, end age, and withdrawal percentage fields
+- Visual separation between the periods with distinct borders
+
+This approach makes it easier for users to understand that there are two spending periods, with the first one always configured and the second one optional.
+
+This approach maintains full functionality while significantly improving the UI's clarity and user experience through better organization of the two-period spending configuration.

@@ -416,45 +416,6 @@ export const RetirementForm: FC<RetirementFormProps> = ({ className, onResult })
           </div>
         )}
 
-        <div className="space-y-1 mb-4">
-          <label htmlFor="retirement_spending.withdrawal_pct" className="block font-medium text-xs mb-0.5">Withdrawal %</label>
-          <input
-            id="retirement_spending.withdrawal_pct"
-            type="number"
-            min={0}
-            max={100}
-            step={0.5}
-            {...form.register("retirement_spending.withdrawal_pct", { valueAsNumber: true })}
-            className="w-full rounded-md border border-input bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none"
-          />
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-          <div className="space-y-1">
-            <label htmlFor="retirement_spending.age_range_start" className="block font-medium text-xs mb-0.5">Age range start</label>
-            <input
-              id="retirement_spending.age_range_start"
-              type="number"
-              min={18}
-              max={100}
-              {...form.register("retirement_spending.age_range_start", { valueAsNumber: true })}
-              className="w-full rounded-md border border-input bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none"
-            />
-          </div>
-
-          <div className="space-y-1">
-            <label htmlFor="retirement_spending.age_range_end" className="block font-medium text-xs mb-0.5">Age range end</label>
-            <input
-              id="retirement_spending.age_range_end"
-              type="number"
-              min={18}
-              max={120}
-              {...form.register("retirement_spending.age_range_end", { valueAsNumber: true })}
-              className="w-full rounded-md border border-input bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none"
-            />
-          </div>
-        </div>
-
         <div className="space-y-3 mb-4">
           <label className="flex items-center space-x-3 cursor-pointer">
             <input
@@ -465,73 +426,65 @@ export const RetirementForm: FC<RetirementFormProps> = ({ className, onResult })
             />
             <span>Adjust for inflation</span>
           </label>
-
-          <label className="flex items-center space-x-3 cursor-pointer">
-            <input
-              id="retirement_spending.two_period_mode"
-              type="checkbox"
-              {...form.register("retirement_spending.two_period_mode")}
-              className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
-            />
-            <span>Two-period spending mode (different pre/post 65)
-              <span className="ml-1 text-xs text-gray-500">(e.g., 4% for early retirement years, 3% for later years)</span>
-            </span>
-          </label>
         </div>
 
-        {form.watch("retirement_spending.two_period_mode") && (
-          <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4 mb-4 text-xs">
-            <p className="font-medium">Two-period spending mode:</p>
-            <ul className="list-disc pl-5 mt-1 space-y-1">
-              <li>Period 1: Ages {form.watch("retirement_spending.period_1_start_age") || "N/A"} to {form.watch("retirement_spending.period_1_end_age") || "N/A"} with withdrawal rate {form.watch("retirement_spending.period_1_withdrawal_pct") || "N/A"}%</li>
-              <li>Period 2: Ages {form.watch("retirement_spending.period_2_start_age") || "N/A"} to {form.watch("retirement_spending.period_2_end_age") || "N/A"} with withdrawal rate {form.watch("retirement_spending.period_2_withdrawal_pct") || "N/A"}%</li>
-            </ul>
-          </div>
-        )}
-
-        {/* Two Period Inputs - conditional rendering */}
-        {form.watch("retirement_spending.two_period_mode") && (
-          <>
-            <h4 className="font-medium mb-3">Period 1 Configuration</h4>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-              <div className="space-y-1">
-                <label htmlFor="retirement_spending.period_1_start_age" className="block font-medium text-xs mb-0.5">Period 1 start age</label>
-                <input
-                  id="retirement_spending.period_1_start_age"
-                  type="number"
-                  min={18}
-                  max={100}
-                  {...form.register("retirement_spending.period_1_start_age", { valueAsNumber: true })}
-                  className="w-full rounded-md border border-input bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none"
-                />
-              </div>
-
-              <div className="space-y-1">
-                <label htmlFor="retirement_spending.period_1_end_age" className="block font-medium text-xs mb-0.5">Period 1 end age</label>
-                <input
-                  id="retirement_spending.period_1_end_age"
-                  type="number"
-                  min={18}
-                  max={120}
-                  {...form.register("retirement_spending.period_1_end_age", { valueAsNumber: true })}
-                  className="w-full rounded-md border border-input bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none"
-                />
-              </div>
-
-              <div className="space-y-1">
-                <label htmlFor="retirement_spending.period_1_withdrawal_pct" className="block font-medium text-xs mb-0.5">Period 1 withdrawal %</label>
-                <input
-                  id="retirement_spending.period_1_withdrawal_pct"
-                  type="number"
-                  min={0}
-                  max={100}
-                  step={0.5}
-                  {...form.register("retirement_spending.period_1_withdrawal_pct", { valueAsNumber: true })}
-                  className="w-full rounded-md border border-input bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none"
-                />
-              </div>
+        {/* Period 1 Configuration - Always visible */}
+        <div className="border rounded-lg p-4 mb-4">
+          <h4 className="font-medium mb-3">Period 1 Configuration</h4>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+            <div className="space-y-1">
+              <label htmlFor="retirement_spending.period_1_start_age" className="block font-medium text-xs mb-0.5">Period 1 start age</label>
+              <input
+                id="retirement_spending.period_1_start_age"
+                type="number"
+                min={18}
+                max={100}
+                {...form.register("retirement_spending.period_1_start_age", { valueAsNumber: true })}
+                className="w-full rounded-md border border-input bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none"
+              />
             </div>
 
+            <div className="space-y-1">
+              <label htmlFor="retirement_spending.period_1_end_age" className="block font-medium text-xs mb-0.5">Period 1 end age</label>
+              <input
+                id="retirement_spending.period_1_end_age"
+                type="number"
+                min={18}
+                max={120}
+                {...form.register("retirement_spending.period_1_end_age", { valueAsNumber: true })}
+                className="w-full rounded-md border border-input bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none"
+              />
+            </div>
+
+            <div className="space-y-1">
+              <label htmlFor="retirement_spending.period_1_withdrawal_pct" className="block font-medium text-xs mb-0.5">Period 1 withdrawal %</label>
+              <input
+                id="retirement_spending.period_1_withdrawal_pct"
+                type="number"
+                min={0}
+                max={100}
+                step={0.5}
+                {...form.register("retirement_spending.period_1_withdrawal_pct", { valueAsNumber: true })}
+                className="w-full rounded-md border border-input bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none"
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Toggle for Period 2 */}
+        <label className="flex items-center space-x-3 cursor-pointer mb-4">
+          <input
+            id="retirement_spending.two_period_mode"
+            type="checkbox"
+            {...form.register("retirement_spending.two_period_mode")}
+            className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
+          />
+          <span>Configure Period 2 spending</span>
+        </label>
+
+        {/* Period 2 Configuration - Only shown when enabled */}
+        {form.watch("retirement_spending.two_period_mode") && (
+          <div className="border rounded-lg p-4 mb-4">
             <h4 className="font-medium mb-3">Period 2 Configuration</h4>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
               <div className="space-y-1">
@@ -571,7 +524,7 @@ export const RetirementForm: FC<RetirementFormProps> = ({ className, onResult })
                 />
               </div>
             </div>
-          </>
+          </div>
         )}
       </section>
 
