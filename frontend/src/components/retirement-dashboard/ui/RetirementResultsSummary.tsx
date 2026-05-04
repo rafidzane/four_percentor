@@ -7,23 +7,23 @@ interface RetirementResultsSummaryProps {
 
 export const RetirementResultsSummary: FC<RetirementResultsSummaryProps> = ({ result }) => {
   return (
-    <div data-pct="retirement-results-section" className="mb-6">
+    <div data-pct="retirement-results-section" className="mb-6 rounded-xl border p-4">
       <h3 data-pct="retirement-results-title" className="text-xl font-semibold mb-4">Results</h3>
       
       <div data-pct="retirement-results-metrics-grid" className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
-        <div data-pct="retirement-final-balance-card" className="bg-white dark:bg-gray-800 p-3 rounded-lg border">
+        <div data-pct="retirement-final-balance-card" className="bg-white dark:bg-gray-800 p-3">
           <p data-pct="retirement-final-balance-label" className="text-xs text-muted-foreground">Final Balance</p>
           <p data-pct="retirement-final-balance-value" className="font-bold">${result.final_balance.toLocaleString(undefined, { minimumFractionDigits: 3, maximumFractionDigits: 3 })}</p>
         </div>
-        <div data-pct="retirement-average-balance-card" className="bg-white dark:bg-gray-800 p-3 rounded-lg border">
+        <div data-pct="retirement-average-balance-card" className="bg-white dark:bg-gray-800 p-3 ">
           <p data-pct="retirement-average-balance-label" className="text-xs text-muted-foreground">Average Balance</p>
           <p data-pct="retirement-average-balance-value" className="font-bold">${result.avg_balance.toLocaleString(undefined, { minimumFractionDigits: 3, maximumFractionDigits: 3 })}</p>
         </div>
-        <div data-pct="retirement-max-balance-card" className="bg-white dark:bg-gray-800 p-3 rounded-lg border">
+        <div data-pct="retirement-max-balance-card" className="bg-white dark:bg-gray-800 p-3 ">
           <p data-pct="retirement-max-balance-label" className="text-xs text-muted-foreground">Max Balance</p>
           <p data-pct="retirement-max-balance-value" className="font-bold">${result.max_balance.toLocaleString(undefined, { minimumFractionDigits: 3, maximumFractionDigits: 3 })}</p>
         </div>
-        <div data-pct="retirement-min-balance-card" className="bg-white dark:bg-gray-800 p-3 rounded-lg border">
+        <div data-pct="retirement-min-balance-card" className="bg-white dark:bg-gray-800 p-3">
           <p data-pct="retirement-min-balance-label" className="text-xs text-muted-foreground">Min Balance</p>
           <p data-pct="retirement-min-balance-value" className="font-bold">${result.min_balance.toLocaleString(undefined, { minimumFractionDigits: 3, maximumFractionDigits: 3 })}</p>
         </div>

@@ -334,7 +334,7 @@ export const RetirementForm: FC<RetirementFormProps> = ({ className }) => {
         <h3 className="text-lg font-semibold mb-4">Contributions</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           <div className="space-y-2">
-            <label htmlFor="current_assets.yearly_contribution" className={labelClass}>Yearly contribution</label>
+            <label htmlFor="current_assets.yearly_contribution" className={labelClass}>Contribution</label>
             <input
               id="current_assets.yearly_contribution"
               type="number"
@@ -347,7 +347,7 @@ export const RetirementForm: FC<RetirementFormProps> = ({ className }) => {
 
           <div className="space-y-2">
             <label htmlFor="current_assets.yearly_contribution_increase_pct" className={labelClass}>
-              Yearly contribution increase %
+              Contribution increase %
             </label>
             <input
               id="current_assets.yearly_contribution_increase_pct"
@@ -371,101 +371,100 @@ export const RetirementForm: FC<RetirementFormProps> = ({ className }) => {
               Catch-up eligible (age 50+)
             </label>
           </div>
-        </div>
-      </section>
 
-      {/* Section: Returns */}
-      <section className="rounded-xl border p-6">
-        <h3 className="text-lg font-semibold mb-4">Returns & Inflation</h3>
-
-        <div className="space-y-2 mb-4">
-          <label htmlFor="portfolio_allocation.simulation_mode" className={labelClass}>Simulation mode</label>
-          <select
-            id="portfolio_allocation.simulation_mode"
-            {...form.register("portfolio_allocation.simulation_mode")}
-            className={inputClass}
-          >
-            <option value="historical_all">Historical (S&P since 1871)</option>
-            <option value="single_year">Single historical year</option>
-            <option value="manual">Manual inputs</option>
-          </select>
-        </div>
-
-        {simulationMode === "manual" && (
-          <>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <label htmlFor="portfolio_allocation.equity_return_pre_retirement_pct" className={labelClass}>
-                  Pre-retirement equity return %
-                </label>
-                <input
-                  id="portfolio_allocation.equity_return_pre_retirement_pct"
-                  type="number"
-                  min={0}
-                  max={100}
-                  step={0.5}
-                  {...form.register("portfolio_allocation.equity_return_pre_retirement_pct", { valueAsNumber: true })}
-                  className={inputClass}
-                />
-              </div>
-
-              <div className="space-y-2">
-                <label htmlFor="portfolio_allocation.equity_return_post_retirement_pct" className={labelClass}>
-                  Post-retirement equity return %
-                </label>
-                <input
-                  id="portfolio_allocation.equity_return_post_retirement_pct"
-                  type="number"
-                  min={0}
-                  max={100}
-                  step={0.5}
-                  {...form.register("portfolio_allocation.equity_return_post_retirement_pct", { valueAsNumber: true })}
-                  className={inputClass}
-                />
-              </div>
-
-              <div className="space-y-2">
-                <label htmlFor="portfolio_allocation.fixed_income_return_pct" className={labelClass}>Fixed income return %</label>
-                <input
-                  id="portfolio_allocation.fixed_income_return_pct"
-                  type="number"
-                  min={0}
-                  max={100}
-                  step={0.5}
-                  {...form.register("portfolio_allocation.fixed_income_return_pct", { valueAsNumber: true })}
-                  className={inputClass}
-                />
-              </div>
-
-              <div className="space-y-2">
-                <label htmlFor="portfolio_allocation.inflation_rate_pct" className={labelClass}>Inflation rate %</label>
-                <input
-                  id="portfolio_allocation.inflation_rate_pct"
-                  type="number"
-                  min={0}
-                  max={100}
-                  step={0.1}
-                  {...form.register("portfolio_allocation.inflation_rate_pct", { valueAsNumber: true })}
-                  className={inputClass}
-                />
-              </div>
+          {/* Returns Simulation Section - moved under Contributions */}
+          <div className="mt-6 border rounded-lg p-4">
+            <h4 className="font-medium mb-3">Returns Simulation</h4>
+            <div className="space-y-2 mb-4">
+              <label htmlFor="portfolio_allocation.simulation_mode" className={labelClass}>Simulation mode</label>
+              <select
+                id="portfolio_allocation.simulation_mode"
+                {...form.register("portfolio_allocation.simulation_mode")}
+                className={inputClass}
+              >
+                <option value="historical_all">Historical (S&P since 1871)</option>
+                <option value="single_year">Single historical year</option>
+                <option value="manual">Manual inputs</option>
+              </select>
             </div>
-          </>
-        )}
 
-        {simulationMode === "single_year" && (
-          <div className="space-y-2">
-            <label htmlFor="portfolio_allocation.historical_year" className={labelClass}>Historical year</label>
-            <input
-              id="portfolio_allocation.historical_year"
-              type="number"
-              min={1871}
-              max={2025}
-              {...form.register("portfolio_allocation.historical_year", { valueAsNumber: true })}
-              className={inputClass}
-            />
+            {simulationMode === "manual" && (
+              <>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <label htmlFor="portfolio_allocation.equity_return_pre_retirement_pct" className={labelClass}>
+                      Pre-retirement equity return %
+                    </label>
+                    <input
+                      id="portfolio_allocation.equity_return_pre_retirement_pct"
+                      type="number"
+                      min={0}
+                      max={100}
+                      step={0.5}
+                      {...form.register("portfolio_allocation.equity_return_pre_retirement_pct", { valueAsNumber: true })}
+                      className={inputClass}
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <label htmlFor="portfolio_allocation.equity_return_post_retirement_pct" className={labelClass}>
+                      Post-retirement equity return %
+                    </label>
+                    <input
+                      id="portfolio_allocation.equity_return_post_retirement_pct"
+                      type="number"
+                      min={0}
+                      max={100}
+                      step={0.5}
+                      {...form.register("portfolio_allocation.equity_return_post_retirement_pct", { valueAsNumber: true })}
+                      className={inputClass}
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <label htmlFor="portfolio_allocation.fixed_income_return_pct" className={labelClass}>Fixed income return %</label>
+                    <input
+                      id="portfolio_allocation.fixed_income_return_pct"
+                      type="number"
+                      min={0}
+                      max={100}
+                      step={0.5}
+                      {...form.register("portfolio_allocation.fixed_income_return_pct", { valueAsNumber: true })}
+                      className={inputClass}
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <label htmlFor="portfolio_allocation.inflation_rate_pct" className={labelClass}>Inflation rate %</label>
+                    <input
+                      id="portfolio_allocation.inflation_rate_pct"
+                      type="number"
+                      min={0}
+                      max={100}
+                      step={0.1}
+                      {...form.register("portfolio_allocation.inflation_rate_pct", { valueAsNumber: true })}
+                      className={inputClass}
+                    />
+                  </div>
+                </div>
+              </>
+            )}
+
+            {simulationMode === "single_year" && (
+              <div className="space-y-2">
+                <label htmlFor="portfolio_allocation.historical_year" className={labelClass}>Historical year</label>
+                <input
+                  id="portfolio_allocation.historical_year"
+                  type="number"
+                  min={1871}
+                  max={2025}
+                  {...form.register("portfolio_allocation.historical_year", { valueAsNumber: true })}
+                  className={inputClass}
+                />
+              </div>
+            )}
           </div>
-        )}
+        </div>
       </section>
 
       {/* Section: Withdrawal Strategy */}

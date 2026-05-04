@@ -1,6 +1,0 @@
-name: remove-padding-from-inputs
-description: Remove padding inside input fields and labels on the retirement dashboard to create a tighter, more compact layout
-version: 0.1.0
-apply:
-  requires:
-    - tasks
