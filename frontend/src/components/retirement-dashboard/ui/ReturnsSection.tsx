@@ -34,8 +34,7 @@ export const ReturnsSection: FC<ReturnsSectionProps> = ({ className }) => {
   };
 
   return (
-    <div className={`space-y-6 ${className}`}>
-      {/* Simulation Mode */}
+    <div className={`space-y-6 ${className}`}> 
       <FormItem>
         <FormLabel htmlFor="portfolio_allocation.simulation_mode">Returns simulation mode</FormLabel>
         <FormControl>

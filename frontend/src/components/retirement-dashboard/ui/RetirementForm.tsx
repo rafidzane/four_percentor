@@ -368,13 +368,13 @@ export const RetirementForm: FC<RetirementFormProps> = ({ className }) => {
               className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
             />
             <label htmlFor="current_assets.catch_up_eligible" className="text-sm">
-              Catch-up eligible (age 50+)
+              Catchup
             </label>
           </div>
 
-          {/* Returns Simulation Section - moved under Contributions */}
-          <div className="mt-6 border rounded-lg p-4">
-            <h4 className="font-medium mb-3">Returns Simulation</h4>
+        
+          <div className="col-span-full mt-6 ">
+            <h4 className="font-medium mb-3">Returns Simulations</h4>
             <div className="space-y-2 mb-4">
               <label htmlFor="portfolio_allocation.simulation_mode" className={labelClass}>Simulation mode</label>
               <select

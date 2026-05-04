@@ -377,14 +377,14 @@ export const RetirementForm: FC<RetirementFormProps> = ({ className, onResult })
               </div>
             </div>
           </div>
+           <div className="mt-4">
+            <ReturnsSection />
+          </div>  
         </div>
       </section>
 
       {/* Section: Returns - now integrated into Personal section */}
-      <div className="border rounded-lg p-3">
-        <h4 className="font-medium mb-3">Returns Simulation</h4>
-        <ReturnsSection />
-      </div>
+     
 
       {/* Section: Withdrawal Strategy */}
       <section className="rounded-xl border p-6 min-h-[200px]">
