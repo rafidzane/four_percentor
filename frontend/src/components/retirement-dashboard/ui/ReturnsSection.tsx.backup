@@ -89,27 +89,29 @@ export const ReturnsSection: FC<ReturnsSectionProps> = ({ className }) => {
           <FormItem>
             <FormLabel htmlFor="portfolio_allocation.equity_return_pre_retirement_pct">
               Pre-retirement equity return %
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button variant="ghost" size="sm" className="h-4 w-4 p-0 ml-1">
-                    <InfoIcon className="h-3 w-3 text-muted-foreground" />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent side="right" className="max-w-xs">
-                  Expected equity return before retirement (historically ~7%). This represents growth in your investment portfolio.
-                </TooltipContent>
-              </Tooltip>
             </FormLabel>
             <FormControl>
-              <Input
-                id="portfolio_allocation.equity_return_pre_retirement_pct"
-                type="number"
-                min={0}
-                max={100}
-                step={0.5}
-                {...register("portfolio_allocation.equity_return_pre_retirement_pct", { valueAsNumber: true })}
-                placeholder="7.0"
-              />
+              <div className="flex items-center gap-1">
+                <Input
+                  id="portfolio_allocation.equity_return_pre_retirement_pct"
+                  type="number"
+                  min={0}
+                  max={100}
+                  step={0.5}
+                  {...register("portfolio_allocation.equity_return_pre_retirement_pct", { valueAsNumber: true })}
+                  placeholder="7.0"
+                />
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button variant="ghost" size="sm" className="h-4 w-4 p-0">
+                      <InfoIcon className="h-3 w-3 text-muted-foreground" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent side="right" className="max-w-xs">
+                    Expected equity return before retirement (historically ~7%)
+                  </TooltipContent>
+                </Tooltip>
+              </div>
             </FormControl>
             <FormDescription>Expected equity return before retirement</FormDescription>
             <FormMessage />
@@ -119,27 +121,29 @@ export const ReturnsSection: FC<ReturnsSectionProps> = ({ className }) => {
           <FormItem>
             <FormLabel htmlFor="portfolio_allocation.equity_return_post_retirement_pct">
               Post-retirement equity return %
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button variant="ghost" size="sm" className="h-4 w-4 p-0 ml-1">
-                    <InfoIcon className="h-3 w-3 text-muted-foreground" />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent side="right" className="max-w-xs">
-                  Expected equity return during retirement (historically ~5%). This represents growth in your portfolio during retirement.
-                </TooltipContent>
-              </Tooltip>
             </FormLabel>
             <FormControl>
-              <Input
-                id="portfolio_allocation.equity_return_post_retirement_pct"
-                type="number"
-                min={0}
-                max={100}
-                step={0.5}
-                {...register("portfolio_allocation.equity_return_post_retirement_pct", { valueAsNumber: true })}
-                placeholder="5.5"
-              />
+              <div className="flex items-center gap-1">
+                <Input
+                  id="portfolio_allocation.equity_return_post_retirement_pct"
+                  type="number"
+                  min={0}
+                  max={100}
+                  step={0.5}
+                  {...register("portfolio_allocation.equity_return_post_retirement_pct", { valueAsNumber: true })}
+                  placeholder="5.5"
+                />
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button variant="ghost" size="sm" className="h-4 w-4 p-0">
+                      <InfoIcon className="h-3 w-3 text-muted-foreground" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent side="right" className="max-w-xs">
+                    Expected equity return during retirement (historically ~5%)
+                  </TooltipContent>
+                </Tooltip>
+              </div>
             </FormControl>
             <FormDescription>Expected equity return during retirement</FormDescription>
             <FormMessage />
@@ -147,29 +151,29 @@ export const ReturnsSection: FC<ReturnsSectionProps> = ({ className }) => {
 
           {/* Fixed Income Return */}
           <FormItem>
-            <FormLabel htmlFor="portfolio_allocation.fixed_income_return_pct">
-              Fixed income return %
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button variant="ghost" size="sm" className="h-4 w-4 p-0 ml-1">
-                    <InfoIcon className="h-3 w-3 text-muted-foreground" />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent side="right" className="max-w-xs">
-                  Expected fixed income return (bonds, CDs) during retirement. This represents stable, predictable returns.
-                </TooltipContent>
-              </Tooltip>
-            </FormLabel>
+            <FormLabel htmlFor="portfolio_allocation.fixed_income_return_pct">Fixed income return %</FormLabel>
             <FormControl>
-              <Input
-                id="portfolio_allocation.fixed_income_return_pct"
-                type="number"
-                min={0}
-                max={100}
-                step={0.5}
-                {...register("portfolio_allocation.fixed_income_return_pct", { valueAsNumber: true })}
-                placeholder="3.5"
-              />
+              <div className="flex items-center gap-1">
+                <Input
+                  id="portfolio_allocation.fixed_income_return_pct"
+                  type="number"
+                  min={0}
+                  max={100}
+                  step={0.5}
+                  {...register("portfolio_allocation.fixed_income_return_pct", { valueAsNumber: true })}
+                  placeholder="3.5"
+                />
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button variant="ghost" size="sm" className="h-4 w-4 p-0">
+                      <InfoIcon className="h-3 w-3 text-muted-foreground" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent side="right" className="max-w-xs">
+                    Expected fixed income return (bonds, CDs) during retirement
+                  </TooltipContent>
+                </Tooltip>
+              </div>
             </FormControl>
             <FormDescription>Expected fixed income return (bonds, CDs)</FormDescription>
             <FormMessage />
@@ -177,29 +181,29 @@ export const ReturnsSection: FC<ReturnsSectionProps> = ({ className }) => {
 
           {/* Inflation Rate */}
           <FormItem>
-            <FormLabel htmlFor="portfolio_allocation.inflation_rate_pct">
-              Inflation rate %
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button variant="ghost" size="sm" className="h-4 w-4 p-0 ml-1">
-                    <InfoIcon className="h-3 w-3 text-muted-foreground" />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent side="right" className="max-w-xs">
-                  Annual inflation rate for expense projections (historically ~3%). This affects your purchasing power.
-                </TooltipContent>
-              </Tooltip>
-            </FormLabel>
+            <FormLabel htmlFor="portfolio_allocation.inflation_rate_pct">Inflation rate %</FormLabel>
             <FormControl>
-              <Input
-                id="portfolio_allocation.inflation_rate_pct"
-                type="number"
-                min={0}
-                max={100}
-                step={0.1}
-                {...register("portfolio_allocation.inflation_rate_pct", { valueAsNumber: true })}
-                placeholder="3.0"
-              />
+              <div className="flex items-center gap-1">
+                <Input
+                  id="portfolio_allocation.inflation_rate_pct"
+                  type="number"
+                  min={0}
+                  max={100}
+                  step={0.1}
+                  {...register("portfolio_allocation.inflation_rate_pct", { valueAsNumber: true })}
+                  placeholder="3.0"
+                />
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button variant="ghost" size="sm" className="h-4 w-4 p-0">
+                      <InfoIcon className="h-3 w-3 text-muted-foreground" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent side="right" className="max-w-xs">
+                    Annual inflation rate for expense projections (historically ~3%)
+                  </TooltipContent>
+                </Tooltip>
+              </div>
             </FormControl>
             <FormDescription>Annual inflation rate for expense projections</FormDescription>
             <FormMessage />
@@ -227,19 +231,7 @@ export const ReturnsSection: FC<ReturnsSectionProps> = ({ className }) => {
 
           {/* Historical Year Input */}
           <FormItem>
-            <FormLabel htmlFor="portfolio_allocation.historical_year">
-              Historical year
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button variant="ghost" size="sm" className="h-4 w-4 p-0 ml-1">
-                    <InfoIcon className="h-3 w-3 text-muted-foreground" />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent side="right" className="max-w-xs">
-                  Select a specific year to simulate market data (range: {YEAR_RANGE.min}-{YEAR_RANGE.max}). This helps understand how different market conditions affect retirement planning.
-                </TooltipContent>
-              </Tooltip>
-            </FormLabel>
+            <FormLabel htmlFor="portfolio_allocation.historical_year">Historical year</FormLabel>
             <FormControl>
               <div className="flex items-center gap-1">
                 <Input
@@ -258,6 +250,16 @@ export const ReturnsSection: FC<ReturnsSectionProps> = ({ className }) => {
                   })}
                   placeholder="Enter year (e.g., 1929)"
                 />
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button variant="ghost" size="sm" className="h-4 w-4 p-0">
+                      <InfoIcon className="h-3 w-3 text-muted-foreground" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent side="right" className="max-w-xs">
+                    Select a specific year to simulate market data (range: {YEAR_RANGE.min}-{YEAR_RANGE.max})
+                  </TooltipContent>
+                </Tooltip>
               </div>
             </FormControl>
             <FormDescription>Select a specific year to simulate (range: {YEAR_RANGE.min}-{YEAR_RANGE.max})</FormDescription>

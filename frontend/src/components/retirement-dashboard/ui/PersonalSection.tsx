@@ -4,6 +4,9 @@ import { FC, useState } from "react";
 import { useFormContext } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import { FormItem, FormLabel, FormDescription, FormControl, FormMessage } from "@/components/ui/form";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { Button } from "@/components/ui/button";
+import { InfoIcon } from "lucide-react";
 
 interface PersonalSectionProps {
   className?: string;
@@ -22,7 +25,19 @@ export const PersonalSection: FC<PersonalSectionProps> = ({ className }) => {
         <h3 className="text-lg font-semibold mb-3">Personal Information</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
           <FormItem>
-            <FormLabel htmlFor="timeline.current_age">Current age</FormLabel>
+            <FormLabel htmlFor="timeline.current_age">
+              Current age
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button variant="ghost" size="sm" className="h-4 w-4 p-0 ml-1">
+                    <InfoIcon className="h-3 w-3 text-muted-foreground" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent side="right" className="max-w-xs">
+                  Your current age in years. This affects how long your retirement will last and when you can start drawing Social Security.
+                </TooltipContent>
+              </Tooltip>
+            </FormLabel>
             <FormControl>
               <Input
                 id="timeline.current_age"
@@ -37,7 +52,19 @@ export const PersonalSection: FC<PersonalSectionProps> = ({ className }) => {
           </FormItem>
 
           <FormItem>
-            <FormLabel htmlFor="timeline.retirement_age">Retirement age</FormLabel>
+            <FormLabel htmlFor="timeline.retirement_age">
+              Retirement age
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button variant="ghost" size="sm" className="h-4 w-4 p-0 ml-1">
+                    <InfoIcon className="h-3 w-3 text-muted-foreground" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent side="right" className="max-w-xs">
+                  At what age do you plan to retire? This impacts when you start drawing Social Security and your retirement duration.
+                </TooltipContent>
+              </Tooltip>
+            </FormLabel>
             <FormControl>
               <Input
                 id="timeline.retirement_age"
@@ -52,7 +79,19 @@ export const PersonalSection: FC<PersonalSectionProps> = ({ className }) => {
           </FormItem>
 
           <FormItem>
-            <FormLabel htmlFor="timeline.spouse_age">Spouse age (optional)</FormLabel>
+            <FormLabel htmlFor="timeline.spouse_age">
+              Spouse age (optional)
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button variant="ghost" size="sm" className="h-4 w-4 p-0 ml-1">
+                    <InfoIcon className="h-3 w-3 text-muted-foreground" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent side="right" className="max-w-xs">
+                  Enter your spouse's current age if applicable. This helps calculate joint retirement planning.
+                </TooltipContent>
+              </Tooltip>
+            </FormLabel>
             <FormControl>
               <Input
                 id="timeline.spouse_age"
@@ -67,7 +106,19 @@ export const PersonalSection: FC<PersonalSectionProps> = ({ className }) => {
           </FormItem>
 
           <FormItem>
-            <FormLabel htmlFor="timeline.years_in_retirement">Years in retirement</FormLabel>
+            <FormLabel htmlFor="timeline.years_in_retirement">
+              Years in retirement
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button variant="ghost" size="sm" className="h-4 w-4 p-0 ml-1">
+                    <InfoIcon className="h-3 w-3 text-muted-foreground" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent side="right" className="max-w-xs">
+                  How many years do you expect to be retired? This impacts your retirement planning duration.
+                </TooltipContent>
+              </Tooltip>
+            </FormLabel>
             <FormControl>
               <Input
                 id="timeline.years_in_retirement"
@@ -88,7 +139,19 @@ export const PersonalSection: FC<PersonalSectionProps> = ({ className }) => {
         <h4 className="font-medium mb-3">Portfolio Assets</h4>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
           <FormItem>
-            <FormLabel htmlFor="current_assets.investment_portfolio">Investment portfolio</FormLabel>
+            <FormLabel htmlFor="current_assets.investment_portfolio">
+              Investment portfolio
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button variant="ghost" size="sm" className="h-4 w-4 p-0 ml-1">
+                    <InfoIcon className="h-3 w-3 text-muted-foreground" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent side="right" className="max-w-xs">
+                  Taxable brokerage, ETFs, mutual funds. This represents your total investment assets.
+                </TooltipContent>
+              </Tooltip>
+            </FormLabel>
             <FormControl>
               <Input
                 id="current_assets.investment_portfolio"
@@ -103,7 +166,19 @@ export const PersonalSection: FC<PersonalSectionProps> = ({ className }) => {
           </FormItem>
 
           <FormItem>
-            <FormLabel htmlFor="current_assets.your_401k_ira">Your 401(k) / IRA</FormLabel>
+            <FormLabel htmlFor="current_assets.your_401k_ira">
+              Your 401(k) / IRA
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button variant="ghost" size="sm" className="h-4 w-4 p-0 ml-1">
+                    <InfoIcon className="h-3 w-3 text-muted-foreground" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent side="right" className="max-w-xs">
+                  Individual retirement account balance. This includes your 401(k), IRA, and other retirement accounts.
+                </TooltipContent>
+              </Tooltip>
+            </FormLabel>
             <FormControl>
               <Input
                 id="current_assets.your_401k_ira"
@@ -118,7 +193,19 @@ export const PersonalSection: FC<PersonalSectionProps> = ({ className }) => {
           </FormItem>
 
           <FormItem>
-            <FormLabel htmlFor="current_assets.spouse_401k_ira">Spouse 401(k) / IRA</FormLabel>
+            <FormLabel htmlFor="current_assets.spouse_401k_ira">
+              Spouse 401(k) / IRA
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button variant="ghost" size="sm" className="h-4 w-4 p-0 ml-1">
+                    <InfoIcon className="h-3 w-3 text-muted-foreground" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent side="right" className="max-w-xs">
+                  Spouse retirement account balance. This includes spouse's 401(k), IRA, and other retirement accounts.
+                </TooltipContent>
+              </Tooltip>
+            </FormLabel>
             <FormControl>
               <Input
                 id="current_assets.spouse_401k_ira"
@@ -138,7 +225,19 @@ export const PersonalSection: FC<PersonalSectionProps> = ({ className }) => {
           <h4 className="font-medium mb-3">Contributions</h4>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
             <FormItem>
-              <FormLabel htmlFor="current_assets.yearly_contribution">Yearly contribution</FormLabel>
+              <FormLabel htmlFor="current_assets.yearly_contribution">
+                Yearly contribution
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button variant="ghost" size="sm" className="h-4 w-4 p-0 ml-1">
+                      <InfoIcon className="h-3 w-3 text-muted-foreground" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent side="right" className="max-w-xs">
+                    Amount you contribute to retirement accounts each year. This should include employer matching.
+                  </TooltipContent>
+                </Tooltip>
+              </FormLabel>
               <FormControl>
                 <Input
                   id="current_assets.yearly_contribution"
@@ -156,6 +255,16 @@ export const PersonalSection: FC<PersonalSectionProps> = ({ className }) => {
             <FormItem>
               <FormLabel htmlFor="current_assets.yearly_contribution_increase_pct">
                 Yearly contribution increase %
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button variant="ghost" size="sm" className="h-4 w-4 p-0 ml-1">
+                      <InfoIcon className="h-3 w-3 text-muted-foreground" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent side="right" className="max-w-xs">
+                    Expected annual increase in contributions (e.g., 3% for raises). This helps with long-term planning.
+                  </TooltipContent>
+                </Tooltip>
               </FormLabel>
               <FormControl>
                 <Input
@@ -183,7 +292,19 @@ export const PersonalSection: FC<PersonalSectionProps> = ({ className }) => {
                 />
               </FormControl>
               <div className="space-y-1 leading-none">
-                <FormLabel htmlFor="current_assets.catch_up_contributions">Catch-up contributions (age 50+)</FormLabel>
+                <FormLabel htmlFor="current_assets.catch_up_contributions">
+                  Catch-up contributions (age 50+)
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button variant="ghost" size="sm" className="h-4 w-4 p-0 ml-1">
+                        <InfoIcon className="h-3 w-3 text-muted-foreground" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent side="right" className="max-w-xs">
+                      Eligible to make additional catch-up contributions once you reach age 50. This helps boost retirement savings.
+                    </TooltipContent>
+                  </Tooltip>
+                </FormLabel>
                 <FormDescription>
                   {currentAge >= 50
                     ? "Eligible to make additional catch-up contributions"

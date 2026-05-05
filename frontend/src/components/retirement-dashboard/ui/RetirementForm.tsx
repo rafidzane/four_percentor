@@ -469,7 +469,7 @@ export const RetirementForm: FC<RetirementFormProps> = ({ className }) => {
 
       {/* Section: Withdrawal Strategy */}
       <section className="rounded-xl border p-6">
-        <h3 className="text-lg font-semibold mb-4">Withdrawal Strategy</h3>
+        <h3 className="text-lg font-semibold mb-4">Withdrawal Strategyaa</h3>
 
         <div className="space-y-2 mb-4">
           <label htmlFor="retirement_spending.spending_mode" className={labelClass}>Spending mode</label>
