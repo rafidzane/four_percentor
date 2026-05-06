@@ -78,7 +78,6 @@ export const ReturnsSection: FC<ReturnsSectionProps> = ({ className }) => {
             </SelectContent>
           </Select>
         </FormControl>
-        <FormDescription>Choose how returns are calculated</FormDescription>
         <FormMessage />
       </FormItem>
 

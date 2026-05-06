@@ -244,7 +244,7 @@ export const RetirementForm: FC<RetirementFormProps> = ({ className, onResult })
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
             <div className="space-y-1">
               <div className="flex items-center gap-1">
-                <label htmlFor="timeline.current_age" className="block font-medium text-xs mb-0.5">Current age</label>
+                <label htmlFor="timeline.current_age" className="block font-medium text-xs mb-0.5">Age</label>
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <Button variant="ghost" size="sm" className="h-4 w-4 p-0">
@@ -271,16 +271,8 @@ export const RetirementForm: FC<RetirementFormProps> = ({ className, onResult })
             </div>
 
             <div className="space-y-1">
-              <label htmlFor="timeline.retirement_age" className="block font-medium text-xs mb-0.5">Retirement age12</label>
               <div className="flex items-center gap-1">
-                <input
-                  id="timeline.retirement_age"
-                  type="number"
-                  min={18}
-                  max={100}
-                  {...form.register("timeline.retirement_age", { valueAsNumber: true })}
-                  className="w-full rounded-md border border-input bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none"
-                />
+                <label htmlFor="timeline.retirement_age" className="block font-medium text-xs mb-0.5">Retire age</label>
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <Button variant="ghost" size="sm" className="h-4 w-4 p-0">
@@ -292,19 +284,21 @@ export const RetirementForm: FC<RetirementFormProps> = ({ className, onResult })
                   </TooltipContent>
                 </Tooltip>
               </div>
-            </div>
-
-            <div className="space-y-1">
-              <label htmlFor="timeline.spouse_age" className="block font-medium text-xs mb-0.5">Spouse age (optional)</label>
               <div className="flex items-center gap-1">
                 <input
-                  id="timeline.spouse_age"
+                  id="timeline.retirement_age"
                   type="number"
                   min={18}
                   max={100}
-                  {...form.register("timeline.spouse_age", { valueAsNumber: true })}
+                  {...form.register("timeline.retirement_age", { valueAsNumber: true })}
                   className="w-full rounded-md border border-input bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none"
                 />
+              </div>
+            </div>
+
+            <div className="space-y-1">
+              <div className="flex items-center gap-1">
+                <label htmlFor="timeline.spouse_age" className="block font-medium text-xs mb-0.5">Spouse age</label>
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <Button variant="ghost" size="sm" className="h-4 w-4 p-0">
@@ -316,19 +310,21 @@ export const RetirementForm: FC<RetirementFormProps> = ({ className, onResult })
                   </TooltipContent>
                 </Tooltip>
               </div>
+              <div className="flex items-center gap-1">
+                <input
+                  id="timeline.spouse_age"
+                  type="number"
+                  min={18}
+                  max={100}
+                  {...form.register("timeline.spouse_age", { valueAsNumber: true })}
+                  className="w-full rounded-md border border-input bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none"
+                />
+              </div>
             </div>
 
             <div className="space-y-1">
-              <label htmlFor="timeline.years_in_retirement" className="block font-medium text-xs mb-0.5">Years in retirement</label>
               <div className="flex items-center gap-1">
-                <input
-                  id="timeline.years_in_retirement"
-                  type="number"
-                  min={1}
-                  max={50}
-                  {...form.register("timeline.years_in_retirement", { valueAsNumber: true })}
-                  className="w-full rounded-md border border-input bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none"
-                />
+                <label htmlFor="timeline.years_in_retirement" className="block font-medium text-xs mb-0.5">Retirement years</label>
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <Button variant="ghost" size="sm" className="h-4 w-4 p-0">
@@ -340,6 +336,16 @@ export const RetirementForm: FC<RetirementFormProps> = ({ className, onResult })
                   </TooltipContent>
                 </Tooltip>
               </div>
+              <div className="flex items-center gap-1">
+                <input
+                  id="timeline.years_in_retirement"
+                  type="number"
+                  min={1}
+                  max={50}
+                  {...form.register("timeline.years_in_retirement", { valueAsNumber: true })}
+                  className="w-full rounded-md border border-input bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none"
+                />
+              </div>
             </div>
           </div>
         </div>
@@ -349,16 +355,8 @@ export const RetirementForm: FC<RetirementFormProps> = ({ className, onResult })
           <h4 className="font-medium mb-2">Portfolio Assets</h4>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
             <div className="space-y-1">
-              <label htmlFor="current_assets.investment_portfolio" className="block font-medium text-xs mb-0.5">Investment portfolio</label>
               <div className="flex items-center gap-1">
-                <input
-                  id="current_assets.investment_portfolio"
-                  type="number"
-                  min={0}
-                  step={1000}
-                  {...form.register("current_assets.investment_portfolio", { valueAsNumber: true })}
-                  className="w-full rounded-md border border-input bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none"
-                />
+                <label htmlFor="current_assets.investment_portfolio" className="block font-medium text-xs mb-0.5">Investment portfolio</label>
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <Button variant="ghost" size="sm" className="h-4 w-4 p-0">
@@ -370,20 +368,22 @@ export const RetirementForm: FC<RetirementFormProps> = ({ className, onResult })
                   </TooltipContent>
                 </Tooltip>
               </div>
+              <div className="flex items-center gap-1">
+                <input
+                  id="current_assets.investment_portfolio"
+                  type="number"
+                  min={0}
+                  step={1000}
+                  {...form.register("current_assets.investment_portfolio", { valueAsNumber: true })}
+                  className="w-full rounded-md border border-input bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none"
+                />
+              </div>
               <p className="text-xs text-muted-foreground mt-0.5">Taxable brokerage, ETFs, mutual funds</p>
             </div>
 
             <div className="space-y-1">
-              <label htmlFor="current_assets.your_401k_ira" className="block font-medium text-xs mb-0.5">Your 401(k) / IRA</label>
               <div className="flex items-center gap-1">
-                <input
-                  id="current_assets.your_401k_ira"
-                  type="number"
-                  min={0}
-                  step={1000}
-                  {...form.register("current_assets.your_401k_ira", { valueAsNumber: true })}
-                  className="w-full rounded-md border border-input bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none"
-                />
+                <label htmlFor="current_assets.your_401k_ira" className="block font-medium text-xs mb-0.5">Your 401(k) / IRA</label>
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <Button variant="ghost" size="sm" className="h-4 w-4 p-0">
@@ -395,20 +395,22 @@ export const RetirementForm: FC<RetirementFormProps> = ({ className, onResult })
                   </TooltipContent>
                 </Tooltip>
               </div>
+              <div className="flex items-center gap-1">
+                <input
+                  id="current_assets.your_401k_ira"
+                  type="number"
+                  min={0}
+                  step={1000}
+                  {...form.register("current_assets.your_401k_ira", { valueAsNumber: true })}
+                  className="w-full rounded-md border border-input bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none"
+                />
+              </div>
               <p className="text-xs text-muted-foreground mt-0.5">Individual retirement account balance</p>
             </div>
 
             <div className="space-y-1">
-              <label htmlFor="current_assets.spouse_401k_ira" className="block font-medium text-xs mb-0.5">Spouse 401(k) / IRA</label>
               <div className="flex items-center gap-1">
-                <input
-                  id="current_assets.spouse_401k_ira"
-                  type="number"
-                  min={0}
-                  step={1000}
-                  {...form.register("current_assets.spouse_401k_ira", { valueAsNumber: true })}
-                  className="w-full rounded-md border border-input bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none"
-                />
+                <label htmlFor="current_assets.spouse_401k_ira" className="block font-medium text-xs mb-0.5">Spouse 401(k) / IRA</label>
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <Button variant="ghost" size="sm" className="h-4 w-4 p-0">
@@ -420,6 +422,16 @@ export const RetirementForm: FC<RetirementFormProps> = ({ className, onResult })
                   </TooltipContent>
                 </Tooltip>
               </div>
+              <div className="flex items-center gap-1">
+                <input
+                  id="current_assets.spouse_401k_ira"
+                  type="number"
+                  min={0}
+                  step={1000}
+                  {...form.register("current_assets.spouse_401k_ira", { valueAsNumber: true })}
+                  className="w-full rounded-md border border-input bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none"
+                />
+              </div>
               <p className="text-xs text-muted-foreground mt-0.5">Spouse retirement account balance</p>
             </div>
           </div>
@@ -429,16 +441,8 @@ export const RetirementForm: FC<RetirementFormProps> = ({ className, onResult })
             <h4 className="font-medium mb-2">Contributions</h4>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
               <div className="space-y-1">
-                <label htmlFor="current_assets.yearly_contribution" className="block font-medium text-xs mb-0.5">Yearly contribution</label>
                 <div className="flex items-center gap-1">
-                  <input
-                    id="current_assets.yearly_contribution"
-                    type="number"
-                    min={0}
-                    step={500}
-                    {...form.register("current_assets.yearly_contribution", { valueAsNumber: true })}
-                    className="w-full rounded-md border border-input bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none"
-                  />
+                  <label htmlFor="current_assets.yearly_contribution" className="block font-medium text-xs mb-0.5">Yearly contribution</label>
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <Button variant="ghost" size="sm" className="h-4 w-4 p-0">
@@ -450,22 +454,23 @@ export const RetirementForm: FC<RetirementFormProps> = ({ className, onResult })
                     </TooltipContent>
                   </Tooltip>
                 </div>
+                <div className="flex items-center gap-1">
+                  <input
+                    id="current_assets.yearly_contribution"
+                    type="number"
+                    min={0}
+                    step={500}
+                    {...form.register("current_assets.yearly_contribution", { valueAsNumber: true })}
+                    className="w-full rounded-md border border-input bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none"
+                  />
+                </div>
               </div>
 
               <div className="space-y-1">
-                <label htmlFor="current_assets.yearly_contribution_increase_pct" className="block font-medium text-xs mb-0.5">
-                  Yearly contribution increase %
-                </label>
                 <div className="flex items-center gap-1">
-                  <input
-                    id="current_assets.yearly_contribution_increase_pct"
-                    type="number"
-                    min={0}
-                    max={100}
-                    step={0.5}
-                    {...form.register("current_assets.yearly_contribution_increase_pct", { valueAsNumber: true })}
-                    className="w-full rounded-md border border-input bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none"
-                  />
+                  <label htmlFor="current_assets.yearly_contribution_increase_pct" className="block font-medium text-xs mb-0.5">
+                    Contribution increase %
+                  </label>
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <Button variant="ghost" size="sm" className="h-4 w-4 p-0">
@@ -477,6 +482,17 @@ export const RetirementForm: FC<RetirementFormProps> = ({ className, onResult })
                     </TooltipContent>
                   </Tooltip>
                 </div>
+                <div className="flex items-center gap-1">
+                  <input
+                    id="current_assets.yearly_contribution_increase_pct"
+                    type="number"
+                    min={0}
+                    max={100}
+                    step={0.5}
+                    {...form.register("current_assets.yearly_contribution_increase_pct", { valueAsNumber: true })}
+                    className="w-full rounded-md border border-input bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none"
+                  />
+                </div>
               </div>
 
               <div className="flex items-center space-x-2 mt-3 pt-2">
@@ -487,7 +503,7 @@ export const RetirementForm: FC<RetirementFormProps> = ({ className, onResult })
                   className="h-3 w-3 rounded border-gray-300 text-primary focus:ring-primary"
                 />
                 <label htmlFor="current_assets.catch_up_contributions" className="text-xs">
-                  Catch-up contributions (age 50+)
+                  Catch-up contrib.
                 </label>
                 <Tooltip>
                   <TooltipTrigger asChild>
