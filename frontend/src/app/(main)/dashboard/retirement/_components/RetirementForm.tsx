@@ -254,8 +254,7 @@ export const RetirementForm: FC<RetirementFormProps> = ({ className, onResult })
                   <TooltipContent side="right" className="max-w-sm px-3 py-1.5 text-xs">
                     Your current age. This is used to calculate your retirement timeline and determine when you'll enter retirement.
                   </TooltipContent>
-                </Tooltip>  
-
+                </Tooltip>
               </div>
               <div className="flex items-center gap-1">
                 <input
@@ -279,7 +278,7 @@ export const RetirementForm: FC<RetirementFormProps> = ({ className, onResult })
                       <InfoIcon className="h-3 w-3 text-muted-foreground" />
                     </Button>
                   </TooltipTrigger>
-                  <TooltipContent side="right" className="max-w-xs">
+                  <TooltipContent side="right" className="max-w-sm px-3 py-1.5 text-xs">
                     The age at which you plan to retire. This determines your retirement timeline and affects investment strategy.
                   </TooltipContent>
                 </Tooltip>
@@ -305,7 +304,7 @@ export const RetirementForm: FC<RetirementFormProps> = ({ className, onResult })
                       <InfoIcon className="h-3 w-3 text-muted-foreground" />
                     </Button>
                   </TooltipTrigger>
-                  <TooltipContent side="right" className="max-w-xs">
+                  <TooltipContent side="right" className="max-w-sm px-3 py-1.5 text-xs">
                     Your spouse's age, if applicable. This affects joint retirement planning and Social Security benefits.
                   </TooltipContent>
                 </Tooltip>
@@ -331,7 +330,7 @@ export const RetirementForm: FC<RetirementFormProps> = ({ className, onResult })
                       <InfoIcon className="h-3 w-3 text-muted-foreground" />
                     </Button>
                   </TooltipTrigger>
-                  <TooltipContent side="right" className="max-w-xs">
+                  <TooltipContent side="right" className="max-w-sm px-3 py-1.5 text-xs">
                     The number of years you expect to spend in retirement. This affects your withdrawal strategy and investment planning.
                   </TooltipContent>
                 </Tooltip>
