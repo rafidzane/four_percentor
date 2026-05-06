@@ -44,7 +44,7 @@ export const ReturnsSection: FC<ReturnsSectionProps> = ({ className }) => {
                 <InfoIcon className="h-3 w-3 text-muted-foreground" />
               </Button>
             </TooltipTrigger>
-            <TooltipContent side="right" className="max-w-xs">
+            <TooltipContent side="right" className="max-w-sm px-3 py-1.5 text-xs">
               Choose how returns are calculated. Historical mode uses past market data, while manual allows custom inputs.
             </TooltipContent>
           </Tooltip>
@@ -68,7 +68,7 @@ export const ReturnsSection: FC<ReturnsSectionProps> = ({ className }) => {
                         <InfoIcon className="h-3 w-3 text-muted-foreground" />
                       </Button>
                     </TooltipTrigger>
-                    <TooltipContent side="right" className="max-w-xs">
+                    <TooltipContent side="right" className="max-w-sm px-3 py-1.5 text-xs">
                       Simulate retirement using a specific historical year's market data (e.g., 1929 for Great Depression, 2008 for Financial Crisis).
                     </TooltipContent>
                   </Tooltip>
@@ -94,7 +94,7 @@ export const ReturnsSection: FC<ReturnsSectionProps> = ({ className }) => {
                     <InfoIcon className="h-3 w-3 text-muted-foreground" />
                   </Button>
                 </TooltipTrigger>
-                <TooltipContent side="right" className="max-w-xs">
+                <TooltipContent side="right" className="max-w-sm px-3 py-1.5 text-xs">
                   Expected equity return before retirement (historically ~7%). This represents growth in your investment portfolio.
                 </TooltipContent>
               </Tooltip>
@@ -124,7 +124,7 @@ export const ReturnsSection: FC<ReturnsSectionProps> = ({ className }) => {
                     <InfoIcon className="h-3 w-3 text-muted-foreground" />
                   </Button>
                 </TooltipTrigger>
-                <TooltipContent side="right" className="max-w-xs">
+                <TooltipContent side="right" className="max-w-sm px-3 py-1.5 text-xs">
                   Expected equity return during retirement (historically ~5%). This represents growth in your portfolio during retirement.
                 </TooltipContent>
               </Tooltip>
@@ -154,7 +154,7 @@ export const ReturnsSection: FC<ReturnsSectionProps> = ({ className }) => {
                     <InfoIcon className="h-3 w-3 text-muted-foreground" />
                   </Button>
                 </TooltipTrigger>
-                <TooltipContent side="right" className="max-w-xs">
+                <TooltipContent side="right" className="max-w-sm px-3 py-1.5 text-xs">
                   Expected fixed income return (bonds, CDs) during retirement. This represents stable, predictable returns.
                 </TooltipContent>
               </Tooltip>
@@ -184,7 +184,7 @@ export const ReturnsSection: FC<ReturnsSectionProps> = ({ className }) => {
                     <InfoIcon className="h-3 w-3 text-muted-foreground" />
                   </Button>
                 </TooltipTrigger>
-                <TooltipContent side="right" className="max-w-xs">
+                <TooltipContent side="right" className="max-w-sm px-3 py-1.5 text-xs">
                   Annual inflation rate for expense projections (historically ~3%). This affects your purchasing power.
                 </TooltipContent>
               </Tooltip>
@@ -234,7 +234,7 @@ export const ReturnsSection: FC<ReturnsSectionProps> = ({ className }) => {
                     <InfoIcon className="h-3 w-3 text-muted-foreground" />
                   </Button>
                 </TooltipTrigger>
-                <TooltipContent side="right" className="max-w-xs">
+                <TooltipContent side="right" className="max-w-sm px-3 py-1.5 text-xs">
                   Select a specific year to simulate market data (range: {YEAR_RANGE.min}-{YEAR_RANGE.max}). This helps understand how different market conditions affect retirement planning.
                 </TooltipContent>
               </Tooltip>
