@@ -244,50 +244,98 @@ export const RetirementForm: FC<RetirementFormProps> = ({ className, onResult })
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
             <div className="space-y-1">
               <label htmlFor="timeline.current_age" className="block font-medium text-xs mb-0.5">Current age</label>
-              <input
-                id="timeline.current_age"
-                type="number"
-                min={18}
-                max={100}
-                {...form.register("timeline.current_age", { valueAsNumber: true })}
-                className="w-full rounded-md border border-input bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none"
-              />
+              <div className="flex items-center gap-1">
+                <input
+                  id="timeline.current_age"
+                  type="number"
+                  min={18}
+                  max={100}
+                  {...form.register("timeline.current_age", { valueAsNumber: true })}
+                  className="w-full rounded-md border border-input bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none"
+                />
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button variant="ghost" size="sm" className="h-4 w-4 p-0">
+                      <InfoIcon className="h-3 w-3 text-muted-foreground" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent side="right" className="max-w-xs">
+                    Your current age. This is used to calculate your retirement timeline and determine when you'll enter retirement.
+                  </TooltipContent>
+                </Tooltip>
+              </div>
             </div>
 
             <div className="space-y-1">
               <label htmlFor="timeline.retirement_age" className="block font-medium text-xs mb-0.5">Retirement age</label>
-              <input
-                id="timeline.retirement_age"
-                type="number"
-                min={18}
-                max={100}
-                {...form.register("timeline.retirement_age", { valueAsNumber: true })}
-                className="w-full rounded-md border border-input bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none"
-              />
+              <div className="flex items-center gap-1">
+                <input
+                  id="timeline.retirement_age"
+                  type="number"
+                  min={18}
+                  max={100}
+                  {...form.register("timeline.retirement_age", { valueAsNumber: true })}
+                  className="w-full rounded-md border border-input bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none"
+                />
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button variant="ghost" size="sm" className="h-4 w-4 p-0">
+                      <InfoIcon className="h-3 w-3 text-muted-foreground" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent side="right" className="max-w-xs">
+                    The age at which you plan to retire. This determines your retirement timeline and affects investment strategy.
+                  </TooltipContent>
+                </Tooltip>
+              </div>
             </div>
 
             <div className="space-y-1">
               <label htmlFor="timeline.spouse_age" className="block font-medium text-xs mb-0.5">Spouse age (optional)</label>
-              <input
-                id="timeline.spouse_age"
-                type="number"
-                min={18}
-                max={100}
-                {...form.register("timeline.spouse_age", { valueAsNumber: true })}
-                className="w-full rounded-md border border-input bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none"
-              />
+              <div className="flex items-center gap-1">
+                <input
+                  id="timeline.spouse_age"
+                  type="number"
+                  min={18}
+                  max={100}
+                  {...form.register("timeline.spouse_age", { valueAsNumber: true })}
+                  className="w-full rounded-md border border-input bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none"
+                />
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button variant="ghost" size="sm" className="h-4 w-4 p-0">
+                      <InfoIcon className="h-3 w-3 text-muted-foreground" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent side="right" className="max-w-xs">
+                    Your spouse's age, if applicable. This affects joint retirement planning and Social Security benefits.
+                  </TooltipContent>
+                </Tooltip>
+              </div>
             </div>
 
             <div className="space-y-1">
               <label htmlFor="timeline.years_in_retirement" className="block font-medium text-xs mb-0.5">Years in retirement</label>
-              <input
-                id="timeline.years_in_retirement"
-                type="number"
-                min={1}
-                max={50}
-                {...form.register("timeline.years_in_retirement", { valueAsNumber: true })}
-                className="w-full rounded-md border border-input bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none"
-              />
+              <div className="flex items-center gap-1">
+                <input
+                  id="timeline.years_in_retirement"
+                  type="number"
+                  min={1}
+                  max={50}
+                  {...form.register("timeline.years_in_retirement", { valueAsNumber: true })}
+                  className="w-full rounded-md border border-input bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none"
+                />
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button variant="ghost" size="sm" className="h-4 w-4 p-0">
+                      <InfoIcon className="h-3 w-3 text-muted-foreground" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent side="right" className="max-w-xs">
+                    The number of years you expect to spend in retirement. This affects your withdrawal strategy and investment planning.
+                  </TooltipContent>
+                </Tooltip>
+              </div>
             </div>
           </div>
         </div>
@@ -314,7 +362,7 @@ export const RetirementForm: FC<RetirementFormProps> = ({ className, onResult })
                     </Button>
                   </TooltipTrigger>
                   <TooltipContent side="right" className="max-w-xs">
-                    Taxable brokerage, ETFs, mutual funds balance
+                    Taxable brokerage, ETFs, mutual funds balance. This represents your total non-retirement investment assets.
                   </TooltipContent>
                 </Tooltip>
               </div>
@@ -339,7 +387,7 @@ export const RetirementForm: FC<RetirementFormProps> = ({ className, onResult })
                     </Button>
                   </TooltipTrigger>
                   <TooltipContent side="right" className="max-w-xs">
-                    Individual retirement account balance
+                    Individual retirement account balance. This includes your 401(k), IRA, and other tax-advantaged accounts.
                   </TooltipContent>
                 </Tooltip>
               </div>
@@ -364,7 +412,7 @@ export const RetirementForm: FC<RetirementFormProps> = ({ className, onResult })
                     </Button>
                   </TooltipTrigger>
                   <TooltipContent side="right" className="max-w-xs">
-                    Spouse retirement account balance
+                    Spouse retirement account balance. This includes spouse's 401(k), IRA, and other tax-advantaged accounts.
                   </TooltipContent>
                 </Tooltip>
               </div>
@@ -394,7 +442,7 @@ export const RetirementForm: FC<RetirementFormProps> = ({ className, onResult })
                       </Button>
                     </TooltipTrigger>
                     <TooltipContent side="right" className="max-w-xs">
-                      Amount contributed to retirement accounts annually
+                      Amount contributed to retirement accounts annually. This represents your regular investment into retirement savings.
                     </TooltipContent>
                   </Tooltip>
                 </div>
@@ -421,7 +469,7 @@ export const RetirementForm: FC<RetirementFormProps> = ({ className, onResult })
                       </Button>
                     </TooltipTrigger>
                     <TooltipContent side="right" className="max-w-xs">
-                      Annual percentage increase in contributions (e.g., 3% for inflation adjustment)
+                      Annual percentage increase in contributions (e.g., 3% for inflation adjustment). This helps maintain purchasing power.
                     </TooltipContent>
                   </Tooltip>
                 </div>
@@ -481,7 +529,7 @@ export const RetirementForm: FC<RetirementFormProps> = ({ className, onResult })
                 </Button>
               </TooltipTrigger>
               <TooltipContent side="right" className="max-w-xs">
-                Choose how spending is calculated (4% rule or manual input)
+                Choose how spending is calculated (4% rule or manual input). The 4% rule provides a safe withdrawal rate, while manual allows custom amounts.
               </TooltipContent>
             </Tooltip>
           </div>
@@ -504,7 +552,7 @@ export const RetirementForm: FC<RetirementFormProps> = ({ className, onResult })
               </Button>
             </TooltipTrigger>
             <TooltipContent side="right" className="max-w-xs">
-              Whether to adjust spending for inflation over time
+              Whether to adjust spending for inflation over time. This helps maintain purchasing power throughout retirement.
             </TooltipContent>
           </Tooltip>
         </div>
@@ -533,6 +581,16 @@ export const RetirementForm: FC<RetirementFormProps> = ({ className, onResult })
                   {...form.register("retirement_spending.period_1_end_age", { valueAsNumber: true })}
                   className="w-full rounded-md border border-input bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none"
                 />
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button variant="ghost" size="sm" className="h-4 w-4 p-0">
+                      <InfoIcon className="h-3 w-3 text-muted-foreground" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent side="right" className="max-w-xs">
+                    Age range for Period 1 of your withdrawal strategy. This defines when this withdrawal approach applies.
+                  </TooltipContent>
+                </Tooltip>
               </div>
             </div>
             
@@ -543,8 +601,8 @@ export const RetirementForm: FC<RetirementFormProps> = ({ className, onResult })
                   type="button"
                   onClick={() => form.setValue("retirement_spending.period_1_withdrawal_type", "percentage")}
                   className={`flex-1 py-1 px-2 text-xs rounded-md ${
-                    form.watch("retirement_spending.period_1_withdrawal_type") === "percentage" 
-                      ? "bg-primary text-primary-foreground" 
+                    form.watch("retirement_spending.period_1_withdrawal_type") === "percentage"
+                      ? "bg-primary text-primary-foreground"
                       : "bg-secondary text-secondary-foreground"
                   }`}
                 >
@@ -554,13 +612,23 @@ export const RetirementForm: FC<RetirementFormProps> = ({ className, onResult })
                   type="button"
                   onClick={() => form.setValue("retirement_spending.period_1_withdrawal_type", "amount")}
                   className={`flex-1 py-1 px-2 text-xs rounded-md ${
-                    form.watch("retirement_spending.period_1_withdrawal_type") === "amount" 
-                      ? "bg-primary text-primary-foreground" 
+                    form.watch("retirement_spending.period_1_withdrawal_type") === "amount"
+                      ? "bg-primary text-primary-foreground"
                       : "bg-secondary text-secondary-foreground"
                   }`}
                 >
                   Amt
                 </button>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button variant="ghost" size="sm" className="h-4 w-4 p-0">
+                      <InfoIcon className="h-3 w-3 text-muted-foreground" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent side="right" className="max-w-xs">
+                    Choose withdrawal strategy type for Period 1: percentage of portfolio or fixed dollar amount.
+                  </TooltipContent>
+                </Tooltip>
               </div>
             </div>
             
@@ -584,7 +652,7 @@ export const RetirementForm: FC<RetirementFormProps> = ({ className, onResult })
                       </Button>
                     </TooltipTrigger>
                     <TooltipContent side="right" className="max-w-xs">
-                      Percentage of portfolio to withdraw annually (e.g., 4% for 4% rule)
+                      Percentage of portfolio to withdraw annually (e.g., 4% for 4% rule). This represents a percentage-based withdrawal strategy.
                     </TooltipContent>
                   </Tooltip>
                 </div>
@@ -605,7 +673,7 @@ export const RetirementForm: FC<RetirementFormProps> = ({ className, onResult })
                       </Button>
                     </TooltipTrigger>
                     <TooltipContent side="right" className="max-w-xs">
-                      Fixed dollar amount to withdraw annually
+                      Fixed dollar amount to withdraw annually. This represents a fixed dollar withdrawal strategy.
                     </TooltipContent>
                   </Tooltip>
                 </div>
@@ -632,7 +700,7 @@ export const RetirementForm: FC<RetirementFormProps> = ({ className, onResult })
               </Button>
             </TooltipTrigger>
             <TooltipContent side="right" className="max-w-xs">
-              Enable second period for more complex withdrawal strategies
+              Enable second period for more complex withdrawal strategies. This allows you to define different spending rules for different age ranges.
             </TooltipContent>
           </Tooltip>
         </div>
@@ -662,6 +730,16 @@ export const RetirementForm: FC<RetirementFormProps> = ({ className, onResult })
                     {...form.register("retirement_spending.period_2_end_age", { valueAsNumber: true })}
                     className="w-full rounded-md border border-input bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none"
                   />
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button variant="ghost" size="sm" className="h-4 w-4 p-0">
+                        <InfoIcon className="h-3 w-3 text-muted-foreground" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent side="right" className="max-w-xs">
+                      Age range for Period 2 of your withdrawal strategy. This defines when this withdrawal approach applies.
+                    </TooltipContent>
+                  </Tooltip>
                 </div>
               </div>
               
@@ -672,8 +750,8 @@ export const RetirementForm: FC<RetirementFormProps> = ({ className, onResult })
                     type="button"
                     onClick={() => form.setValue("retirement_spending.period_2_withdrawal_type", "percentage")}
                     className={`flex-1 py-1 px-2 text-xs rounded-md ${
-                      form.watch("retirement_spending.period_2_withdrawal_type") === "percentage" 
-                        ? "bg-primary text-primary-foreground" 
+                      form.watch("retirement_spending.period_2_withdrawal_type") === "percentage"
+                        ? "bg-primary text-primary-foreground"
                         : "bg-secondary text-secondary-foreground"
                     }`}
                   >
@@ -683,13 +761,23 @@ export const RetirementForm: FC<RetirementFormProps> = ({ className, onResult })
                     type="button"
                     onClick={() => form.setValue("retirement_spending.period_2_withdrawal_type", "amount")}
                     className={`flex-1 py-1 px-2 text-xs rounded-md ${
-                      form.watch("retirement_spending.period_2_withdrawal_type") === "amount" 
-                        ? "bg-primary text-primary-foreground" 
+                      form.watch("retirement_spending.period_2_withdrawal_type") === "amount"
+                        ? "bg-primary text-primary-foreground"
                         : "bg-secondary text-secondary-foreground"
                     }`}
                   >
                     Amt
                   </button>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button variant="ghost" size="sm" className="h-4 w-4 p-0">
+                        <InfoIcon className="h-3 w-3 text-muted-foreground" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent side="right" className="max-w-xs">
+                      Choose withdrawal strategy type for Period 2: percentage of portfolio or fixed dollar amount.
+                    </TooltipContent>
+                  </Tooltip>
                 </div>
               </div>
               
@@ -713,7 +801,7 @@ export const RetirementForm: FC<RetirementFormProps> = ({ className, onResult })
                         </Button>
                       </TooltipTrigger>
                       <TooltipContent side="right" className="max-w-xs">
-                        Percentage of portfolio to withdraw annually (e.g., 4% for 4% rule)
+                        Percentage of portfolio to withdraw annually (e.g., 4% for 4% rule). This represents a percentage-based withdrawal strategy.
                       </TooltipContent>
                     </Tooltip>
                   </div>
@@ -734,7 +822,7 @@ export const RetirementForm: FC<RetirementFormProps> = ({ className, onResult })
                         </Button>
                       </TooltipTrigger>
                       <TooltipContent side="right" className="max-w-xs">
-                        Fixed dollar amount to withdraw annually
+                        Fixed dollar amount to withdraw annually. This represents a fixed dollar withdrawal strategy.
                       </TooltipContent>
                     </Tooltip>
                   </div>
@@ -756,28 +844,52 @@ export const RetirementForm: FC<RetirementFormProps> = ({ className, onResult })
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-1">
                 <label htmlFor="income_streams.social_security_you.claim_age" className="block font-medium text-xs mb-0.5">Claim age</label>
-                <input
-                  id="income_streams.social_security_you.claim_age"
-                  type="number"
-                  min={62}
-                  max={70}
-                  {...form.register("income_streams.social_security_you.claim_age", { valueAsNumber: true })}
-                  className="w-full rounded-md border border-input bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none"
-                />
+                <div className="flex items-center gap-1">
+                  <input
+                    id="income_streams.social_security_you.claim_age"
+                    type="number"
+                    min={62}
+                    max={70}
+                    {...form.register("income_streams.social_security_you.claim_age", { valueAsNumber: true })}
+                    className="w-full rounded-md border border-input bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none"
+                  />
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button variant="ghost" size="sm" className="h-4 w-4 p-0">
+                        <InfoIcon className="h-3 w-3 text-muted-foreground" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent side="right" className="max-w-xs">
+                      The age at which you plan to claim Social Security benefits. Claiming earlier reduces monthly payments, while waiting increases them.
+                    </TooltipContent>
+                  </Tooltip>
+                </div>
               </div>
 
               <div className="space-y-1">
                 <label htmlFor="income_streams.social_security_you.yearly_amount_today_dollars" className="block font-medium text-xs mb-0.5">
                   Yearly amount (today's dollars)
                 </label>
-                <input
-                  id="income_streams.social_security_you.yearly_amount_today_dollars"
-                  type="number"
-                  min={0}
-                  step={100}
-                  {...form.register("income_streams.social_security_you.yearly_amount_today_dollars", { valueAsNumber: true })}
-                  className="w-full rounded-md border border-input bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none"
-                />
+                <div className="flex items-center gap-1">
+                  <input
+                    id="income_streams.social_security_you.yearly_amount_today_dollars"
+                    type="number"
+                    min={0}
+                    step={100}
+                    {...form.register("income_streams.social_security_you.yearly_amount_today_dollars", { valueAsNumber: true })}
+                    className="w-full rounded-md border border-input bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none"
+                  />
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button variant="ghost" size="sm" className="h-4 w-4 p-0">
+                        <InfoIcon className="h-3 w-3 text-muted-foreground" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent side="right" className="max-w-xs">
+                      The annual Social Security benefit amount you expect to receive, adjusted for today's purchasing power.
+                    </TooltipContent>
+                  </Tooltip>
+                </div>
               </div>
             </div>
           </div>
@@ -788,28 +900,52 @@ export const RetirementForm: FC<RetirementFormProps> = ({ className, onResult })
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-1">
                 <label htmlFor="income_streams.social_security_spouse.claim_age" className="block font-medium text-xs mb-0.5">Claim age</label>
-                <input
-                  id="income_streams.social_security_spouse.claim_age"
-                  type="number"
-                  min={62}
-                  max={70}
-                  {...form.register("income_streams.social_security_spouse.claim_age", { valueAsNumber: true })}
-                  className="w-full rounded-md border border-input bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none"
-                />
+                <div className="flex items-center gap-1">
+                  <input
+                    id="income_streams.social_security_spouse.claim_age"
+                    type="number"
+                    min={62}
+                    max={70}
+                    {...form.register("income_streams.social_security_spouse.claim_age", { valueAsNumber: true })}
+                    className="w-full rounded-md border border-input bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none"
+                  />
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button variant="ghost" size="sm" className="h-4 w-4 p-0">
+                        <InfoIcon className="h-3 w-3 text-muted-foreground" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent side="right" className="max-w-xs">
+                      The age at which your spouse plans to claim Social Security benefits. Claiming earlier reduces monthly payments, while waiting increases them.
+                    </TooltipContent>
+                  </Tooltip>
+                </div>
               </div>
 
               <div className="space-y-1">
                 <label htmlFor="income_streams.social_security_spouse.yearly_amount_today_dollars" className="block font-medium text-xs mb-0.5">
                   Yearly amount (today's dollars)
                 </label>
-                <input
-                  id="income_streams.social_security_spouse.yearly_amount_today_dollars"
-                  type="number"
-                  min={0}
-                  step={100}
-                  {...form.register("income_streams.social_security_spouse.yearly_amount_today_dollars", { valueAsNumber: true })}
-                  className="w-full rounded-md border border-input bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none"
-                />
+                <div className="flex items-center gap-1">
+                  <input
+                    id="income_streams.social_security_spouse.yearly_amount_today_dollars"
+                    type="number"
+                    min={0}
+                    step={100}
+                    {...form.register("income_streams.social_security_spouse.yearly_amount_today_dollars", { valueAsNumber: true })}
+                    className="w-full rounded-md border border-input bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none"
+                  />
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button variant="ghost" size="sm" className="h-4 w-4 p-0">
+                        <InfoIcon className="h-3 w-3 text-muted-foreground" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent side="right" className="max-w-xs">
+                      The annual Social Security benefit amount your spouse expects to receive, adjusted for today's purchasing power.
+                    </TooltipContent>
+                  </Tooltip>
+                </div>
               </div>
             </div>
           </div>
@@ -820,26 +956,50 @@ export const RetirementForm: FC<RetirementFormProps> = ({ className, onResult })
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-1">
                 <label htmlFor="income_streams.pension_1.starting_age" className="block font-medium text-xs mb-0.5">Starting age</label>
-                <input
-                  id="income_streams.pension_1.starting_age"
-                  type="number"
-                  min={18}
-                  max={100}
-                  {...form.register("income_streams.pension_1.starting_age", { valueAsNumber: true })}
-                  className="w-full rounded-md border border-input bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none"
-                />
+                <div className="flex items-center gap-1">
+                  <input
+                    id="income_streams.pension_1.starting_age"
+                    type="number"
+                    min={18}
+                    max={100}
+                    {...form.register("income_streams.pension_1.starting_age", { valueAsNumber: true })}
+                    className="w-full rounded-md border border-input bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none"
+                  />
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button variant="ghost" size="sm" className="h-4 w-4 p-0">
+                        <InfoIcon className="h-3 w-3 text-muted-foreground" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent side="right" className="max-w-xs">
+                      The age at which your pension benefits begin. This determines when you'll start receiving pension payments.
+                    </TooltipContent>
+                  </Tooltip>
+                </div>
               </div>
 
               <div className="space-y-1">
                 <label htmlFor="income_streams.pension_1.yearly_amount" className="block font-medium text-xs mb-0.5">Yearly amount</label>
-                <input
-                  id="income_streams.pension_1.yearly_amount"
-                  type="number"
-                  min={0}
-                  step={100}
-                  {...form.register("income_streams.pension_1.yearly_amount", { valueAsNumber: true })}
-                  className="w-full rounded-md border border-input bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none"
-                />
+                <div className="flex items-center gap-1">
+                  <input
+                    id="income_streams.pension_1.yearly_amount"
+                    type="number"
+                    min={0}
+                    step={100}
+                    {...form.register("income_streams.pension_1.yearly_amount", { valueAsNumber: true })}
+                    className="w-full rounded-md border border-input bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none"
+                  />
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button variant="ghost" size="sm" className="h-4 w-4 p-0">
+                        <InfoIcon className="h-3 w-3 text-muted-foreground" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent side="right" className="max-w-xs">
+                      The annual pension benefit amount you expect to receive, adjusted for today's purchasing power.
+                    </TooltipContent>
+                  </Tooltip>
+                </div>
               </div>
             </div>
           </div>
@@ -850,26 +1010,50 @@ export const RetirementForm: FC<RetirementFormProps> = ({ className, onResult })
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-1">
                 <label htmlFor="income_streams.pension_2.starting_age" className="block font-medium text-xs mb-0.5">Starting age</label>
-                <input
-                  id="income_streams.pension_2.starting_age"
-                  type="number"
-                  min={18}
-                  max={100}
-                  {...form.register("income_streams.pension_2.starting_age", { valueAsNumber: true })}
-                  className="w-full rounded-md border border-input bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none"
-                />
+                <div className="flex items-center gap-1">
+                  <input
+                    id="income_streams.pension_2.starting_age"
+                    type="number"
+                    min={18}
+                    max={100}
+                    {...form.register("income_streams.pension_2.starting_age", { valueAsNumber: true })}
+                    className="w-full rounded-md border border-input bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none"
+                  />
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button variant="ghost" size="sm" className="h-4 w-4 p-0">
+                        <InfoIcon className="h-3 w-3 text-muted-foreground" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent side="right" className="max-w-xs">
+                      The age at which your second pension benefits begin. This determines when you'll start receiving pension payments.
+                    </TooltipContent>
+                  </Tooltip>
+                </div>
               </div>
 
               <div className="space-y-1">
                 <label htmlFor="income_streams.pension_2.yearly_amount" className="block font-medium text-xs mb-0.5">Yearly amount</label>
-                <input
-                  id="income_streams.pension_2.yearly_amount"
-                  type="number"
-                  min={0}
-                  step={100}
-                  {...form.register("income_streams.pension_2.yearly_amount", { valueAsNumber: true })}
-                  className="w-full rounded-md border border-input bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none"
-                />
+                <div className="flex items-center gap-1">
+                  <input
+                    id="income_streams.pension_2.yearly_amount"
+                    type="number"
+                    min={0}
+                    step={100}
+                    {...form.register("income_streams.pension_2.yearly_amount", { valueAsNumber: true })}
+                    className="w-full rounded-md border border-input bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none"
+                  />
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button variant="ghost" size="sm" className="h-4 w-4 p-0">
+                        <InfoIcon className="h-3 w-3 text-muted-foreground" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent side="right" className="max-w-xs">
+                      The annual pension benefit amount you expect to receive from your second pension, adjusted for today's purchasing power.
+                    </TooltipContent>
+                  </Tooltip>
+                </div>
               </div>
             </div>
           </div>
@@ -884,38 +1068,74 @@ export const RetirementForm: FC<RetirementFormProps> = ({ className, onResult })
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div className="space-y-1">
                     <label htmlFor={`income_streams.rental_properties.${index}.property_name`} className="block font-medium text-xs mb-0.5">Name</label>
-                    <input
-                      id={`income_streams.rental_properties.${index}.property_name`}
-                      {...form.register(`income_streams.rental_properties.${index}.property_name`)}
-                      className="w-full rounded-md border border-input bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none"
-                      placeholder="Property A"
-                    />
+                    <div className="flex items-center gap-1">
+                      <input
+                        id={`income_streams.rental_properties.${index}.property_name`}
+                        {...form.register(`income_streams.rental_properties.${index}.property_name`)}
+                        className="w-full rounded-md border border-input bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none"
+                        placeholder="Property A"
+                      />
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Button variant="ghost" size="sm" className="h-4 w-4 p-0">
+                            <InfoIcon className="h-3 w-3 text-muted-foreground" />
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent side="right" className="max-w-xs">
+                          Name or identifier for this rental property.
+                        </TooltipContent>
+                      </Tooltip>
+                    </div>
                   </div>
 
                   <div className="space-y-1">
                     <label htmlFor={`income_streams.rental_properties.${index}.net_annual_income`} className="block font-medium text-xs mb-0.5">
                       Net annual income
                     </label>
-                    <input
-                      id={`income_streams.rental_properties.${index}.net_annual_income`}
-                      type="number"
-                      min={0}
-                      step={500}
-                      {...form.register(`income_streams.rental_properties.${index}.net_annual_income`, { valueAsNumber: true })}
-                      className="w-full rounded-md border border-input bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none"
-                    />
+                    <div className="flex items-center gap-1">
+                      <input
+                        id={`income_streams.rental_properties.${index}.net_annual_income`}
+                        type="number"
+                        min={0}
+                        step={500}
+                        {...form.register(`income_streams.rental_properties.${index}.net_annual_income`, { valueAsNumber: true })}
+                        className="w-full rounded-md border border-input bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none"
+                      />
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Button variant="ghost" size="sm" className="h-4 w-4 p-0">
+                            <InfoIcon className="h-3 w-3 text-muted-foreground" />
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent side="right" className="max-w-xs">
+                          Net annual income from this rental property after all expenses (taxes, maintenance, vacancies).
+                        </TooltipContent>
+                      </Tooltip>
+                    </div>
                   </div>
 
                   <div className="space-y-1">
                     <label htmlFor={`income_streams.rental_properties.${index}.until_age`} className="block font-medium text-xs mb-0.5">Until age</label>
-                    <input
-                      id={`income_streams.rental_properties.${index}.until_age`}
-                      type="number"
-                      min={18}
-                      max={120}
-                      {...form.register(`income_streams.rental_properties.${index}.until_age`, { valueAsNumber: true })}
-                      className="w-full rounded-md border border-input bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none"
-                    />
+                    <div className="flex items-center gap-1">
+                      <input
+                        id={`income_streams.rental_properties.${index}.until_age`}
+                        type="number"
+                        min={18}
+                        max={120}
+                        {...form.register(`income_streams.rental_properties.${index}.until_age`, { valueAsNumber: true })}
+                        className="w-full rounded-md border border-input bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none"
+                      />
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Button variant="ghost" size="sm" className="h-4 w-4 p-0">
+                            <InfoIcon className="h-3 w-3 text-muted-foreground" />
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent side="right" className="max-w-xs">
+                          Age at which you expect to stop receiving income from this rental property (e.g., when selling the property).
+                        </TooltipContent>
+                      </Tooltip>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -934,39 +1154,75 @@ export const RetirementForm: FC<RetirementFormProps> = ({ className, onResult })
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             <div className="space-y-1">
               <label htmlFor="real_estate.total_property_value" className="block font-medium text-xs mb-0.5">Total property value</label>
-              <input
-                id="real_estate.total_property_value"
-                type="number"
-                min={0}
-                step={5000}
-                {...form.register("real_estate.total_property_value", { valueAsNumber: true })}
-                className="w-full rounded-md border border-input bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none"
-              />
+              <div className="flex items-center gap-1">
+                <input
+                  id="real_estate.total_property_value"
+                  type="number"
+                  min={0}
+                  step={5000}
+                  {...form.register("real_estate.total_property_value", { valueAsNumber: true })}
+                  className="w-full rounded-md border border-input bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none"
+                />
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button variant="ghost" size="sm" className="h-4 w-4 p-0">
+                      <InfoIcon className="h-3 w-3 text-muted-foreground" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent side="right" className="max-w-xs">
+                    Total value of your primary home, including land and improvements.
+                  </TooltipContent>
+                </Tooltip>
+              </div>
             </div>
 
             <div className="space-y-1">
               <label htmlFor="real_estate.total_outstanding_mortgages" className="block font-medium text-xs mb-0.5">Outstanding mortgage(s)</label>
-              <input
-                id="real_estate.total_outstanding_mortgages"
-                type="number"
-                min={0}
-                step={1000}
-                {...form.register("real_estate.total_outstanding_mortgages", { valueAsNumber: true })}
-                className="w-full rounded-md border border-input bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none"
-              />
+              <div className="flex items-center gap-1">
+                <input
+                  id="real_estate.total_outstanding_mortgages"
+                  type="number"
+                  min={0}
+                  step={1000}
+                  {...form.register("real_estate.total_outstanding_mortgages", { valueAsNumber: true })}
+                  className="w-full rounded-md border border-input bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none"
+                />
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button variant="ghost" size="sm" className="h-4 w-4 p-0">
+                      <InfoIcon className="h-3 w-3 text-muted-foreground" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent side="right" className="max-w-xs">
+                    Total outstanding balance on all mortgages secured by your primary home.
+                  </TooltipContent>
+                </Tooltip>
+              </div>
             </div>
 
             <div className="space-y-1">
               <label htmlFor="real_estate.annual_appreciation_pct" className="block font-medium text-xs mb-0.5">Annual appreciation %</label>
-              <input
-                id="real_estate.annual_appreciation_pct"
-                type="number"
-                min={0}
-                max={20}
-                step={0.1}
-                {...form.register("real_estate.annual_appreciation_pct", { valueAsNumber: true })}
-                className="w-full rounded-md border border-input bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none"
-              />
+              <div className="flex items-center gap-1">
+                <input
+                  id="real_estate.annual_appreciation_pct"
+                  type="number"
+                  min={0}
+                  max={20}
+                  step={0.1}
+                  {...form.register("real_estate.annual_appreciation_pct", { valueAsNumber: true })}
+                  className="w-full rounded-md border border-input bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none"
+                />
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button variant="ghost" size="sm" className="h-4 w-4 p-0">
+                      <InfoIcon className="h-3 w-3 text-muted-foreground" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent side="right" className="max-w-xs">
+                    Expected annual appreciation rate of your primary home's value. Historical average is ~3%.
+                  </TooltipContent>
+                </Tooltip>
+              </div>
             </div>
           </div>
         </div>
@@ -981,38 +1237,74 @@ export const RetirementForm: FC<RetirementFormProps> = ({ className, onResult })
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 <div className="space-y-1">
                   <label htmlFor={`real_estate.rental_properties.${index}.property_name`} className="block font-medium text-xs mb-0.5">Name</label>
-                  <input
-                    id={`real_estate.rental_properties.${index}.property_name`}
-                    {...form.register(`real_estate.rental_properties.${index}.property_name` as any)}
-                    className="w-full rounded-md border border-input bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none"
-                    placeholder="Rental A"
-                  />
+                  <div className="flex items-center gap-1">
+                    <input
+                      id={`real_estate.rental_properties.${index}.property_name`}
+                      {...form.register(`real_estate.rental_properties.${index}.property_name` as any)}
+                      className="w-full rounded-md border border-input bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none"
+                      placeholder="Rental A"
+                    />
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button variant="ghost" size="sm" className="h-4 w-4 p-0">
+                          <InfoIcon className="h-3 w-3 text-muted-foreground" />
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent side="right" className="max-w-xs">
+                        Name or identifier for this rental property.
+                      </TooltipContent>
+                    </Tooltip>
+                  </div>
                 </div>
 
                 <div className="space-y-1">
                   <label htmlFor={`real_estate.rental_properties.${index}.value`} className="block font-medium text-xs mb-0.5">Property value</label>
-                  <input
-                    id={`real_estate.rental_properties.${index}.value`}
-                    type="number"
-                    min={0}
-                    step={5000}
-                    {...form.register(`real_estate.rental_properties.${index}.value`, { valueAsNumber: true })}
-                    className="w-full rounded-md border border-input bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none"
-                  />
+                  <div className="flex items-center gap-1">
+                    <input
+                      id={`real_estate.rental_properties.${index}.value`}
+                      type="number"
+                      min={0}
+                      step={5000}
+                      {...form.register(`real_estate.rental_properties.${index}.value`, { valueAsNumber: true })}
+                      className="w-full rounded-md border border-input bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none"
+                    />
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button variant="ghost" size="sm" className="h-4 w-4 p-0">
+                          <InfoIcon className="h-3 w-3 text-muted-foreground" />
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent side="right" className="max-w-xs">
+                        Total value of this rental property including land and improvements.
+                      </TooltipContent>
+                    </Tooltip>
+                  </div>
                 </div>
 
                 <div className="space-y-1">
                   <label htmlFor={`real_estate.rental_properties.${index}.net_annual_income`} className="block font-medium text-xs mb-0.5">
                     Net annual income
                   </label>
-                  <input
-                    id={`real_estate.rental_properties.${index}.net_annual_income`}
-                    type="number"
-                    min={0}
-                    step={500}
-                    {...form.register(`real_estate.rental_properties.${index}.net_annual_income`, { valueAsNumber: true })}
-                    className="w-full rounded-md border border-input bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none"
-                  />
+                  <div className="flex items-center gap-1">
+                    <input
+                      id={`real_estate.rental_properties.${index}.net_annual_income`}
+                      type="number"
+                      min={0}
+                      step={500}
+                      {...form.register(`real_estate.rental_properties.${index}.net_annual_income`, { valueAsNumber: true })}
+                      className="w-full rounded-md border border-input bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none"
+                    />
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button variant="ghost" size="sm" className="h-4 w-4 p-0">
+                          <InfoIcon className="h-3 w-3 text-muted-foreground" />
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent side="right" className="max-w-xs">
+                        Net annual income from this rental property after all expenses (taxes, maintenance, vacancies).
+                      </TooltipContent>
+                    </Tooltip>
+                  </div>
                 </div>
               </div>
             </div>
@@ -1031,6 +1323,16 @@ export const RetirementForm: FC<RetirementFormProps> = ({ className, onResult })
               className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
             />
             <span>Model planned property sale (downsizing in retirement)</span>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button variant="ghost" size="sm" className="h-4 w-4 p-0">
+                  <InfoIcon className="h-3 w-3 text-muted-foreground" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent side="right" className="max-w-xs">
+                Check if you plan to sell a property during retirement to supplement income.
+              </TooltipContent>
+            </Tooltip>
           </label>
 
           {form.watch("real_estate.model_property_sale") && (
@@ -1038,28 +1340,52 @@ export const RetirementForm: FC<RetirementFormProps> = ({ className, onResult })
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-1">
                   <label htmlFor="real_estate.age_of_sale" className="block font-medium text-xs mb-0.5">Age of sale</label>
-                  <input
-                    id="real_estate.age_of_sale"
-                    type="number"
-                    min={18}
-                    max={100}
-                    {...form.register("real_estate.age_of_sale", { valueAsNumber: true })}
-                    className="w-full rounded-md border border-input bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none"
-                  />
+                  <div className="flex items-center gap-1">
+                    <input
+                      id="real_estate.age_of_sale"
+                      type="number"
+                      min={18}
+                      max={100}
+                      {...form.register("real_estate.age_of_sale", { valueAsNumber: true })}
+                      className="w-full rounded-md border border-input bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none"
+                    />
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button variant="ghost" size="sm" className="h-4 w-4 p-0">
+                          <InfoIcon className="h-3 w-3 text-muted-foreground" />
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent side="right" className="max-w-xs">
+                        Age at which you plan to sell the property. This affects your retirement timeline and income planning.
+                      </TooltipContent>
+                    </Tooltip>
+                  </div>
                 </div>
 
                 <div className="space-y-1">
                   <label htmlFor="real_estate.amount_rolled_into_portfolio" className="block font-medium text-xs mb-0.5">
                     Amount rolled into portfolio
                   </label>
-                  <input
-                    id="real_estate.amount_rolled_into_portfolio"
-                    type="number"
-                    min={0}
-                    step={5000}
-                    {...form.register("real_estate.amount_rolled_into_portfolio", { valueAsNumber: true })}
-                    className="w-full rounded-md border border-input bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none"
-                  />
+                  <div className="flex items-center gap-1">
+                    <input
+                      id="real_estate.amount_rolled_into_portfolio"
+                      type="number"
+                      min={0}
+                      step={5000}
+                      {...form.register("real_estate.amount_rolled_into_portfolio", { valueAsNumber: true })}
+                      className="w-full rounded-md border border-input bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none"
+                    />
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button variant="ghost" size="sm" className="h-4 w-4 p-0">
+                          <InfoIcon className="h-3 w-3 text-muted-foreground" />
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent side="right" className="max-w-xs">
+                        Amount from the property sale that will be added to your investment portfolio.
+                      </TooltipContent>
+                    </Tooltip>
+                  </div>
                 </div>
               </div>
             </>
