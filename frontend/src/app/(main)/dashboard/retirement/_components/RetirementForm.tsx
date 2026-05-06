@@ -243,16 +243,8 @@ export const RetirementForm: FC<RetirementFormProps> = ({ className, onResult })
         <div className="grid grid-cols-1 gap-3">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
             <div className="space-y-1">
-              <label htmlFor="timeline.current_age" className="block font-medium text-xs mb-0.5">Current age</label>
               <div className="flex items-center gap-1">
-                <input
-                  id="timeline.current_age"
-                  type="number"
-                  min={18}
-                  max={100}
-                  {...form.register("timeline.current_age", { valueAsNumber: true })}
-                  className="w-full rounded-md border border-input bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none"
-                />
+                <label htmlFor="timeline.current_age" className="block font-medium text-xs mb-0.5">Current age</label>
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <Button variant="ghost" size="sm" className="h-4 w-4 p-0">
@@ -262,12 +254,24 @@ export const RetirementForm: FC<RetirementFormProps> = ({ className, onResult })
                   <TooltipContent side="right" className="max-w-xs">
                     Your current age. This is used to calculate your retirement timeline and determine when you'll enter retirement.
                   </TooltipContent>
-                </Tooltip>
+                </Tooltip>  
+
+              </div>
+              <div className="flex items-center gap-1">
+                <input
+                  id="timeline.current_age"
+                  type="number"
+                  min={18}
+                  max={100}
+                  {...form.register("timeline.current_age", { valueAsNumber: true })}
+                  className="w-full rounded-md border border-input bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none"
+                />
+                
               </div>
             </div>
 
             <div className="space-y-1">
-              <label htmlFor="timeline.retirement_age" className="block font-medium text-xs mb-0.5">Retirement age</label>
+              <label htmlFor="timeline.retirement_age" className="block font-medium text-xs mb-0.5">Retirement age12</label>
               <div className="flex items-center gap-1">
                 <input
                   id="timeline.retirement_age"
