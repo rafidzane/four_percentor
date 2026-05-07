@@ -63,5 +63,11 @@ Convert this entire section into a card structure that:
 - Maintains existing layout while adding card styling
 - Ensures proper spacing and visual hierarchy
 
-## Next Steps
-This spec will be updated incrementally as each section is converted. The conversion will proceed systematically through each major section, documenting changes along the way.
+### Implementation Plan
+1. Wrap the entire Portfolio Assets section in a div with card styling
+2. Add card-header with title "Portfolio Assets" 
+3. Maintain all existing input fields, tooltips, and ReturnsSection component
+4. Preserve all functionality while improving visual presentation
+
+### Implementation Status
+✅ Completed - The Portfolio Assets section has been converted to use the card pattern.
