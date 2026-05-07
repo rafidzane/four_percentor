@@ -362,7 +362,7 @@ export const RetirementForm: FC<RetirementFormProps> = ({ className, onResult })
                       <InfoIcon className="h-3 w-3 text-muted-foreground" />
                     </Button>
                   </TooltipTrigger>
-                  <TooltipContent side="right" className="max-w-xs">
+                  <TooltipContent side="right" className="max-w-sm px-3 py-1.5 text-xs">
                     Taxable brokerage, ETFs, mutual funds balance. This represents your total non-retirement investment assets.
                   </TooltipContent>
                 </Tooltip>
