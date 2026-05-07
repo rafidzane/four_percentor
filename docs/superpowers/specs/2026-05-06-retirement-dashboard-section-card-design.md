@@ -71,3 +71,54 @@ Convert this entire section into a card structure that:
 
 ### Implementation Status
 ✅ Completed - The Portfolio Assets section has been converted to use the card pattern.
+
+## Section 3: Withdrawal Strategy
+
+### Current Structure
+The Withdrawal Strategy section contains:
+- Spending mode selection (4% rule or manual withdrawal)
+- Adjust for inflation checkbox
+- Various spending-related inputs and configurations
+- Tooltips for each field description
+- Clean but unstyled presentation
+
+### Target Card Pattern
+Convert this entire section into a card structure that:
+- Contains all related form elements in a consistent visual container
+- Maintains existing layout while adding card styling
+- Ensures proper spacing and visual hierarchy
+
+### Implementation Plan
+1. Wrap the entire Withdrawal Strategy section in a div with card styling
+2. Add card-header with title "Withdrawal Strategy"
+3. Maintain all existing input fields, tooltips, and functionality
+4. Preserve all functionality while improving visual presentation
+
+### Implementation Status
+✅ Completed - The Withdrawal Strategy section has been converted to use the card pattern.
+
+## Section 4: Income Sources
+
+### Current Structure
+The Income Sources section contains:
+- Social Security inputs for you and your spouse
+- Pension 1 and Pension 2 inputs
+- Rental properties inputs (up to 3 properties)
+- Various input fields with tooltips for each description
+- Clean but unstyled presentation
+
+### Target Card Pattern
+Convert this entire section into a card structure that:
+- Contains all related form elements in a consistent visual container
+- Maintains existing layout while adding card styling
+- Ensures proper spacing and visual hierarchy
+- Uses appropriate icon (coins) to represent income sources
+
+### Implementation Plan
+1. Wrap the entire Income Sources section in a div with card styling
+2. Add card-header with title "Income Sources" and coins icon
+3. Maintain all existing input fields, tooltips, and functionality
+4. Preserve all functionality while improving visual presentation
+
+### Implementation Status
+✅ Completed - The Income Sources section has been converted to use the card pattern.
