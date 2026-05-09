@@ -122,3 +122,34 @@ Convert this entire section into a card structure that:
 
 ### Implementation Status
 ✅ Completed - The Income Sources section has been converted to use the card pattern.
+
+## Proposed Enhancement: Checkbox-based Income Sources
+
+### Overview
+To improve user experience and reduce form clutter, we propose implementing a checkbox-based system for Income Sources where users can select which income sources they want to include in their retirement planning.
+
+### Implementation Plan
+1. **Frontend Changes**:
+   - Add checkboxes for each income source type (Social Security, Pension 1, Pension 2, Rental Properties)
+   - Conditionally render form fields based on checkbox selections
+   - Maintain all existing validation and functionality
+   - Update tooltips to appear after labels consistently
+
+2. **Backend Changes**:
+   - Modify the data model to support optional income sources with boolean flags
+   - Update API endpoints to handle the new structure
+   - Adjust validation logic for conditional fields
+   - Ensure backward compatibility
+
+3. **User Experience Improvements**:
+   - Clear visual indication of which sources are selected
+   - Dynamic form rendering based on selections
+   - Maintain all existing tooltips and validation messages
+
+### Current Status
+🔄 In Progress - Analysis complete, implementation plan proposed
+
+### Benefits
+- Reduces form clutter for users with limited income sources
+- Improves accessibility by showing only relevant fields
+- Maintains all existing functionality while enhancing usability
