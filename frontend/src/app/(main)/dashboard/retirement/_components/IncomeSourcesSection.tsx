@@ -17,20 +17,18 @@ export const IncomeSourcesSection: FC<IncomeSourcesSectionProps> = ({ className 
   const { control, register, watch } = useFormContext<FormData>();
 
   return (
-    <div data-slot="card" className="bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm">
-      <div data-slot="card-header" className="@container/card-header grid auto-rows-min grid-rows-[auto_auto] items-start gap-2 px-6 has-data-[slot=card-action]:grid-cols-[1fr_auto] [.border-b]:pb-6">
-        <div data-slot="card-title" className="leading-none font-semibold">
-          <div className="flex items-center gap-2">
-            <span className="grid size-7 place-content-center rounded-sm bg-muted">
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-coins size-5" aria-hidden="true">
-                <circle cx="8" cy="8" r="6"></circle>
-                <path d="M18 8a6 6 0 0 1-6 6"></path>
-                <circle cx="8" cy="16" r="6"></circle>
-                <path d="M18 16a6 6 0 0 1-6-6"></path>
-              </svg>
-            </span>
-            Income Sources
-          </div>
+    <div data-slot="card" className="bg-card text-card-foreground flex flex-col gap-6 rounded-xl border-l-4 border-blue-500 py-6 shadow-sm">
+      <div data-slot="card-header" className="@container/card-header grid auto-rows-min grid-rows-[auto_auto] items-start gap-2 has-data-[slot=card-action]:grid-cols-[1fr_auto] [.border-b]:pb-6">
+        <div data-slot="card-title" className="leading-none font-semibold flex items-center gap-2">
+          <span className="grid size-7 place-content-center rounded-sm bg-muted">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-coins size-5" aria-hidden="true">
+              <circle cx="8" cy="8" r="6"></circle>
+              <path d="M18 8a6 6 0 0 1-6 6"></path>
+              <circle cx="8" cy="16" r="6"></circle>
+              <path d="M18 16a6 6 0 0 1-6-6"></path>
+            </svg>
+          </span>
+          Income Sources
         </div>
       </div>
       <div data-slot="card-content" className="px-6 space-y-6">

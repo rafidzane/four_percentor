@@ -1,15 +1,22 @@
-import { FC } from "react";
-import { RetirementResponse } from "@/types/retirement";
+import { FC, memo } from "react";
+import { RetirementResponse } from "@/hooks/useRetirementCalculation";
+import { SkeletonResultsSection, SkeletonStatCard } from "./SkeletonLoaders";
 
 interface RetirementResultsSummaryProps {
   result: RetirementResponse;
+  isLoading?: boolean;
 }
 
-export const RetirementResultsSummary: FC<RetirementResultsSummaryProps> = ({ result }) => {
+// Memoize the component to prevent unnecessary re-renders during calculation updates
+export const RetirementResultsSummary = memo<RetirementResultsSummaryProps>(({ result, isLoading = false }) => {
+  if (isLoading) {
+    return <SkeletonResultsSection variant="full" />;
+  }
+
   return (
     <div data-pct="retirement-results-section" className="mb-6 rounded-xl border p-4">
       <h3 data-pct="retirement-results-title" className="text-xl font-semibold mb-4">Results</h3>
-      
+
       <div data-pct="retirement-results-metrics-grid" className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
         <div data-pct="retirement-final-balance-card" className="bg-white dark:bg-gray-800 p-3">
           <p data-pct="retirement-final-balance-label" className="text-xs text-muted-foreground">Final Balance</p>
@@ -42,4 +49,6 @@ export const RetirementResultsSummary: FC<RetirementResultsSummaryProps> = ({ re
       </p>
     </div>
   );
-};
+});
+
+export default RetirementResultsSummary;

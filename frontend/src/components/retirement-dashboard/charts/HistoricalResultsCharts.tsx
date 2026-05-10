@@ -26,7 +26,7 @@ interface ChartPoint {
 interface HistoricalResultsChartsProps {
   data: ChartPoint[];
   successProbability?: number;
-  yearOfDepletion?: number | null;
+  yearOfDepletion?: number | null | undefined;
   isLoading?: boolean;
   error?: string | null;
 }
@@ -208,7 +208,7 @@ export function IncomeVsExpensesChart({ data }: { data: ChartPoint[] }) {
   );
 }
 
-export function ResultsSummary({ successProbability, yearOfDepletion }: { successProbability?: number; yearOfDepletion: number | null }) {
+export function ResultsSummary({ successProbability, yearOfDepletion }: { successProbability?: number; yearOfDepletion?: number | null }) {
   const isDarkMode = useMemo(() => {
     if (typeof window === "undefined") return false;
     return document.documentElement.classList.contains("dark");

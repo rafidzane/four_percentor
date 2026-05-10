@@ -17,8 +17,18 @@ export const RealEstateSection: FC<RealEstateSectionProps> = ({ className }) => 
   const { control, register, watch } = useFormContext<FormData>();
 
   return (
-    <section className="rounded-xl border p-6 min-h-[200px]">
-      <h3 className="text-lg font-semibold mb-4">Real Estate</h3>
+    <section className="rounded-xl border-l-4 border-blue-500 p-6 min-h-[200px]">
+      <div data-slot="card-header" className="@container/card-header grid auto-rows-min grid-rows-[auto_auto] items-start gap-2 has-data-[slot=card-action]:grid-cols-[1fr_auto] [.border-b]:pb-6 mb-4">
+        <div data-slot="card-title" className="leading-none font-semibold flex items-center gap-2 text-lg">
+          <span className="grid size-7 place-content-center rounded-sm bg-muted">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-home size-5" aria-hidden="true">
+              <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+              <polyline points="9 22 9 12 15 12 15 22"></polyline>
+            </svg>
+          </span>
+          Real Estate
+        </div>
+      </div>
 
       {/* Primary Home */}
       <div className="space-y-4 mb-6">

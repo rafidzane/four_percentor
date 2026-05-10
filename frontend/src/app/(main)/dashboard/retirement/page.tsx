@@ -1,6 +1,5 @@
 "use client";
 
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { RetirementForm } from "./_components/RetirementForm";
 import { RetirementCharts } from "./_components/RetirementCharts";
 import { RetirementResultsSummary } from "@/components/retirement-dashboard/ui/RetirementResultsSummary";
@@ -24,12 +23,23 @@ export default function Page() {
           <RetirementForm onResult={setResult} />
         </div>
 
-        {/* Right Column - Charts */}
-        <div className="lg:col-span-1 flex flex-col">
-          {/* Results section would be positioned here when calculation is done */}
-          <RetirementCharts result={result} />
+        {/* Right Column - Charts & Results */}
+        <div className="lg:col-span-1 flex flex-col space-y-6">
+          {result && (
+            <>
+              <RetirementResultsSummary result={result} isLoading={false} />
+              <RetirementCharts result={result} />
+            </>
+          )}
         </div>
       </div>
+
+      {/* Global loading indicator */}
+      {result && (
+        <p className="text-sm text-muted-foreground text-center italic">
+          Manual calculation enabled for Income Sources and Real Estate sections
+        </p>
+      )}
     </div>
   );
 }
