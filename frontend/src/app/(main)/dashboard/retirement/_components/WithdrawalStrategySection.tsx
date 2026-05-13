@@ -3,8 +3,10 @@
 import { FC } from "react";
 import { useWatch } from "react-hook-form";
 import { useFormContext } from "react-hook-form";
+import { cn } from "@/lib/utils";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
 import { InfoIcon } from "lucide-react";
 
 // Import the form data types
@@ -15,19 +17,13 @@ interface WithdrawalStrategySectionProps {
 }
 
 export const WithdrawalStrategySection: FC<WithdrawalStrategySectionProps> = ({ className }) => {
-  const { control, register, watch } = useFormContext<FormData>();
-  
+  const { control, register, watch, setValue } = useFormContext<FormData>();
+
   // Watch values for conditional rendering
   const spendingMode = watch("retirement_spending.spending_mode");
   const twoPeriodMode = watch("retirement_spending.two_period_mode");
-  // Withdrawal type fields not in FormData type - using default styling for now
-  // const period1WithdrawalType = watch("retirement_spending.period_1_withdrawal_type") as unknown as "percentage" | "amount" | undefined;
-  // const false = period1WithdrawalType === "percentage";
-  // const false = period1WithdrawalType === "amount";
-  // Withdrawal type fields not in FormData type - using default styling for now
-  // const period2WithdrawalType = watch("retirement_spending.period_2_withdrawal_type") as unknown as "percentage" | "amount" | undefined;
-  // const false = period2WithdrawalType === "percentage";
-  // const false = period2WithdrawalType === "amount";
+  const period1WithdrawalType = watch("retirement_spending.period_1_withdrawal_type") as "percentage" | "amount" | undefined;
+  const period2WithdrawalType = watch("retirement_spending.period_2_withdrawal_type") as "percentage" | "amount" | undefined;
 
   return (
     <div data-slot="card" className="bg-card text-card-foreground flex flex-col gap-6 rounded-xl border-l-4 border-blue-500 py-6 shadow-sm">
@@ -46,30 +42,7 @@ export const WithdrawalStrategySection: FC<WithdrawalStrategySectionProps> = ({ 
         </div>
       </div>
       <div data-slot="card-content" className="px-6 space-y-4">
-        <div className="space-y-1 mb-3">
-          <label htmlFor="retirement_spending.spending_mode" className="block font-medium text-xs mb-0.5">Spending mode</label>
-          <div className="flex items-center gap-1">
-            <select
-              id="retirement_spending.spending_mode"
-              {...register("retirement_spending.spending_mode")}
-              className="w-full rounded-md border border-input bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none"
-            >
-              <option value="four_pct_rule">4% Rule (safe withdrawal rate)</option>
-              <option value="manual_withdrawal">Manual Withdrawal Amount</option>
-            </select>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button variant="ghost" size="sm" className="h-4 w-4 p-0">
-                  <InfoIcon className="h-3 w-3 text-muted-foreground" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent side="right" className="max-w-xs">
-                Choose how spending is calculated (4% rule or manual input). The 4% rule provides a safe withdrawal rate, while manual allows custom amounts.
-              </TooltipContent>
-            </Tooltip>
-          </div>
-        </div>
-
+        {/* Inflation checkbox */}
         <div className="flex items-center space-x-2 mb-3">
           <label className="flex items-center space-x-2 cursor-pointer">
             <input
@@ -131,45 +104,14 @@ export const WithdrawalStrategySection: FC<WithdrawalStrategySectionProps> = ({ 
 
             <div className="flex-1 min-w-[80px]">
               <label htmlFor="retirement_spending.period_1_withdrawal_type" className="block font-medium text-xs mb-0.5">Type</label>
-              <div className="flex gap-1">
-                <button
-                  type="button"
-                  onClick={() => {
-                    // We'll use form.setValue since we don't have access to the form context directly here
-                    // This would be handled by the parent component that has the form context
-                  }}
-                  className={`flex-1 py-1 px-2 text-xs rounded-md ${
-                    false
-                      ? "bg-primary text-primary-foreground"
-                      : "bg-secondary text-secondary-foreground"
-                  }`}
-                >
-                  Pct
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    // We'll use form.setValue since we don't have access to the form context directly here
-                    // This would be handled by the parent component that has the form context
-                  }}
-                  className={`flex-1 py-1 px-2 text-xs rounded-md ${
-                    false
-                      ? "bg-primary text-primary-foreground"
-                      : "bg-secondary text-secondary-foreground"
-                  }`}
-                >
-                  Amt
-                </button>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button variant="ghost" size="sm" className="h-4 w-4 p-0">
-                      <InfoIcon className="h-3 w-3 text-muted-foreground" />
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent side="right" className="max-w-xs">
-                    Choose withdrawal strategy type for Period 1: percentage of portfolio or fixed dollar amount.
-                  </TooltipContent>
-                </Tooltip>
+              <div className="flex items-center gap-2">
+                <span className={cn("text-xs", period1WithdrawalType === "amount" ? "font-semibold text-primary" : "text-muted-foreground")}>Amount</span>
+                <Switch
+                  id="retirement_spending.period_1_withdrawal_type"
+                  checked={period1WithdrawalType === "percentage"}
+                  onCheckedChange={(checked) => setValue("retirement_spending.period_1_withdrawal_type", checked ? "percentage" : "amount")}
+                />
+                <span className={cn("text-xs", period1WithdrawalType === "percentage" ? "font-semibold text-primary" : "text-muted-foreground")}>Pct</span>
               </div>
             </div>
 
@@ -286,45 +228,14 @@ export const WithdrawalStrategySection: FC<WithdrawalStrategySectionProps> = ({ 
 
               <div className="flex-1 min-w-[80px]">
                 <label htmlFor="retirement_spending.period_2_withdrawal_type" className="block font-medium text-xs mb-0.5">Type</label>
-                <div className="flex gap-1">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      // We'll use form.setValue since we don't have access to the form context directly here
-                      // This would be handled by the parent component that has the form context
-                    }}
-                    className={`flex-1 py-1 px-2 text-xs rounded-md ${
-                      false
-                        ? "bg-primary text-primary-foreground"
-                        : "bg-secondary text-secondary-foreground"
-                    }`}
-                  >
-                    Pct
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      // We'll use form.setValue since we don't have access to the form context directly here
-                      // This would be handled by the parent component that has the form context
-                    }}
-                    className={`flex-1 py-1 px-2 text-xs rounded-md ${
-                      false
-                        ? "bg-primary text-primary-foreground"
-                        : "bg-secondary text-secondary-foreground"
-                    }`}
-                  >
-                    Amt
-                  </button>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Button variant="ghost" size="sm" className="h-4 w-4 p-0">
-                        <InfoIcon className="h-3 w-3 text-muted-foreground" />
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent side="right" className="max-w-xs">
-                      Choose withdrawal strategy type for Period 2: percentage of portfolio or fixed dollar amount.
-                    </TooltipContent>
-                  </Tooltip>
+                <div className="flex items-center gap-2">
+                  <span className={cn("text-xs", period2WithdrawalType === "amount" ? "font-semibold text-primary" : "text-muted-foreground")}>Amount</span>
+                  <Switch
+                    id="retirement_spending.period_2_withdrawal_type"
+                    checked={period2WithdrawalType === "percentage"}
+                    onCheckedChange={(checked) => setValue("retirement_spending.period_2_withdrawal_type", checked ? "percentage" : "amount")}
+                  />
+                  <span className={cn("text-xs", period2WithdrawalType === "percentage" ? "font-semibold text-primary" : "text-muted-foreground")}>Pct</span>
                 </div>
               </div>
 

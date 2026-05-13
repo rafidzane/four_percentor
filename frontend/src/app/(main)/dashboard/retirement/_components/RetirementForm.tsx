@@ -128,9 +128,11 @@ export const RetirementForm: FC<RetirementFormProps> = ({ className, onResult })
       period_1_start_age: 62,
       period_1_end_age: 65,
       period_1_withdrawal_pct: 4,
+      period_1_withdrawal_type: "percentage",
       period_2_start_age: 66,
       period_2_end_age: 92,
       period_2_withdrawal_pct: 4,
+      period_2_withdrawal_type: "percentage",
     },
   };
 

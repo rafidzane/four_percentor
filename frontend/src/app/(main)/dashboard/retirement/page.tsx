@@ -2,7 +2,7 @@
 
 import { RetirementForm } from "./_components/RetirementForm";
 import { RetirementCharts } from "./_components/RetirementCharts";
-import { RetirementResultsSummary } from "@/components/retirement-dashboard/ui/RetirementResultsSummary";
+import { RetirementSummaryCards } from "@/components/retirement-dashboard/ui/RetirementSummaryCards";
 import { useState } from "react";
 
 export default function Page() {
@@ -10,6 +10,7 @@ export default function Page() {
 
   return (
     <div className="space-y-6">
+      {/* Title */}
       <div>
         <h2 className="text-3xl font-bold tracking-tight">Retirement Calculator</h2>
         <p className="text-muted-foreground mt-1">
@@ -17,24 +18,40 @@ export default function Page() {
         </p>
       </div>
 
+      {/* Two-column layout: Form on left, Results/Charts on right */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Left Column - Inputs */}
-        <div className="lg:col-span-1 flex flex-col">
+        {/* Left Column - Form */}
+        <div className="flex flex-col">
           <RetirementForm onResult={setResult} />
         </div>
 
-        {/* Right Column - Charts & Results */}
-        <div className="lg:col-span-1 flex flex-col space-y-6">
+        {/* Right Column - Results & Charts (only visible after calculation) */}
+        <div className="flex flex-col space-y-6">
+          {result ? null : (
+            <p className="text-sm text-muted-foreground text-center italic lg:text-left py-8">
+              Enter your details and click "Calculate Projection" to see retirement results
+            </p>
+          )}
+
+          {/* Summary Cards Section */}
           {result && (
             <>
-              <RetirementResultsSummary result={result} isLoading={false} />
+              <RetirementSummaryCards
+                finalBalance={result.final_balance || 0}
+                averageBalance={result.avg_balance || 0}
+                maxBalance={result.max_balance || 0}
+                minBalance={result.min_balance || 0}
+              />
+
+              
+              {/* Charts Section */}
               <RetirementCharts result={result} />
             </>
           )}
         </div>
       </div>
 
-      {/* Global loading indicator */}
+      {/* Manual calculation indicator - only show after results */}
       {result && (
         <p className="text-sm text-muted-foreground text-center italic">
           Manual calculation enabled for Income Sources and Real Estate sections
