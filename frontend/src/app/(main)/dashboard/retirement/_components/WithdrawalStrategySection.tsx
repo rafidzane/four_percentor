@@ -1,7 +1,7 @@
 "use client";
 
-import { FC } from "react";
-import { useFormContext, Controller } from "react-hook-form";
+import { FC, useEffect } from "react";
+import { useFormContext, Controller, useWatch } from "react-hook-form";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
 import { InfoIcon, PiggyBankIcon } from "lucide-react";
@@ -17,7 +17,7 @@ interface WithdrawalStrategySectionProps {
 }
 
 export const WithdrawalStrategySection: FC<WithdrawalStrategySectionProps> = ({ className }) => {
-  const { control, watch, formState: { errors } } = useFormContext<FormData>();
+  const { control, watch, formState: { errors }, setValue } = useFormContext<FormData>();
 
   // Track withdrawal type for each period from form values
   const period1Type = watch("retirement_spending.period_1_withdrawal_type") || "amount";
@@ -25,6 +25,20 @@ export const WithdrawalStrategySection: FC<WithdrawalStrategySectionProps> = ({ 
 
   // Get two_period_mode value
   const twoPeriodMode = watch("retirement_spending.two_period_mode");
+
+  // Watch Period 2 ages for cross-field validation
+  const period2StartAge = watch("retirement_spending.period_2_start_age");
+  const period2EndAge = watch("retirement_spending.period_2_end_age");
+
+  // Display validation error message for Period 2 end age
+  const getPeriod2EndAgeError = () => {
+    if (twoPeriodMode && period2StartAge !== undefined && period2EndAge !== undefined) {
+      if (period2EndAge <= period2StartAge) {
+        return "End age must be greater than start age";
+      }
+    }
+    return errors.retirement_spending?.period_2_end_age?.message;
+  };
 
   return (
     <section data-slot="card" className={cn(
@@ -313,22 +327,25 @@ export const WithdrawalStrategySection: FC<WithdrawalStrategySectionProps> = ({ 
                     min: { value: 18, message: "Age must be at least 18" },
                     max: { value: 120, message: "Age cannot exceed 120" },
                   }}
-                  render={({ field }) => (
-                    <>
-                      <input
-                        id="retirement_spending.period_2_end_age"
-                        type="number"
-                        value={field.value ?? ''}
-                        onChange={(e) => field.onChange(e.target.value === '' ? null : Number(e.target.value))}
-                        className={`w-full rounded-md border bg-transparent px-2 py-1.5 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none transition-colors ${
-                          errors.retirement_spending?.period_2_end_age ? "border-red-500 ring-red-500" : "border-slate-300 dark:border-slate-700"
-                        }`}
-                      />
-                      {errors.retirement_spending?.period_2_end_age && (
-                        <ValidationError field="retirement_spending.period_2_end_age" message={errors.retirement_spending.period_2_end_age.message ?? "Invalid value"} />
-                      )}
-                    </>
-                  )}
+                  render={({ field }) => {
+                    const error = getPeriod2EndAgeError();
+                    return (
+                      <>
+                        <input
+                          id="retirement_spending.period_2_end_age"
+                          type="number"
+                          value={field.value ?? ''}
+                          onChange={(e) => field.onChange(e.target.value === '' ? null : Number(e.target.value))}
+                          className={`w-full rounded-md border bg-transparent px-2 py-1.5 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none transition-colors ${
+                            error ? "border-red-500 ring-red-500" : "border-slate-300 dark:border-slate-700"
+                          }`}
+                        />
+                        {error && (
+                          <ValidationError field="retirement_spending.period_2_end_age" message={error} />
+                        )}
+                      </>
+                    );
+                  }}
                 />
               </div>
 
