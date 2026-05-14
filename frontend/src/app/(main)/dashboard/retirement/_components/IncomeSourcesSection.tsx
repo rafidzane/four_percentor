@@ -9,7 +9,7 @@ import { cn } from "@/lib/utils";
 
 // Import the form data types and validation components
 import type { FormData } from "@/app/(main)/dashboard/retirement/_components/RetirementForm";
-import { ValidationError, ErrorBanner } from "@/components/retirement-dashboard/ui/ValidationErrors";
+import { ValidationError } from "@/components/retirement-dashboard/ui/ValidationErrors";
 
 interface IncomeSourcesSectionProps {
   className?: string;
@@ -18,46 +18,11 @@ interface IncomeSourcesSectionProps {
 export const IncomeSourcesSection: FC<IncomeSourcesSectionProps> = ({ className }) => {
   const { control, register, watch, formState: { errors } } = useFormContext<FormData>();
 
-  // Helper to render input field with tooltip and validation
-  const renderInput = (
-    name: string,
-    label: string,
-    type: "number" | "text" = "number",
-    min?: number,
-    max?: number,
-    step?: number,
-    tooltip: string = "",
-    placeholder?: string
-  ) => {
-    return (
-      <Controller
-        name={name}
-        control={control}
-        rules={{
-          min: min !== undefined ? { value: min, message: `Value must be at least ${min}` } : undefined,
-          max: max !== undefined ? { value: max, message: `Value cannot exceed ${max}` } : undefined,
-          minLength: placeholder ? { value: 1, message: "This field is required" } : undefined,
-        }}
-        render={({ field }) => (
-          <>
-            <input
-              id={name}
-              type={type}
-              step={step}
-              placeholder={placeholder}
-              {...field}
-              className={`w-full rounded-md border bg-transparent px-2 py-1.5 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none transition-colors ${
-                errors.income_streams?.[name.split(".")[1]] ? "border-red-300 dark:border-red-800" : ""
-              }`}
-            />
-            {errors.income_streams?.[name.split(".")[1]] && (
-              <ValidationError field={name} message={errors.income_streams[name.split(".")[1]]?.message ?? "Invalid value"} />
-            )}
-          </>
-        )}
-      />
-    );
-  };
+  // Watch values for conditional rendering
+  const spouseAge = watch("timeline.spouse_age");
+
+  // Check if spouse info should be shown
+  const showSpouseFields = spouseAge !== undefined && spouseAge > 0;
 
   return (
     <section data-slot="card" className={cn(
@@ -80,23 +45,23 @@ export const IncomeSourcesSection: FC<IncomeSourcesSectionProps> = ({ className 
       </div>
 
       {/* Card Content */}
-      <div data-slot="card-content" className="px-4 py-3 space-y-4">
+      <div data-slot="card-content" className="px-4 py-3 space-y-6">
 
-        {/* Social Security - You */}
-        <div className="rounded-xl border border-emerald-100 dark:border-emerald-900/30 bg-white dark:bg-slate-800/50 p-4 shadow-sm transition-all hover:shadow-md">
+        {/* Social Security - You and Spouse on same line */}
+        <div className="border-t border-slate-100 dark:border-slate-700 pt-4 first:border-0">
           <div className="flex items-center gap-2 mb-3">
             <CoinsIcon className="size-5 text-emerald-600 dark:text-teal-400" />
-            <h3 className="text-xs font-semibold uppercase tracking-wider text-emerald-800 dark:text-emerald-300">Social Security (You)</h3>
+            <h3 className="text-sm font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300">Social Security</h3>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            {/* Claim Age */}
-            <div className="space-y-2">
-              <label htmlFor="income_streams.social_security_you.claim_age" className="block font-medium text-xs mb-0.5 flex items-center gap-1">
-                Claim Age
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Claim Age - You */}
+            <div className="space-y-1">
+              <div className="flex items-center gap-1">
+                <label htmlFor="income_streams.social_security_you.claim_age" className="block font-medium text-xs mb-0.5">Claim Age (You)</label>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <Button variant="ghost" size="sm" className="h-4 w-4 p-0 hover:bg-transparent">
+                    <Button variant="ghost" size="sm" className="h-4 w-4 p-0">
                       <InfoIcon className="h-3 w-3 text-muted-foreground" />
                     </Button>
                   </TooltipTrigger>
@@ -104,28 +69,41 @@ export const IncomeSourcesSection: FC<IncomeSourcesSectionProps> = ({ className 
                     The age at which you plan to claim Social Security benefits. Claiming earlier reduces monthly payments, while waiting increases them.
                   </TooltipContent>
                 </Tooltip>
-              </label>
-              <div className="relative">
-                {renderInput(
-                  "income_streams.social_security_you.claim_age",
-                  "",
-                  "number",
-                  62,
-                  70,
-                  undefined,
-                  "Claim age must be between 62 and 70"
-                )}
-                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground pointer-events-none">ages 62-70</span>
               </div>
+              <Controller
+                name="income_streams.social_security_you.claim_age"
+                control={control}
+                rules={{
+                  min: { value: 62, message: "Claim age must be between 62 and 70" },
+                  max: { value: 70, message: "Claim age must be between 62 and 70" },
+                }}
+                render={({ field }) => (
+                  <>
+                    <input
+                      id="income_streams.social_security_you.claim_age"
+                      type="number"
+                      value={field.value ?? ''}
+                      onChange={(e) => field.onChange(e.target.value === '' ? null : Number(e.target.value))}
+                      className={`w-full rounded-md border bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none ${
+                        errors.income_streams?.social_security_you?.claim_age ? "border-red-500 ring-red-500" : ""
+                      }`}
+                    />
+                    {errors.income_streams?.social_security_you?.claim_age && (
+                      <ValidationError field="income_streams.social_security_you.claim_age" message={errors.income_streams.social_security_you.claim_age.message ?? "Invalid value"} />
+                    )}
+                  </>
+                )}
+              />
+              <p className="text-xs text-muted-foreground mt-0.5">ages 62-70</p>
             </div>
 
-            {/* Yearly Amount */}
-            <div className="space-y-2">
-              <label htmlFor="income_streams.social_security_you.yearly_amount_today_dollars" className="block font-medium text-xs mb-0.5 flex items-center gap-1">
-                Yearly Amount (Today's $)
+            {/* Yearly Amount - You */}
+            <div className="space-y-1">
+              <div className="flex items-center gap-1">
+                <label htmlFor="income_streams.social_security_you.yearly_amount_today_dollars" className="block font-medium text-xs mb-0.5">Yearly Amount (Today's $)</label>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <Button variant="ghost" size="sm" className="h-4 w-4 p-0 hover:bg-transparent">
+                    <Button variant="ghost" size="sm" className="h-4 w-4 p-0">
                       <InfoIcon className="h-3 w-3 text-muted-foreground" />
                     </Button>
                   </TooltipTrigger>
@@ -133,38 +111,40 @@ export const IncomeSourcesSection: FC<IncomeSourcesSectionProps> = ({ className 
                     The annual Social Security benefit amount you expect to receive, adjusted for today's purchasing power.
                   </TooltipContent>
                 </Tooltip>
-              </label>
-              <div className="relative">
-                {renderInput(
-                  "income_streams.social_security_you.yearly_amount_today_dollars",
-                  "",
-                  "number",
-                  0,
-                  undefined,
-                  100,
-                  "Yearly amount cannot be negative"
-                )}
-                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground pointer-events-none">$</span>
               </div>
+              <Controller
+                name="income_streams.social_security_you.yearly_amount_today_dollars"
+                control={control}
+                rules={{
+                  min: { value: 0, message: "Yearly amount cannot be negative" },
+                }}
+                render={({ field }) => (
+                  <>
+                    <input
+                      id="income_streams.social_security_you.yearly_amount_today_dollars"
+                      type="number"
+                      value={field.value ?? ''}
+                      onChange={(e) => field.onChange(e.target.value === '' ? null : Number(e.target.value))}
+                      className={`w-full rounded-md border bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none ${
+                        errors.income_streams?.social_security_you?.yearly_amount_today_dollars ? "border-red-500 ring-red-500" : ""
+                      }`}
+                    />
+                    {errors.income_streams?.social_security_you?.yearly_amount_today_dollars && (
+                      <ValidationError field="income_streams.social_security_you.yearly_amount_today_dollars" message={errors.income_streams.social_security_you.yearly_amount_today_dollars.message ?? "Invalid value"} />
+                    )}
+                  </>
+                )}
+              />
+              <p className="text-xs text-muted-foreground mt-0.5">Annual benefit amount</p>
             </div>
-          </div>
-        </div>
 
-        {/* Social Security - Spouse */}
-        <div className="rounded-xl border border-emerald-100 dark:border-emerald-900/30 bg-white dark:bg-slate-800/50 p-4 shadow-sm transition-all hover:shadow-md">
-          <div className="flex items-center gap-2 mb-3">
-            <WalletIcon className="size-5 text-teal-600 dark:text-emerald-400" />
-            <h3 className="text-xs font-semibold uppercase tracking-wider text-emerald-800 dark:text-emerald-300">Social Security (Spouse)</h3>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            {/* Claim Age */}
-            <div className="space-y-2">
-              <label htmlFor="income_streams.social_security_spouse.claim_age" className="block font-medium text-xs mb-0.5 flex items-center gap-1">
-                Claim Age
+            {/* Claim Age - Spouse */}
+            <div className="space-y-1">
+              <div className="flex items-center gap-1">
+                <label htmlFor="income_streams.social_security_spouse.claim_age" className="block font-medium text-xs mb-0.5">Claim Age (Spouse)</label>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <Button variant="ghost" size="sm" className="h-4 w-4 p-0 hover:bg-transparent">
+                    <Button variant="ghost" size="sm" className="h-4 w-4 p-0">
                       <InfoIcon className="h-3 w-3 text-muted-foreground" />
                     </Button>
                   </TooltipTrigger>
@@ -172,28 +152,41 @@ export const IncomeSourcesSection: FC<IncomeSourcesSectionProps> = ({ className 
                     The age at which your spouse plans to claim Social Security benefits.
                   </TooltipContent>
                 </Tooltip>
-              </label>
-              <div className="relative">
-                {renderInput(
-                  "income_streams.social_security_spouse.claim_age",
-                  "",
-                  "number",
-                  62,
-                  70,
-                  undefined,
-                  "Claim age must be between 62 and 70"
-                )}
-                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground pointer-events-none">ages 62-70</span>
               </div>
+              <Controller
+                name="income_streams.social_security_spouse.claim_age"
+                control={control}
+                rules={{
+                  min: { value: 62, message: "Claim age must be between 62 and 70" },
+                  max: { value: 70, message: "Claim age must be between 62 and 70" },
+                }}
+                render={({ field }) => (
+                  <>
+                    <input
+                      id="income_streams.social_security_spouse.claim_age"
+                      type="number"
+                      value={field.value ?? ''}
+                      onChange={(e) => field.onChange(e.target.value === '' ? null : Number(e.target.value))}
+                      className={`w-full rounded-md border bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none ${
+                        errors.income_streams?.social_security_spouse?.claim_age ? "border-red-500 ring-red-500" : ""
+                      }`}
+                    />
+                    {errors.income_streams?.social_security_spouse?.claim_age && (
+                      <ValidationError field="income_streams.social_security_spouse.claim_age" message={errors.income_streams.social_security_spouse.claim_age.message ?? "Invalid value"} />
+                    )}
+                  </>
+                )}
+              />
+              <p className="text-xs text-muted-foreground mt-0.5">ages 62-70</p>
             </div>
 
-            {/* Yearly Amount */}
-            <div className="space-y-2">
-              <label htmlFor="income_streams.social_security_spouse.yearly_amount_today_dollars" className="block font-medium text-xs mb-0.5 flex items-center gap-1">
-                Yearly Amount (Today's $)
+            {/* Yearly Amount - Spouse */}
+            <div className="space-y-1">
+              <div className="flex items-center gap-1">
+                <label htmlFor="income_streams.social_security_spouse.yearly_amount_today_dollars" className="block font-medium text-xs mb-0.5">Yearly Amount (Today's $)</label>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <Button variant="ghost" size="sm" className="h-4 w-4 p-0 hover:bg-transparent">
+                    <Button variant="ghost" size="sm" className="h-4 w-4 p-0">
                       <InfoIcon className="h-3 w-3 text-muted-foreground" />
                     </Button>
                   </TooltipTrigger>
@@ -201,38 +194,53 @@ export const IncomeSourcesSection: FC<IncomeSourcesSectionProps> = ({ className 
                     The annual Social Security benefit amount your spouse expects to receive.
                   </TooltipContent>
                 </Tooltip>
-              </label>
-              <div className="relative">
-                {renderInput(
-                  "income_streams.social_security_spouse.yearly_amount_today_dollars",
-                  "",
-                  "number",
-                  0,
-                  undefined,
-                  100,
-                  "Yearly amount cannot be negative"
-                )}
-                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground pointer-events-none">$</span>
               </div>
+              <Controller
+                name="income_streams.social_security_spouse.yearly_amount_today_dollars"
+                control={control}
+                rules={{
+                  min: { value: 0, message: "Yearly amount cannot be negative" },
+                }}
+                render={({ field }) => (
+                  <>
+                    <input
+                      id="income_streams.social_security_spouse.yearly_amount_today_dollars"
+                      type="number"
+                      value={field.value ?? ''}
+                      onChange={(e) => field.onChange(e.target.value === '' ? null : Number(e.target.value))}
+                      className={`w-full rounded-md border bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none ${
+                        errors.income_streams?.social_security_spouse?.yearly_amount_today_dollars ? "border-red-500 ring-red-500" : ""
+                      }`}
+                    />
+                    {errors.income_streams?.social_security_spouse?.yearly_amount_today_dollars && (
+                      <ValidationError field="income_streams.social_security_spouse.yearly_amount_today_dollars" message={errors.income_streams.social_security_spouse.yearly_amount_today_dollars.message ?? "Invalid value"} />
+                    )}
+                  </>
+                )}
+              />
+              <p className="text-xs text-muted-foreground mt-0.5">Annual benefit amount</p>
             </div>
           </div>
         </div>
 
+        {/* Divider */}
+        <div className="h-px bg-gradient-to-r from-transparent via-slate-200 dark:via-slate-700 to-transparent" />
+
         {/* Pension 1 */}
-        <div className="rounded-xl border border-emerald-100 dark:border-emerald-900/30 bg-white dark:bg-slate-800/50 p-4 shadow-sm transition-all hover:shadow-md">
+        <div className="border-t border-slate-100 dark:border-slate-700 pt-4 first:border-0">
           <div className="flex items-center gap-2 mb-3">
             <BuildingIcon className="size-5 text-teal-600 dark:text-emerald-400" />
-            <h3 className="text-xs font-semibold uppercase tracking-wider text-emerald-800 dark:text-emerald-300">Pension 1</h3>
+            <h3 className="text-sm font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300">Pension 1</h3>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* Starting Age */}
-            <div className="space-y-2">
-              <label htmlFor="income_streams.pension_1.starting_age" className="block font-medium text-xs mb-0.5 flex items-center gap-1">
-                Starting Age
+            <div className="space-y-1">
+              <div className="flex items-center gap-1">
+                <label htmlFor="income_streams.pension_1.starting_age" className="block font-medium text-xs mb-0.5">Starting Age</label>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <Button variant="ghost" size="sm" className="h-4 w-4 p-0 hover:bg-transparent">
+                    <Button variant="ghost" size="sm" className="h-4 w-4 p-0">
                       <InfoIcon className="h-3 w-3 text-muted-foreground" />
                     </Button>
                   </TooltipTrigger>
@@ -240,28 +248,41 @@ export const IncomeSourcesSection: FC<IncomeSourcesSectionProps> = ({ className 
                     The age at which your pension benefits begin.
                   </TooltipContent>
                 </Tooltip>
-              </label>
-              <div className="relative">
-                {renderInput(
-                  "income_streams.pension_1.starting_age",
-                  "",
-                  "number",
-                  18,
-                  100,
-                  undefined,
-                  "Starting age must be between 18 and 100"
-                )}
-                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground pointer-events-none">age</span>
               </div>
+              <Controller
+                name="income_streams.pension_1.starting_age"
+                control={control}
+                rules={{
+                  min: { value: 18, message: "Starting age must be between 18 and 100" },
+                  max: { value: 100, message: "Starting age must be between 18 and 100" },
+                }}
+                render={({ field }) => (
+                  <>
+                    <input
+                      id="income_streams.pension_1.starting_age"
+                      type="number"
+                      value={field.value ?? ''}
+                      onChange={(e) => field.onChange(e.target.value === '' ? null : Number(e.target.value))}
+                      className={`w-full rounded-md border bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none ${
+                        errors.income_streams?.pension_1?.starting_age ? "border-red-500 ring-red-500" : ""
+                      }`}
+                    />
+                    {errors.income_streams?.pension_1?.starting_age && (
+                      <ValidationError field="income_streams.pension_1.starting_age" message={errors.income_streams.pension_1.starting_age.message ?? "Invalid value"} />
+                    )}
+                  </>
+                )}
+              />
+              <p className="text-xs text-muted-foreground mt-0.5">Age when benefits begin</p>
             </div>
 
             {/* Yearly Amount */}
-            <div className="space-y-2">
-              <label htmlFor="income_streams.pension_1.yearly_amount" className="block font-medium text-xs mb-0.5 flex items-center gap-1">
-                Yearly Amount
+            <div className="space-y-1">
+              <div className="flex items-center gap-1">
+                <label htmlFor="income_streams.pension_1.yearly_amount" className="block font-medium text-xs mb-0.5">Yearly Amount</label>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <Button variant="ghost" size="sm" className="h-4 w-4 p-0 hover:bg-transparent">
+                    <Button variant="ghost" size="sm" className="h-4 w-4 p-0">
                       <InfoIcon className="h-3 w-3 text-muted-foreground" />
                     </Button>
                   </TooltipTrigger>
@@ -269,38 +290,53 @@ export const IncomeSourcesSection: FC<IncomeSourcesSectionProps> = ({ className 
                     The annual pension benefit amount you expect to receive, adjusted for today's purchasing power.
                   </TooltipContent>
                 </Tooltip>
-              </label>
-              <div className="relative">
-                {renderInput(
-                  "income_streams.pension_1.yearly_amount",
-                  "",
-                  "number",
-                  0,
-                  undefined,
-                  100,
-                  "Yearly amount cannot be negative"
-                )}
-                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground pointer-events-none">$</span>
               </div>
+              <Controller
+                name="income_streams.pension_1.yearly_amount"
+                control={control}
+                rules={{
+                  min: { value: 0, message: "Yearly amount cannot be negative" },
+                }}
+                render={({ field }) => (
+                  <>
+                    <input
+                      id="income_streams.pension_1.yearly_amount"
+                      type="number"
+                      value={field.value ?? ''}
+                      onChange={(e) => field.onChange(e.target.value === '' ? null : Number(e.target.value))}
+                      className={`w-full rounded-md border bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none ${
+                        errors.income_streams?.pension_1?.yearly_amount ? "border-red-500 ring-red-500" : ""
+                      }`}
+                    />
+                    {errors.income_streams?.pension_1?.yearly_amount && (
+                      <ValidationError field="income_streams.pension_1.yearly_amount" message={errors.income_streams.pension_1.yearly_amount.message ?? "Invalid value"} />
+                    )}
+                  </>
+                )}
+              />
+              <p className="text-xs text-muted-foreground mt-0.5">Annual pension amount</p>
             </div>
           </div>
         </div>
 
+        {/* Divider */}
+        <div className="h-px bg-gradient-to-r from-transparent via-slate-200 dark:via-slate-700 to-transparent" />
+
         {/* Pension 2 */}
-        <div className="rounded-xl border border-emerald-100 dark:border-emerald-900/30 bg-white dark:bg-slate-800/50 p-4 shadow-sm transition-all hover:shadow-md">
+        <div className="border-t border-slate-100 dark:border-slate-700 pt-4 first:border-0">
           <div className="flex items-center gap-2 mb-3">
             <BuildingIcon className="size-5 text-teal-600 dark:text-emerald-400" />
-            <h3 className="text-xs font-semibold uppercase tracking-wider text-emerald-800 dark:text-emerald-300">Pension 2 (optional)</h3>
+            <h3 className="text-sm font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300">Pension 2 (optional)</h3>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* Starting Age */}
-            <div className="space-y-2">
-              <label htmlFor="income_streams.pension_2.starting_age" className="block font-medium text-xs mb-0.5 flex items-center gap-1">
-                Starting Age
+            <div className="space-y-1">
+              <div className="flex items-center gap-1">
+                <label htmlFor="income_streams.pension_2.starting_age" className="block font-medium text-xs mb-0.5">Starting Age</label>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <Button variant="ghost" size="sm" className="h-4 w-4 p-0 hover:bg-transparent">
+                    <Button variant="ghost" size="sm" className="h-4 w-4 p-0">
                       <InfoIcon className="h-3 w-3 text-muted-foreground" />
                     </Button>
                   </TooltipTrigger>
@@ -308,28 +344,41 @@ export const IncomeSourcesSection: FC<IncomeSourcesSectionProps> = ({ className 
                     The age at which your second pension benefits begin.
                   </TooltipContent>
                 </Tooltip>
-              </label>
-              <div className="relative">
-                {renderInput(
-                  "income_streams.pension_2.starting_age",
-                  "",
-                  "number",
-                  18,
-                  100,
-                  undefined,
-                  "Starting age must be between 18 and 100"
-                )}
-                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground pointer-events-none">age</span>
               </div>
+              <Controller
+                name="income_streams.pension_2.starting_age"
+                control={control}
+                rules={{
+                  min: { value: 18, message: "Starting age must be between 18 and 100" },
+                  max: { value: 100, message: "Starting age must be between 18 and 100" },
+                }}
+                render={({ field }) => (
+                  <>
+                    <input
+                      id="income_streams.pension_2.starting_age"
+                      type="number"
+                      value={field.value ?? ''}
+                      onChange={(e) => field.onChange(e.target.value === '' ? null : Number(e.target.value))}
+                      className={`w-full rounded-md border bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none ${
+                        errors.income_streams?.pension_2?.starting_age ? "border-red-500 ring-red-500" : ""
+                      }`}
+                    />
+                    {errors.income_streams?.pension_2?.starting_age && (
+                      <ValidationError field="income_streams.pension_2.starting_age" message={errors.income_streams.pension_2.starting_age.message ?? "Invalid value"} />
+                    )}
+                  </>
+                )}
+              />
+              <p className="text-xs text-muted-foreground mt-0.5">Age when benefits begin</p>
             </div>
 
             {/* Yearly Amount */}
-            <div className="space-y-2">
-              <label htmlFor="income_streams.pension_2.yearly_amount" className="block font-medium text-xs mb-0.5 flex items-center gap-1">
-                Yearly Amount
+            <div className="space-y-1">
+              <div className="flex items-center gap-1">
+                <label htmlFor="income_streams.pension_2.yearly_amount" className="block font-medium text-xs mb-0.5">Yearly Amount</label>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <Button variant="ghost" size="sm" className="h-4 w-4 p-0 hover:bg-transparent">
+                    <Button variant="ghost" size="sm" className="h-4 w-4 p-0">
                       <InfoIcon className="h-3 w-3 text-muted-foreground" />
                     </Button>
                   </TooltipTrigger>
@@ -337,42 +386,57 @@ export const IncomeSourcesSection: FC<IncomeSourcesSectionProps> = ({ className 
                     The annual pension benefit amount you expect to receive from your second pension.
                   </TooltipContent>
                 </Tooltip>
-              </label>
-              <div className="relative">
-                {renderInput(
-                  "income_streams.pension_2.yearly_amount",
-                  "",
-                  "number",
-                  0,
-                  undefined,
-                  100,
-                  "Yearly amount cannot be negative"
-                )}
-                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground pointer-events-none">$</span>
               </div>
+              <Controller
+                name="income_streams.pension_2.yearly_amount"
+                control={control}
+                rules={{
+                  min: { value: 0, message: "Yearly amount cannot be negative" },
+                }}
+                render={({ field }) => (
+                  <>
+                    <input
+                      id="income_streams.pension_2.yearly_amount"
+                      type="number"
+                      value={field.value ?? ''}
+                      onChange={(e) => field.onChange(e.target.value === '' ? null : Number(e.target.value))}
+                      className={`w-full rounded-md border bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none ${
+                        errors.income_streams?.pension_2?.yearly_amount ? "border-red-500 ring-red-500" : ""
+                      }`}
+                    />
+                    {errors.income_streams?.pension_2?.yearly_amount && (
+                      <ValidationError field="income_streams.pension_2.yearly_amount" message={errors.income_streams.pension_2.yearly_amount.message ?? "Invalid value"} />
+                    )}
+                  </>
+                )}
+              />
+              <p className="text-xs text-muted-foreground mt-0.5">Annual pension amount</p>
             </div>
           </div>
         </div>
 
+        {/* Divider */}
+        <div className="h-px bg-gradient-to-r from-transparent via-slate-200 dark:via-slate-700 to-transparent" />
+
         {/* Rental Properties */}
-        <div className="rounded-xl border border-emerald-100 dark:border-emerald-900/30 bg-white dark:bg-slate-800/50 p-4 shadow-sm transition-all hover:shadow-md">
+        <div className="border-t border-slate-100 dark:border-slate-700 pt-4 first:border-0">
           <div className="flex items-center gap-2 mb-3">
             <BuildingIcon className="size-5 text-teal-600 dark:text-emerald-400" />
-            <h3 className="text-xs font-semibold uppercase tracking-wider text-emerald-800 dark:text-emerald-300">Rental Income (up to 3 properties)</h3>
+            <h3 className="text-sm font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300">Rental Income (up to 3 properties)</h3>
           </div>
 
           {[0, 1, 2].map((index) => (
-            <div key={index} className="border-t border-slate-100 dark:border-slate-700 pt-4 space-y-3 first:border-0">
+            <div key={index} className="border-t border-slate-100 dark:border-slate-700 pt-4 space-y-2 first:border-0">
               <h4 className="text-[10px] font-bold uppercase text-emerald-600 dark:text-emerald-400">Property {index + 1}</h4>
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {/* Property Name */}
-                <div className="space-y-2">
-                  <label htmlFor={`income_streams.rental_properties.${index}.property_name`} className="block font-medium text-xs mb-0.5 flex items-center gap-1">
-                    Property Name
+                <div className="space-y-1">
+                  <div className="flex items-center gap-1">
+                    <label htmlFor={`income_streams.rental_properties.${index}.property_name`} className="block font-medium text-xs mb-0.5">Property Name</label>
                     <Tooltip>
                       <TooltipTrigger asChild>
-                        <Button variant="ghost" size="sm" className="h-4 w-4 p-0 hover:bg-transparent">
+                        <Button variant="ghost" size="sm" className="h-4 w-4 p-0">
                           <InfoIcon className="h-3 w-3 text-muted-foreground" />
                         </Button>
                       </TooltipTrigger>
@@ -380,25 +444,39 @@ export const IncomeSourcesSection: FC<IncomeSourcesSectionProps> = ({ className 
                         Name or identifier for this rental property.
                       </TooltipContent>
                     </Tooltip>
-                  </label>
-                  {renderInput(
-                    `income_streams.rental_properties.${index}.property_name`,
-                    "",
-                    "text",
-                    undefined,
-                    undefined,
-                    undefined,
-                    "Property name is required"
-                  )}
+                  </div>
+                  <Controller
+                    name={`income_streams.rental_properties.${index}.property_name`}
+                    control={control}
+                    rules={{
+                      minLength: { value: 1, message: "Property name is required" },
+                    }}
+                    render={({ field }) => (
+                      <>
+                        <input
+                          id={`income_streams.rental_properties.${index}.property_name`}
+                          type="text"
+                          value={field.value ?? ''}
+                          onChange={(e) => field.onChange(e.target.value)}
+                          className={`w-full rounded-md border bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none ${
+                            errors.income_streams?.rental_properties?.[index]?.property_name ? "border-red-500 ring-red-500" : ""
+                          }`}
+                        />
+                        {errors.income_streams?.rental_properties?.[index]?.property_name && (
+                          <ValidationError field={`income_streams.rental_properties.${index}.property_name`} message={errors.income_streams.rental_properties[index].property_name.message ?? "Invalid value"} />
+                        )}
+                      </>
+                    )}
+                  />
                 </div>
 
                 {/* Net Annual Income */}
-                <div className="space-y-2">
-                  <label htmlFor={`income_streams.rental_properties.${index}.net_annual_income`} className="block font-medium text-xs mb-0.5 flex items-center gap-1">
-                    Net Annual Income
+                <div className="space-y-1">
+                  <div className="flex items-center gap-1">
+                    <label htmlFor={`income_streams.rental_properties.${index}.net_annual_income`} className="block font-medium text-xs mb-0.5">Net Annual Income</label>
                     <Tooltip>
                       <TooltipTrigger asChild>
-                        <Button variant="ghost" size="sm" className="h-4 w-4 p-0 hover:bg-transparent">
+                        <Button variant="ghost" size="sm" className="h-4 w-4 p-0">
                           <InfoIcon className="h-3 w-3 text-muted-foreground" />
                         </Button>
                       </TooltipTrigger>
@@ -406,28 +484,39 @@ export const IncomeSourcesSection: FC<IncomeSourcesSectionProps> = ({ className 
                         Net annual income from this rental property after all expenses (taxes, maintenance, vacancies).
                       </TooltipContent>
                     </Tooltip>
-                  </label>
-                  <div className="relative">
-                    {renderInput(
-                      `income_streams.rental_properties.${index}.net_annual_income`,
-                      "",
-                      "number",
-                      0,
-                      undefined,
-                      500,
-                      "Net annual income cannot be negative"
-                    )}
-                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground pointer-events-none">$</span>
                   </div>
+                  <Controller
+                    name={`income_streams.rental_properties.${index}.net_annual_income`}
+                    control={control}
+                    rules={{
+                      min: { value: 0, message: "Net annual income cannot be negative" },
+                    }}
+                    render={({ field }) => (
+                      <>
+                        <input
+                          id={`income_streams.rental_properties.${index}.net_annual_income`}
+                          type="number"
+                          value={field.value ?? ''}
+                          onChange={(e) => field.onChange(e.target.value === '' ? null : Number(e.target.value))}
+                          className={`w-full rounded-md border bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none ${
+                            errors.income_streams?.rental_properties?.[index]?.net_annual_income ? "border-red-500 ring-red-500" : ""
+                          }`}
+                        />
+                        {errors.income_streams?.rental_properties?.[index]?.net_annual_income && (
+                          <ValidationError field={`income_streams.rental_properties.${index}.net_annual_income`} message={errors.income_streams.rental_properties[index].net_annual_income.message ?? "Invalid value"} />
+                        )}
+                      </>
+                    )}
+                  />
                 </div>
 
                 {/* Until Age */}
-                <div className="space-y-2">
-                  <label htmlFor={`income_streams.rental_properties.${index}.until_age`} className="block font-medium text-xs mb-0.5 flex items-center gap-1">
-                    Until Age
+                <div className="space-y-1">
+                  <div className="flex items-center gap-1">
+                    <label htmlFor={`income_streams.rental_properties.${index}.until_age`} className="block font-medium text-xs mb-0.5">Until Age</label>
                     <Tooltip>
                       <TooltipTrigger asChild>
-                        <Button variant="ghost" size="sm" className="h-4 w-4 p-0 hover:bg-transparent">
+                        <Button variant="ghost" size="sm" className="h-4 w-4 p-0">
                           <InfoIcon className="h-3 w-3 text-muted-foreground" />
                         </Button>
                       </TooltipTrigger>
@@ -435,19 +524,31 @@ export const IncomeSourcesSection: FC<IncomeSourcesSectionProps> = ({ className 
                         Age at which you expect to stop receiving income from this rental property (e.g., when selling the property).
                       </TooltipContent>
                     </Tooltip>
-                  </label>
-                  <div className="relative">
-                    {renderInput(
-                      `income_streams.rental_properties.${index}.until_age`,
-                      "",
-                      "number",
-                      18,
-                      120,
-                      undefined,
-                      "Age must be between 18 and 120"
-                    )}
-                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground pointer-events-none">age</span>
                   </div>
+                  <Controller
+                    name={`income_streams.rental_properties.${index}.until_age`}
+                    control={control}
+                    rules={{
+                      min: { value: 18, message: "Age must be between 18 and 120" },
+                      max: { value: 120, message: "Age must be between 18 and 120" },
+                    }}
+                    render={({ field }) => (
+                      <>
+                        <input
+                          id={`income_streams.rental_properties.${index}.until_age`}
+                          type="number"
+                          value={field.value ?? ''}
+                          onChange={(e) => field.onChange(e.target.value === '' ? null : Number(e.target.value))}
+                          className={`w-full rounded-md border bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none ${
+                            errors.income_streams?.rental_properties?.[index]?.until_age ? "border-red-500 ring-red-500" : ""
+                          }`}
+                        />
+                        {errors.income_streams?.rental_properties?.[index]?.until_age && (
+                          <ValidationError field={`income_streams.rental_properties.${index}.until_age`} message={errors.income_streams.rental_properties[index].until_age.message ?? "Invalid value"} />
+                        )}
+                      </>
+                    )}
+                  />
                 </div>
               </div>
             </div>

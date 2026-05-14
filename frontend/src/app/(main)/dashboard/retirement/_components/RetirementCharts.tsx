@@ -1,6 +1,17 @@
 "use client";
 
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
+import {
+  BarChart,
+  Bar,
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+} from "recharts";
 
 // Define the type for retirement response
 interface RetirementResponse {
@@ -50,50 +61,56 @@ export function RetirementCharts({ result }: { result?: any }) {
   }
 
   return (
-    <div className="space-y-6">
-      {/* Portfolio Value Chart */}
-      <div className="border rounded-lg p-4">
-        <h3 className="text-xl font-semibold mb-4">Portfolio Balance Over Time</h3>
-        <ResponsiveContainer width="100%" height={300}>
-          <LineChart data={chartData.portfolio} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="age" label={{ value: 'Age', position: 'insideBottom', offset: -5 }} />
-            <YAxis tickFormatter={(value) => `$${(value / 1000).toFixed(0)}K`} />
-            <Tooltip formatter={(value: number) => [`$${value.toLocaleString()}`, 'Balance']} />
-            <Legend />
-            <Line type="monotone" dataKey="portfolioValue" stroke="#3b82f6" name="Portfolio Balance" strokeWidth={2} />
-          </LineChart>
-        </ResponsiveContainer>
+    <section className="group relative overflow-hidden rounded-2xl border bg-card text-card-foreground shadow-sm transition-all hover:shadow-md">
+      {/* Decorative accent bar */}
+      <div className="absolute inset-y-0 left-0 w-1.5 bg-gradient-to-b from-blue-500 via-indigo-500 to-purple-500 opacity-80 transition-all group-hover:opacity-100" />
+
+      {/* Header Section */}
+      <div className="relative px-4 py-3 border-b border-slate-100 dark:border-slate-800">
+        <h2 className="text-base font-semibold tracking-tight text-slate-900 dark:text-slate-100">
+          Retirement Projections
+        </h2>
       </div>
 
-      {/* Income vs Expenses Chart */}
-      <div className="border rounded-lg p-4">
-        <h3 className="text-xl font-semibold mb-4">Income vs Expenses</h3>
-        <ResponsiveContainer width="100%" height={300}>
-          <LineChart data={chartData.portfolio} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="age" label={{ value: 'Age', position: 'insideBottom', offset: -5 }} />
-            <YAxis tickFormatter={(value) => `$${(value / 1000).toFixed(0)}K`} />
-            <Tooltip formatter={(value: number) => [`$${value.toLocaleString()}`, 'Amount']} />
-            <Legend />
-            <Line type="monotone" dataKey="income" stroke="#10b981" name="Income" strokeWidth={2} />
-            <Line type="monotone" dataKey="expenses" stroke="#ef4444" name="Expenses" strokeWidth={2} />
-          </LineChart>
-        </ResponsiveContainer>
-      </div>
+      {/* Chart Content */}
+      <div className="px-4 py-3 space-y-6">
+        {/* Portfolio Value Chart */}
+        <div className="space-y-2">
+          <h3 className="text-sm font-medium text-slate-700 dark:text-slate-300">Portfolio Balance Over Time</h3>
+          <ResponsiveContainer width="100%" height={300}>
+            <LineChart data={chartData.portfolio} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="age" label={{ value: 'Age', position: 'insideBottom', offset: -5 }} />
+              <YAxis tickFormatter={(value) => `$${(value / 1000).toFixed(0)}K`} />
+              <Tooltip formatter={(value: number) => [`$${value.toLocaleString()}`, 'Balance']} />
+              <Legend />
+              <Line type="monotone" dataKey="portfolioValue" stroke="#3b82f6" name="Portfolio Balance" strokeWidth={2} activeDot={{ r: 6 }} />
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
 
-      {/* Success Banner */}
-      <div className={`border rounded-lg p-4 ${result.success ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200'}`}>
-        <h3 className="font-semibold mb-2">
-          {result.success ? '✓ Projection Successful' : '✗ Projection Failed'}
-        </h3>
-        <p className="text-sm text-muted-foreground">
-          Final Balance: ${(result.final_balance ?? 0).toLocaleString()} | 
-          Average: ${(result.avg_balance ?? 0).toLocaleString()} | 
-          Min: ${(result.min_balance ?? 0).toLocaleString()} | 
-          Max: ${(result.max_balance ?? 0).toLocaleString()}
-        </p>
+        {/* Income vs Expenses Chart */}
+        <div className="space-y-2">
+          <h3 className="text-sm font-medium text-slate-700 dark:text-slate-300">Income vs Expenses</h3>
+          <ResponsiveContainer width="100%" height={300}>
+            <BarChart data={chartData.portfolio} margin={{ top: 20, right: 30, left: 20, bottom: 20 }} barSize={6} barGap={4}>
+              <CartesianGrid strokeDasharray="3 3" vertical={false} />
+              <XAxis dataKey="age" label={{ value: 'Age', position: 'insideBottom', offset: -5 }} />
+              <YAxis tickFormatter={(value) => `$${(value / 1000).toFixed(0)}K`} />
+              <Tooltip formatter={(value: number, name: string) => {
+                if (name === 'Income' || name === 'Expenses') return [`$${value.toLocaleString()}`, name];
+                return [`$${value.toLocaleString()}`, 'Amount'];
+              }} />
+              <Legend />
+              <Bar dataKey="income" fill="#10b981" name="Income" radius={[4, 4, 0, 0]} />
+              <Bar dataKey="expenses" fill="#ef4444" name="Expenses" radius={[4, 4, 0, 0]} />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+
+         
+        
       </div>
-    </div>
+    </section>
   );
 }

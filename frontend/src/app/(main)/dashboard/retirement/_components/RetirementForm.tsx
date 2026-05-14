@@ -149,6 +149,9 @@ export const RetirementForm: FC<RetirementFormProps> = ({ className, onResult })
   const incomeStreams = form.watch('income_streams');
   const realEstate = form.watch('real_estate');
 
+  // Get full form data for calculation (including passive fields)
+  const allFormData = form.getValues();
+
   // Auto-calculate with 1 second debounce for active sections only
   // Pass the raw array directly - hook will handle comparison
   const { results, isLoading, isError, error, calculateNow } = useRetirementCalculation(
@@ -157,7 +160,9 @@ export const RetirementForm: FC<RetirementFormProps> = ({ className, onResult })
       current_assets: watchedActiveFields[1],
       portfolio_allocation: watchedActiveFields[2],
       retirement_spending: watchedActiveFields[3],
-    } : null, 
+      income_streams: allFormData.income_streams,
+      real_estate: allFormData.real_estate,
+    } : null,
     1000
   );
 

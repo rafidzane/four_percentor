@@ -22,6 +22,10 @@ export const PortfolioAssetsSection: FC<PortfolioAssetsSectionProps> = ({ classN
   const equityPct = useWatch({ control, name: "portfolio_allocation.equity_pct" });
   const fixedIncomePct = useWatch({ control, name: "portfolio_allocation.fixed_income_pct" });
   const simulationMode = watch("portfolio_allocation.simulation_mode");
+  const spouseAge = watch("timeline.spouse_age");
+
+  // Check if spouse info should be shown
+  const showSpouseFields = spouseAge !== undefined && spouseAge > 0;
 
   // Validate allocation totals using useMemo to prevent recalculations
   const validationErrors = useMemo(() => {
@@ -95,6 +99,8 @@ export const PortfolioAssetsSection: FC<PortfolioAssetsSectionProps> = ({ classN
                     id="current_assets.investment_portfolio"
                     type="number"
                     {...field}
+                    value={field.value ?? ''}
+                    onChange={(e) => field.onChange(e.target.value === '' ? null : Number(e.target.value))}
                     className={`w-full rounded-md border bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none ${
                       errors.current_assets?.investment_portfolio ? "border-red-500 ring-red-500" : ""
                     }`}
@@ -133,7 +139,8 @@ export const PortfolioAssetsSection: FC<PortfolioAssetsSectionProps> = ({ classN
                   <input
                     id="current_assets.your_401k_ira"
                     type="number"
-                    {...field}
+                    value={field.value ?? ''}
+                    onChange={(e) => field.onChange(e.target.value === '' ? null : Number(e.target.value))}
                     className={`w-full rounded-md border bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none ${
                       errors.current_assets?.your_401k_ira ? "border-red-500 ring-red-500" : ""
                     }`}
@@ -161,29 +168,34 @@ export const PortfolioAssetsSection: FC<PortfolioAssetsSectionProps> = ({ classN
                 </TooltipContent>
               </Tooltip>
             </div>
-            <Controller
-              name="current_assets.spouse_401k_ira"
-              control={control}
-              rules={{
-                min: { value: 0, message: "Value cannot be negative" },
-              }}
-              render={({ field }) => (
-                <>
-                  <input
-                    id="current_assets.spouse_401k_ira"
-                    type="number"
-                    {...field}
-                    className={`w-full rounded-md border bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none ${
-                      errors.current_assets?.spouse_401k_ira ? "border-red-500 ring-red-500" : ""
-                    }`}
-                  />
-                  {errors.current_assets?.spouse_401k_ira && (
-                    <ValidationError field="current_assets.spouse_401k_ira" message={errors.current_assets.spouse_401k_ira.message ?? "Invalid value"} />
-                  )}
-                </>
-              )}
-            />
-            <p className="text-xs text-muted-foreground mt-0.5">Spouse retirement account balance</p>
+            {(showSpouseFields || showSpouseFields === false) && (
+              <Controller
+                name="current_assets.spouse_401k_ira"
+                control={control}
+                rules={{
+                  min: { value: 0, message: "Value cannot be negative" },
+                }}
+                render={({ field }) => (
+                  <>
+                    <input
+                      id="current_assets.spouse_401k_ira"
+                      type="number"
+                      value={field.value ?? ''}
+                      onChange={(e) => field.onChange(e.target.value === '' ? null : Number(e.target.value))}
+                      className={`w-full rounded-md border bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none ${
+                        errors.current_assets?.spouse_401k_ira ? "border-red-500 ring-red-500" : ""
+                      }`}
+                    />
+                    {errors.current_assets?.spouse_401k_ira && (
+                      <ValidationError field="current_assets.spouse_401k_ira" message={errors.current_assets.spouse_401k_ira.message ?? "Invalid value"} />
+                    )}
+                  </>
+                )}
+              />
+            )}
+            {(showSpouseFields || showSpouseFields === false) && (
+              <p className="text-xs text-muted-foreground mt-0.5 animate-in fade-in slide-in-from-top-2 duration-300">Spouse retirement account balance</p>
+            )}
           </div>
         </div>
 
@@ -216,7 +228,8 @@ export const PortfolioAssetsSection: FC<PortfolioAssetsSectionProps> = ({ classN
                     <input
                       id="current_assets.yearly_contribution"
                       type="number"
-                      {...field}
+                      value={field.value ?? ''}
+                      onChange={(e) => field.onChange(e.target.value === '' ? null : Number(e.target.value))}
                       className={`w-full rounded-md border bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none ${
                         errors.current_assets?.yearly_contribution ? "border-red-500 ring-red-500" : ""
                       }`}
@@ -257,7 +270,8 @@ export const PortfolioAssetsSection: FC<PortfolioAssetsSectionProps> = ({ classN
                     <input
                       id="current_assets.yearly_contribution_increase_pct"
                       type="number"
-                      {...field}
+                      value={field.value ?? ''}
+                      onChange={(e) => field.onChange(e.target.value === '' ? null : Number(e.target.value))}
                       className={`w-full rounded-md border bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none ${
                         errors.current_assets?.yearly_contribution_increase_pct ? "border-red-500 ring-red-500" : ""
                       }`}

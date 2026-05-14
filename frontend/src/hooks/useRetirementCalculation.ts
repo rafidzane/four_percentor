@@ -65,6 +65,22 @@ interface FormData {
     period_2_end_age?: number;
     period_2_withdrawal_pct?: number;
   };
+  income_streams?: {
+    social_security_you?: { claim_age: number; yearly_amount_today_dollars: number };
+    social_security_spouse?: { claim_age: number; yearly_amount_today_dollars: number };
+    pension_1?: { starting_age: number; yearly_amount: number };
+    pension_2?: { starting_age: number; yearly_amount: number };
+    rental_properties?: Array<{ property_name: string; net_annual_income: number; until_age: number }>;
+  };
+  real_estate?: {
+    total_property_value: number;
+    total_outstanding_mortgages: number;
+    annual_appreciation_pct: number;
+    model_property_sale?: boolean;
+    age_of_sale?: number;
+    amount_rolled_into_portfolio?: number;
+    rental_properties?: Array<{ value: number; net_annual_income: number; until_age: number }>;
+  };
 }
 
 interface UseRetirementCalculationResult {

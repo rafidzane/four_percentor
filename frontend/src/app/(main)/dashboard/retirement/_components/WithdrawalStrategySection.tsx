@@ -1,11 +1,12 @@
 "use client";
 
-import { FC, useMemo, useState } from "react";
+import { FC } from "react";
 import { useFormContext, Controller } from "react-hook-form";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
 import { InfoIcon, PiggyBankIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Switch } from "@/components/ui/switch";
 
 // Import the form data types and validation components
 import type { FormData } from "@/app/(main)/dashboard/retirement/_components/RetirementForm";
@@ -16,22 +17,14 @@ interface WithdrawalStrategySectionProps {
 }
 
 export const WithdrawalStrategySection: FC<WithdrawalStrategySectionProps> = ({ className }) => {
-  const { control, register, watch, formState: { errors } } = useFormContext<FormData>();
+  const { control, watch, formState: { errors } } = useFormContext<FormData>();
 
-  // Track withdrawal type for each period
-  const [period1WithdrawalType, setPeriod1WithdrawalType] = useState<"amount" | "percentage">("amount");
-  const [period2WithdrawalType, setPeriod2WithdrawalType] = useState<"amount" | "percentage">("amount");
+  // Track withdrawal type for each period from form values
+  const period1Type = watch("retirement_spending.period_1_withdrawal_type") || "amount";
+  const period2Type = watch("retirement_spending.period_2_withdrawal_type") || "amount";
 
   // Get two_period_mode value
   const twoPeriodMode = watch("retirement_spending.two_period_mode");
-
-  const handlePeriod1Toggle = () => {
-    setPeriod1WithdrawalType((prev) => (prev === "amount" ? "percentage" : "amount"));
-  };
-
-  const handlePeriod2Toggle = () => {
-    setPeriod2WithdrawalType((prev) => (prev === "amount" ? "percentage" : "amount"));
-  };
 
   return (
     <section data-slot="card" className={cn(
@@ -54,10 +47,10 @@ export const WithdrawalStrategySection: FC<WithdrawalStrategySectionProps> = ({ 
       </div>
 
       {/* Card Content */}
-      <div data-slot="card-content" className="px-4 py-3 space-y-3">
+      <div data-slot="card-content" className="px-4 py-3 space-y-6">
 
         {/* Inflation checkbox */}
-        <div className="flex items-center space-x-2 mb-2">
+        <div className="flex items-center gap-3">
           <Controller
             name="retirement_spending.adjust_for_inflation"
             control={control}
@@ -67,7 +60,7 @@ export const WithdrawalStrategySection: FC<WithdrawalStrategySectionProps> = ({ 
                   id="retirement_spending.adjust_for_inflation"
                   type="checkbox"
                   checked={field.value}
-                  onCheckedChange={field.onChange}
+                  onChange={(e) => field.onChange(e.target.checked)}
                   className="h-4 w-4 rounded border-gray-300 text-purple-600 focus:ring-purple-600 transition-colors"
                 />
                 <label htmlFor="retirement_spending.adjust_for_inflation" className="text-xs font-medium cursor-pointer">
@@ -91,10 +84,12 @@ export const WithdrawalStrategySection: FC<WithdrawalStrategySectionProps> = ({ 
         {/* Period 1 Configuration - Always visible */}
         <div className="space-y-2">
           <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Period 1</h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
+          
+          {/* All inputs on one line using flexbox */}
+          <div className="flex flex-wrap gap-3 items-end">
             {/* Period 1 Start Age */}
-            <div className="space-y-1">
-              <label htmlFor="retirement_spending.period_1_start_age" className="block font-medium text-xs mb-0.5">Start Age</label>
+            <div className="space-y-1 min-w-[80px] flex-1">
+              <label htmlFor="retirement_spending.period_1_start_age" className="block font-medium text-xs">Start</label>
               <Controller
                 name="retirement_spending.period_1_start_age"
                 control={control}
@@ -107,9 +102,10 @@ export const WithdrawalStrategySection: FC<WithdrawalStrategySectionProps> = ({ 
                     <input
                       id="retirement_spending.period_1_start_age"
                       type="number"
-                      {...field}
-                      className={`w-full rounded-md border bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none ${
-                        errors.retirement_spending?.period_1_start_age ? "border-red-500 ring-red-500" : ""
+                      value={field.value ?? ''}
+                      onChange={(e) => field.onChange(e.target.value === '' ? null : Number(e.target.value))}
+                      className={`w-full rounded-md border bg-transparent px-2 py-1.5 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none transition-colors ${
+                        errors.retirement_spending?.period_1_start_age ? "border-red-500 ring-red-500" : "border-slate-300 dark:border-slate-700"
                       }`}
                     />
                     {errors.retirement_spending?.period_1_start_age && (
@@ -121,8 +117,8 @@ export const WithdrawalStrategySection: FC<WithdrawalStrategySectionProps> = ({ 
             </div>
 
             {/* Period 1 End Age */}
-            <div className="space-y-1">
-              <label htmlFor="retirement_spending.period_1_end_age" className="block font-medium text-xs mb-0.5">End Age</label>
+            <div className="space-y-1 min-w-[80px] flex-1">
+              <label htmlFor="retirement_spending.period_1_end_age" className="block font-medium text-xs">End</label>
               <Controller
                 name="retirement_spending.period_1_end_age"
                 control={control}
@@ -135,9 +131,10 @@ export const WithdrawalStrategySection: FC<WithdrawalStrategySectionProps> = ({ 
                     <input
                       id="retirement_spending.period_1_end_age"
                       type="number"
-                      {...field}
-                      className={`w-full rounded-md border bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none ${
-                        errors.retirement_spending?.period_1_end_age ? "border-red-500 ring-red-500" : ""
+                      value={field.value ?? ''}
+                      onChange={(e) => field.onChange(e.target.value === '' ? null : Number(e.target.value))}
+                      className={`w-full rounded-md border bg-transparent px-2 py-1.5 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none transition-colors ${
+                        errors.retirement_spending?.period_1_end_age ? "border-red-500 ring-red-500" : "border-slate-300 dark:border-slate-700"
                       }`}
                     />
                     {errors.retirement_spending?.period_1_end_age && (
@@ -148,48 +145,52 @@ export const WithdrawalStrategySection: FC<WithdrawalStrategySectionProps> = ({ 
               />
             </div>
 
-            {/* Period 1 Type */}
-            <div className="space-y-1">
-              <label htmlFor="retirement_spending.period_1_withdrawal_type" className="block font-medium text-xs mb-0.5">Type</label>
+            {/* Period 1 Type - Switch toggle */}
+            <div className="space-y-2 min-w-[140px]">
+              <label className="block font-medium text-xs">Type</label>
               <Controller
                 name="retirement_spending.period_1_withdrawal_type"
                 control={control}
-                render={() => (
-                  <>
-                    <div className="flex items-center gap-2">
-                      <button
-                        type="button"
-                        onClick={handlePeriod1Toggle}
-                        className={`text-xs px-3 py-1.5 rounded-md transition-colors ${
-                          period1WithdrawalType === "amount"
-                            ? "bg-purple-600 text-white hover:bg-purple-700"
-                            : "border border-slate-300 dark:border-slate-600 text-muted-foreground hover:text-gray-700 dark:hover:text-gray-300 bg-white dark:bg-slate-900"
-                        }`}
-                      >
-                        Amount
-                      </button>
-                      <div className="w-[2px] h-5 bg-border rounded-full"></div>
-                      <button
-                        type="button"
-                        onClick={handlePeriod1Toggle}
-                        className={`text-xs px-3 py-1.5 rounded-md transition-colors ${
-                          period1WithdrawalType === "percentage"
-                            ? "bg-purple-600 text-white hover:bg-purple-700"
-                            : "border border-slate-300 dark:border-slate-600 text-muted-foreground hover:text-gray-700 dark:hover:text-gray-300 bg-white dark:bg-slate-900"
-                        }`}
-                      >
-                        Percentage
-                      </button>
-                    </div>
-                  </>
+                render={({ field }) => (
+                  <div className="flex items-center justify-between gap-2 bg-slate-50 dark:bg-slate-900/50 rounded-lg p-1 border border-slate-200 dark:border-slate-800">
+                    <button
+                      type="button"
+                      onClick={() => field.onChange("amount")}
+                      className={`
+                        flex-1 py-1 px-2 text-xs font-medium rounded-md transition-all duration-200 ease-out
+                        ${field.value === "amount" 
+                          ? "bg-white dark:bg-slate-800 text-purple-700 dark:text-purple-400 shadow-sm ring-1 ring-black/5" 
+                          : "text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200"}
+                      `}
+                    >
+                      Amount
+                    </button>
+                    <Switch
+                      checked={field.value === "percentage"}
+                      onCheckedChange={(checked) => field.onChange(checked ? "percentage" : "amount")}
+                      className="data-[state=unchecked]:bg-slate-300 data-[state=checked]:bg-purple-600"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => field.onChange("percentage")}
+                      className={`
+                        flex-1 py-1 px-2 text-xs font-medium rounded-md transition-all duration-200 ease-out text-center
+                        ${field.value === "percentage" 
+                          ? "bg-white dark:bg-slate-800 text-purple-700 dark:text-purple-400 shadow-sm ring-1 ring-black/5" 
+                          : "text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200"}
+                      `}
+                    >
+                      Percent
+                    </button>
+                  </div>
                 )}
               />
             </div>
 
             {/* Period 1 Value */}
-            <div className="space-y-1 md:col-span-3">
-              <label htmlFor="retirement_spending.period_1_withdrawal_value" className="block font-medium text-xs mb-0.5">Value</label>
-              {period1WithdrawalType === "percentage" ? (
+            <div className="space-y-1 flex-1 min-w-[120px]">
+              <label htmlFor="retirement_spending.period_1_withdrawal_value" className="block font-medium text-xs">Value</label>
+              {period1Type === "percentage" ? (
                 <Controller
                   name="retirement_spending.period_1_withdrawal_pct"
                   control={control}
@@ -199,17 +200,16 @@ export const WithdrawalStrategySection: FC<WithdrawalStrategySectionProps> = ({ 
                   }}
                   render={({ field }) => (
                     <>
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center rounded-md border bg-transparent px-2 py-1.5 shadow-xs focus-within:border-ring focus-within:ring-ring/50 outline-none transition-colors">
                         <input
                           id="retirement_spending.period_1_withdrawal_pct"
                           type="number"
                           min={0}
                           max={100}
                           step={0.5}
-                          {...field}
-                          className={`w-full rounded-md border bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none ${
-                            errors.retirement_spending?.period_1_withdrawal_pct ? "border-red-500 ring-red-500" : ""
-                          }`}
+                          value={field.value ?? ''}
+                          onChange={(e) => field.onChange(e.target.value === '' ? null : Number(e.target.value))}
+                          className="flex-1 bg-transparent text-xs outline-none"
                         />
                         <span className="text-xs text-muted-foreground">%</span>
                       </div>
@@ -228,16 +228,18 @@ export const WithdrawalStrategySection: FC<WithdrawalStrategySectionProps> = ({ 
                   }}
                   render={({ field }) => (
                     <>
-                      <input
-                        id="retirement_spending.period_1_withdrawal_amount"
-                        type="number"
-                        min={0}
-                        step={100}
-                        {...field}
-                        className={`w-full rounded-md border bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none ${
-                          errors.retirement_spending?.period_1_withdrawal_amount ? "border-red-500 ring-red-500" : ""
-                        }`}
-                      />
+                      <div className="flex items-center rounded-md border bg-transparent px-2 py-1.5 shadow-xs focus-within:border-ring focus-within:ring-ring/50 outline-none transition-colors">
+                        <span className="text-xs text-muted-foreground mr-1">$</span>
+                        <input
+                          id="retirement_spending.period_1_withdrawal_amount"
+                          type="number"
+                          min={0}
+                          step={100}
+                          value={field.value ?? ''}
+                          onChange={(e) => field.onChange(e.target.value === '' ? null : Number(e.target.value))}
+                          className="flex-1 bg-transparent text-xs outline-none"
+                        />
+                      </div>
                       {errors.retirement_spending?.period_1_withdrawal_amount && (
                         <ValidationError field="retirement_spending.period_1_withdrawal_amount" message={errors.retirement_spending.period_1_withdrawal_amount.message ?? "Invalid value"} />
                       )}
@@ -250,35 +252,31 @@ export const WithdrawalStrategySection: FC<WithdrawalStrategySectionProps> = ({ 
         </div>
 
         {/* Toggle for Period 2 */}
-        <div className="flex items-center space-x-2 mb-2">
-          <Controller
-            name="retirement_spending.two_period_mode"
-            control={control}
-            render={({ field }) => (
-              <div className="flex items-center gap-2">
-                <input
-                  id="retirement_spending.two_period_mode"
-                  type="checkbox"
-                  checked={field.value}
-                  onCheckedChange={field.onChange}
-                  className="h-4 w-4 rounded border-gray-300 text-purple-600 focus:ring-purple-600 transition-colors"
-                />
-                <label htmlFor="retirement_spending.two_period_mode" className="text-xs font-medium cursor-pointer">
-                  Configure Period 2 spending
-                </label>
-              </div>
-            )}
-          />
+        <div className="flex items-center gap-3 border-t pt-4 dark:border-slate-800">
+          <div className="flex items-center space-x-2 w-full justify-between cursor-pointer" onClick={() => setValue("retirement_spending.two_period_mode", !twoPeriodMode, { shouldDirty: true })}>
+            <input
+              id="retirement_spending.two_period_mode"
+              type="checkbox"
+              checked={twoPeriodMode}
+              className="h-3 w-3 rounded border-gray-300 text-purple-600 focus:ring-purple-600 transition-colors cursor-pointer"
+              onChange={(e) => setValue("retirement_spending.two_period_mode", e.target.checked, { shouldDirty: true })}
+            />
+            <label htmlFor="retirement_spending.two_period_mode" className="text-xs font-medium cursor-pointer">
+              Configure Period 2 spending
+            </label>
+          </div>
         </div>
 
         {/* Period 2 Configuration - Only shown when enabled */}
         {twoPeriodMode && (
           <div className="space-y-2 animate-in fade-in slide-in-from-top-2 duration-300">
             <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Period 2</h3>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
+            
+            {/* All inputs on one line using flexbox */}
+            <div className="flex flex-wrap gap-3 items-end">
               {/* Period 2 Start Age */}
-              <div className="space-y-1">
-                <label htmlFor="retirement_spending.period_2_start_age" className="block font-medium text-xs mb-0.5">Start Age</label>
+              <div className="space-y-1 min-w-[80px] flex-1">
+                <label htmlFor="retirement_spending.period_2_start_age" className="block font-medium text-xs">Start</label>
                 <Controller
                   name="retirement_spending.period_2_start_age"
                   control={control}
@@ -291,9 +289,10 @@ export const WithdrawalStrategySection: FC<WithdrawalStrategySectionProps> = ({ 
                       <input
                         id="retirement_spending.period_2_start_age"
                         type="number"
-                        {...field}
-                        className={`w-full rounded-md border bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none ${
-                          errors.retirement_spending?.period_2_start_age ? "border-red-500 ring-red-500" : ""
+                        value={field.value ?? ''}
+                        onChange={(e) => field.onChange(e.target.value === '' ? null : Number(e.target.value))}
+                        className={`w-full rounded-md border bg-transparent px-2 py-1.5 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none transition-colors ${
+                          errors.retirement_spending?.period_2_start_age ? "border-red-500 ring-red-500" : "border-slate-300 dark:border-slate-700"
                         }`}
                       />
                       {errors.retirement_spending?.period_2_start_age && (
@@ -305,8 +304,8 @@ export const WithdrawalStrategySection: FC<WithdrawalStrategySectionProps> = ({ 
               </div>
 
               {/* Period 2 End Age */}
-              <div className="space-y-1">
-                <label htmlFor="retirement_spending.period_2_end_age" className="block font-medium text-xs mb-0.5">End Age</label>
+              <div className="space-y-1 min-w-[80px] flex-1">
+                <label htmlFor="retirement_spending.period_2_end_age" className="block font-medium text-xs">End</label>
                 <Controller
                   name="retirement_spending.period_2_end_age"
                   control={control}
@@ -319,9 +318,10 @@ export const WithdrawalStrategySection: FC<WithdrawalStrategySectionProps> = ({ 
                       <input
                         id="retirement_spending.period_2_end_age"
                         type="number"
-                        {...field}
-                        className={`w-full rounded-md border bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none ${
-                          errors.retirement_spending?.period_2_end_age ? "border-red-500 ring-red-500" : ""
+                        value={field.value ?? ''}
+                        onChange={(e) => field.onChange(e.target.value === '' ? null : Number(e.target.value))}
+                        className={`w-full rounded-md border bg-transparent px-2 py-1.5 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none transition-colors ${
+                          errors.retirement_spending?.period_2_end_age ? "border-red-500 ring-red-500" : "border-slate-300 dark:border-slate-700"
                         }`}
                       />
                       {errors.retirement_spending?.period_2_end_age && (
@@ -332,48 +332,52 @@ export const WithdrawalStrategySection: FC<WithdrawalStrategySectionProps> = ({ 
                 />
               </div>
 
-              {/* Period 2 Type */}
-              <div className="space-y-1">
-                <label htmlFor="retirement_spending.period_2_withdrawal_type" className="block font-medium text-xs mb-0.5">Type</label>
+              {/* Period 2 Type - Switch toggle */}
+              <div className="space-y-2 min-w-[140px]">
+                <label className="block font-medium text-xs">Type</label>
                 <Controller
                   name="retirement_spending.period_2_withdrawal_type"
                   control={control}
-                  render={() => (
-                    <>
-                      <div className="flex items-center gap-2">
-                        <button
-                          type="button"
-                          onClick={handlePeriod2Toggle}
-                          className={`text-xs px-3 py-1.5 rounded-md transition-colors ${
-                            period2WithdrawalType === "amount"
-                              ? "bg-purple-600 text-white hover:bg-purple-700"
-                              : "border border-slate-300 dark:border-slate-600 text-muted-foreground hover:text-gray-700 dark:hover:text-gray-300 bg-white dark:bg-slate-900"
-                          }`}
-                        >
-                          Amount
-                        </button>
-                        <div className="w-[2px] h-5 bg-border rounded-full"></div>
-                        <button
-                          type="button"
-                          onClick={handlePeriod2Toggle}
-                          className={`text-xs px-3 py-1.5 rounded-md transition-colors ${
-                            period2WithdrawalType === "percentage"
-                              ? "bg-purple-600 text-white hover:bg-purple-700"
-                              : "border border-slate-300 dark:border-slate-600 text-muted-foreground hover:text-gray-700 dark:hover:text-gray-300 bg-white dark:bg-slate-900"
-                          }`}
-                        >
-                          Percentage
-                        </button>
-                      </div>
-                    </>
+                  render={({ field }) => (
+                    <div className="flex items-center justify-between gap-2 bg-slate-50 dark:bg-slate-900/50 rounded-lg p-1 border border-slate-200 dark:border-slate-800">
+                      <button
+                        type="button"
+                        onClick={() => field.onChange("amount")}
+                        className={`
+                          flex-1 py-1 px-2 text-xs font-medium rounded-md transition-all duration-200 ease-out
+                          ${field.value === "amount" 
+                            ? "bg-white dark:bg-slate-800 text-purple-700 dark:text-purple-400 shadow-sm ring-1 ring-black/5" 
+                            : "text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200"}
+                        `}
+                      >
+                        Amount
+                      </button>
+                      <Switch
+                        checked={field.value === "percentage"}
+                        onCheckedChange={(checked) => field.onChange(checked ? "percentage" : "amount")}
+                        className="data-[state=unchecked]:bg-slate-300 data-[state=checked]:bg-purple-600"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => field.onChange("percentage")}
+                        className={`
+                          flex-1 py-1 px-2 text-xs font-medium rounded-md transition-all duration-200 ease-out text-center
+                          ${field.value === "percentage" 
+                            ? "bg-white dark:bg-slate-800 text-purple-700 dark:text-purple-400 shadow-sm ring-1 ring-black/5" 
+                            : "text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200"}
+                        `}
+                      >
+                        Percent
+                      </button>
+                    </div>
                   )}
                 />
               </div>
 
               {/* Period 2 Value */}
-              <div className="space-y-1 md:col-span-3">
-                <label htmlFor="retirement_spending.period_2_withdrawal_value" className="block font-medium text-xs mb-0.5">Value</label>
-                {period2WithdrawalType === "percentage" ? (
+              <div className="space-y-1 flex-1 min-w-[120px]">
+                <label htmlFor="retirement_spending.period_2_withdrawal_value" className="block font-medium text-xs">Value</label>
+                {period2Type === "percentage" ? (
                   <Controller
                     name="retirement_spending.period_2_withdrawal_pct"
                     control={control}
@@ -383,17 +387,16 @@ export const WithdrawalStrategySection: FC<WithdrawalStrategySectionProps> = ({ 
                     }}
                     render={({ field }) => (
                       <>
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center rounded-md border bg-transparent px-2 py-1.5 shadow-xs focus-within:border-ring focus-within:ring-ring/50 outline-none transition-colors">
                           <input
                             id="retirement_spending.period_2_withdrawal_pct"
                             type="number"
                             min={0}
                             max={100}
                             step={0.5}
-                            {...field}
-                            className={`w-full rounded-md border bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none ${
-                              errors.retirement_spending?.period_2_withdrawal_pct ? "border-red-500 ring-red-500" : ""
-                            }`}
+                            value={field.value ?? ''}
+                            onChange={(e) => field.onChange(e.target.value === '' ? null : Number(e.target.value))}
+                            className="flex-1 bg-transparent text-xs outline-none"
                           />
                           <span className="text-xs text-muted-foreground">%</span>
                         </div>
@@ -412,16 +415,18 @@ export const WithdrawalStrategySection: FC<WithdrawalStrategySectionProps> = ({ 
                     }}
                     render={({ field }) => (
                       <>
-                        <input
-                          id="retirement_spending.period_2_withdrawal_amount"
-                          type="number"
-                          min={0}
-                          step={100}
-                          {...field}
-                          className={`w-full rounded-md border bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none ${
-                            errors.retirement_spending?.period_2_withdrawal_amount ? "border-red-500 ring-red-500" : ""
-                          }`}
-                        />
+                        <div className="flex items-center rounded-md border bg-transparent px-2 py-1.5 shadow-xs focus-within:border-ring focus-within:ring-ring/50 outline-none transition-colors">
+                          <span className="text-xs text-muted-foreground mr-1">$</span>
+                          <input
+                            id="retirement_spending.period_2_withdrawal_amount"
+                            type="number"
+                            min={0}
+                            step={100}
+                            value={field.value ?? ''}
+                            onChange={(e) => field.onChange(e.target.value === '' ? null : Number(e.target.value))}
+                            className="flex-1 bg-transparent text-xs outline-none"
+                          />
+                        </div>
                         {errors.retirement_spending?.period_2_withdrawal_amount && (
                           <ValidationError field="retirement_spending.period_2_withdrawal_amount" message={errors.retirement_spending.period_2_withdrawal_amount.message ?? "Invalid value"} />
                         )}

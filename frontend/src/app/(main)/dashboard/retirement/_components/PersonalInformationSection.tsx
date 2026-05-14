@@ -22,7 +22,6 @@ export const PersonalInformationSection: FC<PersonalInformationSectionProps> = (
   const currentAge = watch("timeline.current_age");
   const retirementAge = watch("timeline.retirement_age");
   const spouseAge = watch("timeline.spouse_age");
-  const yearsInRetirement = watch("timeline.years_in_retirement");
 
   // Validate age ranges using useMemo to prevent recalculations
   const validationErrors = useMemo(() => {
@@ -38,6 +37,9 @@ export const PersonalInformationSection: FC<PersonalInformationSectionProps> = (
 
     return newErrors;
   }, [currentAge, retirementAge, spouseAge]);
+
+  // Check if spouse info should be shown
+  const showSpouseFields = spouseAge !== undefined && spouseAge > 0;
 
   return (
     <section className={cn(
@@ -71,7 +73,7 @@ export const PersonalInformationSection: FC<PersonalInformationSectionProps> = (
 
         {/* Main Input Grid - matching PortfolioAssetsSection layout */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2">
-          
+
           {/* Current Age Field */}
           <div className="space-y-1">
             <div className="flex items-center gap-1">
@@ -99,7 +101,8 @@ export const PersonalInformationSection: FC<PersonalInformationSectionProps> = (
                   <input
                     id="timeline.current_age"
                     type="number"
-                    {...field}
+                    value={field.value ?? ''}
+                    onChange={(e) => field.onChange(e.target.value === '' ? null : Number(e.target.value))}
                     className={`w-full rounded-md border bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none ${
                       errors.timeline?.current_age ? "border-red-500 ring-red-500" : ""
                     }`}
@@ -139,7 +142,8 @@ export const PersonalInformationSection: FC<PersonalInformationSectionProps> = (
                   <input
                     id="timeline.retirement_age"
                     type="number"
-                    {...field}
+                    value={field.value ?? ''}
+                    onChange={(e) => field.onChange(e.target.value === '' ? null : Number(e.target.value))}
                     className={`w-full rounded-md border bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none ${
                       errors.timeline?.retirement_age ? "border-red-500 ring-red-500" : ""
                     }`}
@@ -152,85 +156,91 @@ export const PersonalInformationSection: FC<PersonalInformationSectionProps> = (
             />
           </div>
 
-          {/* Spouse Age Field */}
-          <div className="space-y-1">
-            <div className="flex items-center gap-1">
-              <label htmlFor="timeline.spouse_age" className="block font-medium text-xs mb-0.5">Spouse Age</label>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button variant="ghost" size="sm" className="h-4 w-4 p-0">
-                    <InfoIcon className="h-3 w-3 text-muted-foreground" />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent side="right" className="max-w-sm px-3 py-1.5 text-xs">
-                  Your spouse's current age in years
-                </TooltipContent>
-              </Tooltip>
+          {/* Spouse Age Field - Only show when spouse info provided */}
+          {(showSpouseFields || showSpouseFields === false) && (
+            <div className="space-y-1 animate-in fade-in slide-in-from-top-2 duration-300">
+              <div className="flex items-center gap-1">
+                <label htmlFor="timeline.spouse_age" className="block font-medium text-xs mb-0.5">Spouse Age</label>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button variant="ghost" size="sm" className="h-4 w-4 p-0">
+                      <InfoIcon className="h-3 w-3 text-muted-foreground" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent side="right" className="max-w-sm px-3 py-1.5 text-xs">
+                    Your spouse's current age in years
+                  </TooltipContent>
+                </Tooltip>
+              </div>
+              <Controller
+                name="timeline.spouse_age"
+                control={control}
+                rules={{
+                  min: { value: 18, message: "Spouse age must be at least 18" },
+                  max: { value: 100, message: "Spouse age cannot exceed 100" },
+                }}
+                render={({ field }) => (
+                  <>
+                    <input
+                      id="timeline.spouse_age"
+                      type="number"
+                      value={field.value ?? ''}
+                      onChange={(e) => field.onChange(e.target.value === '' ? null : Number(e.target.value))}
+                      className={`w-full rounded-md border bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none ${
+                        errors.timeline?.spouse_age ? "border-red-500 ring-red-500" : ""
+                      }`}
+                    />
+                    {errors.timeline?.spouse_age && (
+                      <ValidationError field="timeline.spouse_age" message={errors.timeline.spouse_age.message ?? "Invalid value"} />
+                    )}
+                  </>
+                )}
+              />
             </div>
-            <Controller
-              name="timeline.spouse_age"
-              control={control}
-              rules={{
-                min: { value: 18, message: "Spouse age must be at least 18" },
-                max: { value: 100, message: "Spouse age cannot exceed 100" },
-              }}
-              render={({ field }) => (
-                <>
-                  <input
-                    id="timeline.spouse_age"
-                    type="number"
-                    {...field}
-                    className={`w-full rounded-md border bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none ${
-                      errors.timeline?.spouse_age ? "border-red-500 ring-red-500" : ""
-                    }`}
-                  />
-                  {errors.timeline?.spouse_age && (
-                    <ValidationError field="timeline.spouse_age" message={errors.timeline.spouse_age.message ?? "Invalid value"} />
-                  )}
-                </>
-              )}
-            />
-          </div>
+          )}
 
-          {/* Years in Retirement Field */}
-          <div className="space-y-1">
-            <div className="flex items-center gap-1">
-              <label htmlFor="timeline.years_in_retirement" className="block font-medium text-xs mb-0.5">Retirement Years</label>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button variant="ghost" size="sm" className="h-4 w-4 p-0">
-                    <InfoIcon className="h-3 w-3 text-muted-foreground" />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent side="right" className="max-w-sm px-3 py-1.5 text-xs">
-                  Number of years you expect to be in retirement
-                </TooltipContent>
-              </Tooltip>
+          {/* Years in Retirement Field - Only show when spouse info provided */}
+          {(showSpouseFields || showSpouseFields === false) && (
+            <div className="space-y-1 animate-in fade-in slide-in-from-top-2 duration-300">
+              <div className="flex items-center gap-1">
+                <label htmlFor="timeline.years_in_retirement" className="block font-medium text-xs mb-0.5">Retirement Years</label>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button variant="ghost" size="sm" className="h-4 w-4 p-0">
+                      <InfoIcon className="h-3 w-3 text-muted-foreground" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent side="right" className="max-w-sm px-3 py-1.5 text-xs">
+                    Number of years you expect to be in retirement
+                  </TooltipContent>
+                </Tooltip>
+              </div>
+              <Controller
+                name="timeline.years_in_retirement"
+                control={control}
+                rules={{
+                  min: { value: 1, message: "Years in retirement must be at least 1" },
+                  max: { value: 50, message: "Years in retirement cannot exceed 50" },
+                }}
+                render={({ field }) => (
+                  <>
+                    <input
+                      id="timeline.years_in_retirement"
+                      type="number"
+                      value={field.value ?? ''}
+                      onChange={(e) => field.onChange(e.target.value === '' ? null : Number(e.target.value))}
+                      className={`w-full rounded-md border bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none ${
+                        errors.timeline?.years_in_retirement ? "border-red-500 ring-red-500" : ""
+                      }`}
+                    />
+                    {errors.timeline?.years_in_retirement && (
+                      <ValidationError field="timeline.years_in_retirement" message={errors.timeline.years_in_retirement.message ?? "Invalid value"} />
+                    )}
+                  </>
+                )}
+              />
             </div>
-            <Controller
-              name="timeline.years_in_retirement"
-              control={control}
-              rules={{
-                min: { value: 1, message: "Years in retirement must be at least 1" },
-                max: { value: 50, message: "Years in retirement cannot exceed 50" },
-              }}
-              render={({ field }) => (
-                <>
-                  <input
-                    id="timeline.years_in_retirement"
-                    type="number"
-                    {...field}
-                    className={`w-full rounded-md border bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none ${
-                      errors.timeline?.years_in_retirement ? "border-red-500 ring-red-500" : ""
-                    }`}
-                  />
-                  {errors.timeline?.years_in_retirement && (
-                    <ValidationError field="timeline.years_in_retirement" message={errors.timeline.years_in_retirement.message ?? "Invalid value"} />
-                  )}
-                </>
-              )}
-            />
-          </div>
+          )}
 
         </div>
 
