@@ -64,5 +64,10 @@ tmp/
 temp/
 *.tmp
 
+# Backup files
+*.orig
+*.bak
+*.backup
+
 # Worktrees (isolated development branches)
 .worktrees/

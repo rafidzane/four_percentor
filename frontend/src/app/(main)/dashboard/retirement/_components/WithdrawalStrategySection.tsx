@@ -1,296 +1,441 @@
 "use client";
 
-import { FC } from "react";
-import { useWatch } from "react-hook-form";
-import { useFormContext } from "react-hook-form";
-import { cn } from "@/lib/utils";
+import { FC, useMemo, useState } from "react";
+import { useFormContext, Controller } from "react-hook-form";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
-import { Switch } from "@/components/ui/switch";
-import { InfoIcon } from "lucide-react";
+import { InfoIcon, PiggyBankIcon } from "lucide-react";
+import { cn } from "@/lib/utils";
 
-// Import the form data types
+// Import the form data types and validation components
 import type { FormData } from "@/app/(main)/dashboard/retirement/_components/RetirementForm";
+import { ValidationError, ErrorBanner } from "@/components/retirement-dashboard/ui/ValidationErrors";
 
 interface WithdrawalStrategySectionProps {
   className?: string;
 }
 
 export const WithdrawalStrategySection: FC<WithdrawalStrategySectionProps> = ({ className }) => {
-  const { control, register, watch, setValue } = useFormContext<FormData>();
+  const { control, register, watch, formState: { errors } } = useFormContext<FormData>();
 
-  // Watch values for conditional rendering
-  const spendingMode = watch("retirement_spending.spending_mode");
+  // Track withdrawal type for each period
+  const [period1WithdrawalType, setPeriod1WithdrawalType] = useState<"amount" | "percentage">("amount");
+  const [period2WithdrawalType, setPeriod2WithdrawalType] = useState<"amount" | "percentage">("amount");
+
+  // Get two_period_mode value
   const twoPeriodMode = watch("retirement_spending.two_period_mode");
-  const period1WithdrawalType = watch("retirement_spending.period_1_withdrawal_type") as "percentage" | "amount" | undefined;
-  const period2WithdrawalType = watch("retirement_spending.period_2_withdrawal_type") as "percentage" | "amount" | undefined;
+
+  const handlePeriod1Toggle = () => {
+    setPeriod1WithdrawalType((prev) => (prev === "amount" ? "percentage" : "amount"));
+  };
+
+  const handlePeriod2Toggle = () => {
+    setPeriod2WithdrawalType((prev) => (prev === "amount" ? "percentage" : "amount"));
+  };
 
   return (
-    <div data-slot="card" className="bg-card text-card-foreground flex flex-col gap-6 rounded-xl border-l-4 border-blue-500 py-6 shadow-sm">
-      <div data-slot="card-header" className="@container/card-header grid auto-rows-min grid-rows-[auto_auto] items-start gap-2 has-data-[slot=card-action]:grid-cols-[1fr_auto] [.border-b]:pb-6">
-        <div data-slot="card-title" className="leading-none font-semibold flex items-center gap-2">
-          <span className="grid size-7 place-content-center rounded-sm bg-muted">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-piggy-bank size-5" aria-hidden="true">
-              <path d="M19 5c-1.46 0-2.73.83-3.43 2.08l-.95 1.58a4.5 4.5 0 0 1-5.57 2.12 4.5 4.5 0 0 1-5.57-2.12l-.95-1.58C4.31 6.83 3.04 6 1.58 6"></path>
-              <path d="M19 5a5 5 0 0 1 0 10"></path>
-              <path d="M22 13h-2.5a1 1 0 0 1-1-1v-1.5a1 1 0 0 1 1-1H22"></path>
-              <path d="M2 16v4a1 1 0 0 0 1 1h18a1 1 0 0 0 1-1v-4a1 1 0 0 0-1-1H3a1 1 0 0 0-1 1z"></path>
-              <path d="M12 16v4"></path>
-            </svg>
-          </span>
-          Withdrawal Strategy
+    <section data-slot="card" className={cn(
+      "group relative overflow-hidden rounded-2xl border bg-card text-card-foreground shadow-sm transition-all hover:shadow-md",
+      className
+    )}>
+      {/* Decorative accent bar */}
+      <div className="absolute inset-y-0 left-0 w-1.5 bg-gradient-to-b from-purple-600 via-indigo-600 to-blue-600 opacity-80 transition-all group-hover:opacity-100" />
+
+      {/* Header Section */}
+      <div className="relative px-4 py-3 border-b border-slate-100 dark:border-slate-800">
+        <div className="flex items-center gap-2">
+          <div className="grid size-7 place-content-center rounded-md bg-gradient-to-br from-purple-50 to-indigo-50 dark:from-purple-950/30 dark:to-indigo-950/30 border border-purple-100 dark:border-purple-800/50 shadow-inner">
+            <PiggyBankIcon className="size-4 text-purple-600 dark:text-indigo-400" />
+          </div>
+          <h2 className="text-base font-semibold tracking-tight text-slate-900 dark:text-slate-100">
+            Withdrawal Strategy
+          </h2>
         </div>
       </div>
-      <div data-slot="card-content" className="px-6 space-y-4">
+
+      {/* Card Content */}
+      <div data-slot="card-content" className="px-4 py-3 space-y-3">
+
         {/* Inflation checkbox */}
-        <div className="flex items-center space-x-2 mb-3">
-          <label className="flex items-center space-x-2 cursor-pointer">
-            <input
-              id="retirement_spending.adjust_for_inflation"
-              type="checkbox"
-              {...register("retirement_spending.adjust_for_inflation")}
-              className="h-3 w-3 rounded border-gray-300 text-primary focus:ring-primary"
-            />
-            <span className="text-xs">Adjust for inflation</span>
-          </label>
+        <div className="flex items-center space-x-2 mb-2">
+          <Controller
+            name="retirement_spending.adjust_for_inflation"
+            control={control}
+            render={({ field }) => (
+              <div className="flex items-center gap-2">
+                <input
+                  id="retirement_spending.adjust_for_inflation"
+                  type="checkbox"
+                  checked={field.value}
+                  onCheckedChange={field.onChange}
+                  className="h-4 w-4 rounded border-gray-300 text-purple-600 focus:ring-purple-600 transition-colors"
+                />
+                <label htmlFor="retirement_spending.adjust_for_inflation" className="text-xs font-medium cursor-pointer">
+                  Adjust for inflation
+                </label>
+              </div>
+            )}
+          />
           <Tooltip>
             <TooltipTrigger asChild>
               <Button variant="ghost" size="sm" className="h-4 w-4 p-0">
                 <InfoIcon className="h-3 w-3 text-muted-foreground" />
               </Button>
             </TooltipTrigger>
-            <TooltipContent side="right" className="max-w-xs">
+            <TooltipContent side="right" className="max-w-sm px-3 py-1.5 text-xs">
               Whether to adjust spending for inflation over time. This helps maintain purchasing power throughout retirement.
             </TooltipContent>
           </Tooltip>
         </div>
 
         {/* Period 1 Configuration - Always visible */}
-        <div className="mb-3">
-          <h4 className="font-medium mb-2">Period 1</h4>
-          <div className="flex flex-wrap gap-2 mb-2">
-            <div className="flex-1 min-w-[80px]">
-              <label htmlFor="retirement_spending.period_1_start_age" className="block font-medium text-xs mb-0.5">Age</label>
-              <div className="flex gap-1">
-                <input
-                  id="retirement_spending.period_1_start_age"
-                  type="number"
-                  min={18}
-                  max={100}
-                  {...register("retirement_spending.period_1_start_age", { valueAsNumber: true })}
-                  className="w-full rounded-md border border-input bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none"
-                />
-                <span className="self-center text-xs">-</span>
-                <input
-                  id="retirement_spending.period_1_end_age"
-                  type="number"
-                  min={18}
-                  max={120}
-                  {...register("retirement_spending.period_1_end_age", { valueAsNumber: true })}
-                  className="w-full rounded-md border border-input bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none"
-                />
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button variant="ghost" size="sm" className="h-4 w-4 p-0">
-                      <InfoIcon className="h-3 w-3 text-muted-foreground" />
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent side="right" className="max-w-xs">
-                    Age range for Period 1 of your withdrawal strategy. This defines when this withdrawal approach applies.
-                  </TooltipContent>
-                </Tooltip>
-              </div>
+        <div className="space-y-2">
+          <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Period 1</h3>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
+            {/* Period 1 Start Age */}
+            <div className="space-y-1">
+              <label htmlFor="retirement_spending.period_1_start_age" className="block font-medium text-xs mb-0.5">Start Age</label>
+              <Controller
+                name="retirement_spending.period_1_start_age"
+                control={control}
+                rules={{
+                  min: { value: 18, message: "Age must be at least 18" },
+                  max: { value: 100, message: "Age cannot exceed 100" },
+                }}
+                render={({ field }) => (
+                  <>
+                    <input
+                      id="retirement_spending.period_1_start_age"
+                      type="number"
+                      {...field}
+                      className={`w-full rounded-md border bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none ${
+                        errors.retirement_spending?.period_1_start_age ? "border-red-500 ring-red-500" : ""
+                      }`}
+                    />
+                    {errors.retirement_spending?.period_1_start_age && (
+                      <ValidationError field="retirement_spending.period_1_start_age" message={errors.retirement_spending.period_1_start_age.message ?? "Invalid value"} />
+                    )}
+                  </>
+                )}
+              />
             </div>
 
-            <div className="flex-1 min-w-[80px]">
+            {/* Period 1 End Age */}
+            <div className="space-y-1">
+              <label htmlFor="retirement_spending.period_1_end_age" className="block font-medium text-xs mb-0.5">End Age</label>
+              <Controller
+                name="retirement_spending.period_1_end_age"
+                control={control}
+                rules={{
+                  min: { value: 18, message: "Age must be at least 18" },
+                  max: { value: 120, message: "Age cannot exceed 120" },
+                }}
+                render={({ field }) => (
+                  <>
+                    <input
+                      id="retirement_spending.period_1_end_age"
+                      type="number"
+                      {...field}
+                      className={`w-full rounded-md border bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none ${
+                        errors.retirement_spending?.period_1_end_age ? "border-red-500 ring-red-500" : ""
+                      }`}
+                    />
+                    {errors.retirement_spending?.period_1_end_age && (
+                      <ValidationError field="retirement_spending.period_1_end_age" message={errors.retirement_spending.period_1_end_age.message ?? "Invalid value"} />
+                    )}
+                  </>
+                )}
+              />
+            </div>
+
+            {/* Period 1 Type */}
+            <div className="space-y-1">
               <label htmlFor="retirement_spending.period_1_withdrawal_type" className="block font-medium text-xs mb-0.5">Type</label>
-              <div className="flex items-center gap-2">
-                <span className={cn("text-xs", period1WithdrawalType === "amount" ? "font-semibold text-primary" : "text-muted-foreground")}>Amount</span>
-                <Switch
-                  id="retirement_spending.period_1_withdrawal_type"
-                  checked={period1WithdrawalType === "percentage"}
-                  onCheckedChange={(checked) => setValue("retirement_spending.period_1_withdrawal_type", checked ? "percentage" : "amount")}
-                />
-                <span className={cn("text-xs", period1WithdrawalType === "percentage" ? "font-semibold text-primary" : "text-muted-foreground")}>Pct</span>
-              </div>
+              <Controller
+                name="retirement_spending.period_1_withdrawal_type"
+                control={control}
+                render={() => (
+                  <>
+                    <div className="flex items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={handlePeriod1Toggle}
+                        className={`text-xs px-3 py-1.5 rounded-md transition-colors ${
+                          period1WithdrawalType === "amount"
+                            ? "bg-purple-600 text-white hover:bg-purple-700"
+                            : "border border-slate-300 dark:border-slate-600 text-muted-foreground hover:text-gray-700 dark:hover:text-gray-300 bg-white dark:bg-slate-900"
+                        }`}
+                      >
+                        Amount
+                      </button>
+                      <div className="w-[2px] h-5 bg-border rounded-full"></div>
+                      <button
+                        type="button"
+                        onClick={handlePeriod1Toggle}
+                        className={`text-xs px-3 py-1.5 rounded-md transition-colors ${
+                          period1WithdrawalType === "percentage"
+                            ? "bg-purple-600 text-white hover:bg-purple-700"
+                            : "border border-slate-300 dark:border-slate-600 text-muted-foreground hover:text-gray-700 dark:hover:text-gray-300 bg-white dark:bg-slate-900"
+                        }`}
+                      >
+                        Percentage
+                      </button>
+                    </div>
+                  </>
+                )}
+              />
             </div>
 
-            <div className="flex-1 min-w-[80px]">
+            {/* Period 1 Value */}
+            <div className="space-y-1 md:col-span-3">
               <label htmlFor="retirement_spending.period_1_withdrawal_value" className="block font-medium text-xs mb-0.5">Value</label>
-              {false ? (
-                <div className="flex items-center gap-1">
-                  <input
-                    id="retirement_spending.period_1_withdrawal_pct"
-                    type="number"
-                    min={0}
-                    max={100}
-                    step={0.5}
-                    {...register("retirement_spending.period_1_withdrawal_pct", { valueAsNumber: true })}
-                    className="w-full rounded-md border border-input bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none"
-                  />
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Button variant="ghost" size="sm" className="h-4 w-4 p-0">
-                        <InfoIcon className="h-3 w-3 text-muted-foreground" />
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent side="right" className="max-w-xs">
-                      Percentage of portfolio to withdraw annually (e.g., 4% for 4% rule). This represents a percentage-based withdrawal strategy.
-                    </TooltipContent>
-                  </Tooltip>
-                </div>
+              {period1WithdrawalType === "percentage" ? (
+                <Controller
+                  name="retirement_spending.period_1_withdrawal_pct"
+                  control={control}
+                  rules={{
+                    min: { value: 0, message: "Percentage cannot be negative" },
+                    max: { value: 100, message: "Percentage cannot exceed 100" },
+                  }}
+                  render={({ field }) => (
+                    <>
+                      <div className="flex items-center gap-2">
+                        <input
+                          id="retirement_spending.period_1_withdrawal_pct"
+                          type="number"
+                          min={0}
+                          max={100}
+                          step={0.5}
+                          {...field}
+                          className={`w-full rounded-md border bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none ${
+                            errors.retirement_spending?.period_1_withdrawal_pct ? "border-red-500 ring-red-500" : ""
+                          }`}
+                        />
+                        <span className="text-xs text-muted-foreground">%</span>
+                      </div>
+                      {errors.retirement_spending?.period_1_withdrawal_pct && (
+                        <ValidationError field="retirement_spending.period_1_withdrawal_pct" message={errors.retirement_spending.period_1_withdrawal_pct.message ?? "Invalid value"} />
+                      )}
+                    </>
+                  )}
+                />
               ) : (
-                <div className="flex items-center gap-1">
-                  <input
-                    id="retirement_spending.period_1_withdrawal_amount"
-                    type="number"
-                    min={0}
-                    step={100}
-                    {...register("retirement_spending.period_1_withdrawal_amount", { valueAsNumber: true })}
-                    className="w-full rounded-md border border-input bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none"
-                  />
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Button variant="ghost" size="sm" className="h-4 w-4 p-0">
-                        <InfoIcon className="h-3 w-3 text-muted-foreground" />
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent side="right" className="max-w-xs">
-                      Fixed dollar amount to withdraw annually. This represents a fixed dollar withdrawal strategy.
-                    </TooltipContent>
-                  </Tooltip>
-                </div>
+                <Controller
+                  name="retirement_spending.period_1_withdrawal_amount"
+                  control={control}
+                  rules={{
+                    min: { value: 0, message: "Amount cannot be negative" },
+                  }}
+                  render={({ field }) => (
+                    <>
+                      <input
+                        id="retirement_spending.period_1_withdrawal_amount"
+                        type="number"
+                        min={0}
+                        step={100}
+                        {...field}
+                        className={`w-full rounded-md border bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none ${
+                          errors.retirement_spending?.period_1_withdrawal_amount ? "border-red-500 ring-red-500" : ""
+                        }`}
+                      />
+                      {errors.retirement_spending?.period_1_withdrawal_amount && (
+                        <ValidationError field="retirement_spending.period_1_withdrawal_amount" message={errors.retirement_spending.period_1_withdrawal_amount.message ?? "Invalid value"} />
+                      )}
+                    </>
+                  )}
+                />
               )}
             </div>
           </div>
         </div>
 
-        {/* Toggle for Period 2 - next to inflation */}
-        <div className="flex items-center space-x-2 mb-3">
-          <input
-            id="retirement_spending.two_period_mode"
-            type="checkbox"
-            {...register("retirement_spending.two_period_mode")}
-            className="h-3 w-3 rounded border-gray-300 text-primary focus:ring-primary"
+        {/* Toggle for Period 2 */}
+        <div className="flex items-center space-x-2 mb-2">
+          <Controller
+            name="retirement_spending.two_period_mode"
+            control={control}
+            render={({ field }) => (
+              <div className="flex items-center gap-2">
+                <input
+                  id="retirement_spending.two_period_mode"
+                  type="checkbox"
+                  checked={field.value}
+                  onCheckedChange={field.onChange}
+                  className="h-4 w-4 rounded border-gray-300 text-purple-600 focus:ring-purple-600 transition-colors"
+                />
+                <label htmlFor="retirement_spending.two_period_mode" className="text-xs font-medium cursor-pointer">
+                  Configure Period 2 spending
+                </label>
+              </div>
+            )}
           />
-          <label htmlFor="retirement_spending.two_period_mode" className="text-xs">
-            Configure Period 2 spending
-          </label>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button variant="ghost" size="sm" className="h-4 w-4 p-0">
-                <InfoIcon className="h-3 w-3 text-muted-foreground" />
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent side="right" className="max-w-xs">
-              Enable second period for more complex withdrawal strategies. This allows you to define different spending rules for different age ranges.
-            </TooltipContent>
-          </Tooltip>
         </div>
 
         {/* Period 2 Configuration - Only shown when enabled */}
         {twoPeriodMode && (
-          <div className="mb-3">
-            <h4 className="font-medium mb-2">Period 2</h4>
-            <div className="flex flex-wrap gap-2 mb-2">
-              <div className="flex-1 min-w-[80px]">
-                <label htmlFor="retirement_spending.period_2_start_age" className="block font-medium text-xs mb-0.5">Age</label>
-                <div className="flex gap-1">
-                  <input
-                    id="retirement_spending.period_2_start_age"
-                    type="number"
-                    min={18}
-                    max={120}
-                    {...register("retirement_spending.period_2_start_age", { valueAsNumber: true })}
-                    className="w-full rounded-md border border-input bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none"
-                  />
-                  <span className="self-center text-xs">-</span>
-                  <input
-                    id="retirement_spending.period_2_end_age"
-                    type="number"
-                    min={18}
-                    max={120}
-                    {...register("retirement_spending.period_2_end_age", { valueAsNumber: true })}
-                    className="w-full rounded-md border border-input bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none"
-                  />
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Button variant="ghost" size="sm" className="h-4 w-4 p-0">
-                        <InfoIcon className="h-3 w-3 text-muted-foreground" />
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent side="right" className="max-w-xs">
-                      Age range for Period 2 of your withdrawal strategy. This defines when this withdrawal approach applies.
-                    </TooltipContent>
-                  </Tooltip>
-                </div>
+          <div className="space-y-2 animate-in fade-in slide-in-from-top-2 duration-300">
+            <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Period 2</h3>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
+              {/* Period 2 Start Age */}
+              <div className="space-y-1">
+                <label htmlFor="retirement_spending.period_2_start_age" className="block font-medium text-xs mb-0.5">Start Age</label>
+                <Controller
+                  name="retirement_spending.period_2_start_age"
+                  control={control}
+                  rules={{
+                    min: { value: 18, message: "Age must be at least 18" },
+                    max: { value: 120, message: "Age cannot exceed 120" },
+                  }}
+                  render={({ field }) => (
+                    <>
+                      <input
+                        id="retirement_spending.period_2_start_age"
+                        type="number"
+                        {...field}
+                        className={`w-full rounded-md border bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none ${
+                          errors.retirement_spending?.period_2_start_age ? "border-red-500 ring-red-500" : ""
+                        }`}
+                      />
+                      {errors.retirement_spending?.period_2_start_age && (
+                        <ValidationError field="retirement_spending.period_2_start_age" message={errors.retirement_spending.period_2_start_age.message ?? "Invalid value"} />
+                      )}
+                    </>
+                  )}
+                />
               </div>
 
-              <div className="flex-1 min-w-[80px]">
+              {/* Period 2 End Age */}
+              <div className="space-y-1">
+                <label htmlFor="retirement_spending.period_2_end_age" className="block font-medium text-xs mb-0.5">End Age</label>
+                <Controller
+                  name="retirement_spending.period_2_end_age"
+                  control={control}
+                  rules={{
+                    min: { value: 18, message: "Age must be at least 18" },
+                    max: { value: 120, message: "Age cannot exceed 120" },
+                  }}
+                  render={({ field }) => (
+                    <>
+                      <input
+                        id="retirement_spending.period_2_end_age"
+                        type="number"
+                        {...field}
+                        className={`w-full rounded-md border bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none ${
+                          errors.retirement_spending?.period_2_end_age ? "border-red-500 ring-red-500" : ""
+                        }`}
+                      />
+                      {errors.retirement_spending?.period_2_end_age && (
+                        <ValidationError field="retirement_spending.period_2_end_age" message={errors.retirement_spending.period_2_end_age.message ?? "Invalid value"} />
+                      )}
+                    </>
+                  )}
+                />
+              </div>
+
+              {/* Period 2 Type */}
+              <div className="space-y-1">
                 <label htmlFor="retirement_spending.period_2_withdrawal_type" className="block font-medium text-xs mb-0.5">Type</label>
-                <div className="flex items-center gap-2">
-                  <span className={cn("text-xs", period2WithdrawalType === "amount" ? "font-semibold text-primary" : "text-muted-foreground")}>Amount</span>
-                  <Switch
-                    id="retirement_spending.period_2_withdrawal_type"
-                    checked={period2WithdrawalType === "percentage"}
-                    onCheckedChange={(checked) => setValue("retirement_spending.period_2_withdrawal_type", checked ? "percentage" : "amount")}
-                  />
-                  <span className={cn("text-xs", period2WithdrawalType === "percentage" ? "font-semibold text-primary" : "text-muted-foreground")}>Pct</span>
-                </div>
+                <Controller
+                  name="retirement_spending.period_2_withdrawal_type"
+                  control={control}
+                  render={() => (
+                    <>
+                      <div className="flex items-center gap-2">
+                        <button
+                          type="button"
+                          onClick={handlePeriod2Toggle}
+                          className={`text-xs px-3 py-1.5 rounded-md transition-colors ${
+                            period2WithdrawalType === "amount"
+                              ? "bg-purple-600 text-white hover:bg-purple-700"
+                              : "border border-slate-300 dark:border-slate-600 text-muted-foreground hover:text-gray-700 dark:hover:text-gray-300 bg-white dark:bg-slate-900"
+                          }`}
+                        >
+                          Amount
+                        </button>
+                        <div className="w-[2px] h-5 bg-border rounded-full"></div>
+                        <button
+                          type="button"
+                          onClick={handlePeriod2Toggle}
+                          className={`text-xs px-3 py-1.5 rounded-md transition-colors ${
+                            period2WithdrawalType === "percentage"
+                              ? "bg-purple-600 text-white hover:bg-purple-700"
+                              : "border border-slate-300 dark:border-slate-600 text-muted-foreground hover:text-gray-700 dark:hover:text-gray-300 bg-white dark:bg-slate-900"
+                          }`}
+                        >
+                          Percentage
+                        </button>
+                      </div>
+                    </>
+                  )}
+                />
               </div>
 
-              <div className="flex-1 min-w-[80px]">
+              {/* Period 2 Value */}
+              <div className="space-y-1 md:col-span-3">
                 <label htmlFor="retirement_spending.period_2_withdrawal_value" className="block font-medium text-xs mb-0.5">Value</label>
-                {false ? (
-                  <div className="flex items-center gap-1">
-                    <input
-                      id="retirement_spending.period_2_withdrawal_pct"
-                      type="number"
-                      min={0}
-                      max={100}
-                      step={0.5}
-                      {...register("retirement_spending.period_2_withdrawal_pct", { valueAsNumber: true })}
-                      className="w-full rounded-md border border-input bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none"
-                    />
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <Button variant="ghost" size="sm" className="h-4 w-4 p-0">
-                          <InfoIcon className="h-3 w-3 text-muted-foreground" />
-                        </Button>
-                      </TooltipTrigger>
-                      <TooltipContent side="right" className="max-w-xs">
-                        Percentage of portfolio to withdraw annually (e.g., 4% for 4% rule). This represents a percentage-based withdrawal strategy.
-                      </TooltipContent>
-                    </Tooltip>
-                  </div>
+                {period2WithdrawalType === "percentage" ? (
+                  <Controller
+                    name="retirement_spending.period_2_withdrawal_pct"
+                    control={control}
+                    rules={{
+                      min: { value: 0, message: "Percentage cannot be negative" },
+                      max: { value: 100, message: "Percentage cannot exceed 100" },
+                    }}
+                    render={({ field }) => (
+                      <>
+                        <div className="flex items-center gap-2">
+                          <input
+                            id="retirement_spending.period_2_withdrawal_pct"
+                            type="number"
+                            min={0}
+                            max={100}
+                            step={0.5}
+                            {...field}
+                            className={`w-full rounded-md border bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none ${
+                              errors.retirement_spending?.period_2_withdrawal_pct ? "border-red-500 ring-red-500" : ""
+                            }`}
+                          />
+                          <span className="text-xs text-muted-foreground">%</span>
+                        </div>
+                        {errors.retirement_spending?.period_2_withdrawal_pct && (
+                          <ValidationError field="retirement_spending.period_2_withdrawal_pct" message={errors.retirement_spending.period_2_withdrawal_pct.message ?? "Invalid value"} />
+                        )}
+                      </>
+                    )}
+                  />
                 ) : (
-                  <div className="flex items-center gap-1">
-                    <input
-                      id="retirement_spending.period_2_withdrawal_amount"
-                      type="number"
-                      min={0}
-                      step={100}
-                      {...register("retirement_spending.period_2_withdrawal_amount", { valueAsNumber: true })}
-                      className="w-full rounded-md border border-input bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none"
-                    />
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <Button variant="ghost" size="sm" className="h-4 w-4 p-0">
-                          <InfoIcon className="h-3 w-3 text-muted-foreground" />
-                        </Button>
-                      </TooltipTrigger>
-                      <TooltipContent side="right" className="max-w-xs">
-                        Fixed dollar amount to withdraw annually. This represents a fixed dollar withdrawal strategy.
-                      </TooltipContent>
-                    </Tooltip>
-                  </div>
+                  <Controller
+                    name="retirement_spending.period_2_withdrawal_amount"
+                    control={control}
+                    rules={{
+                      min: { value: 0, message: "Amount cannot be negative" },
+                    }}
+                    render={({ field }) => (
+                      <>
+                        <input
+                          id="retirement_spending.period_2_withdrawal_amount"
+                          type="number"
+                          min={0}
+                          step={100}
+                          {...field}
+                          className={`w-full rounded-md border bg-transparent px-2 py-1 text-xs shadow-xs focus:border-ring focus:ring-ring/50 outline-none ${
+                            errors.retirement_spending?.period_2_withdrawal_amount ? "border-red-500 ring-red-500" : ""
+                          }`}
+                        />
+                        {errors.retirement_spending?.period_2_withdrawal_amount && (
+                          <ValidationError field="retirement_spending.period_2_withdrawal_amount" message={errors.retirement_spending.period_2_withdrawal_amount.message ?? "Invalid value"} />
+                        )}
+                      </>
+                    )}
+                  />
                 )}
               </div>
             </div>
           </div>
         )}
+
       </div>
-    </div>
+    </section>
   );
 };
 

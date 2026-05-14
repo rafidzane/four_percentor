@@ -37,7 +37,9 @@ Utility functions and helper methods should be organized under the `util` module
 
 ### Implementation Process
 - Changes should be implemented in a staged manner using the tasks file
-- Each task should be marked as complete when finished
+- **Task format**: Tasks must use checkbox format with `- [ ]` prefix for incomplete and `- [x]` when complete
+- Tasks are auto-generated from OpenSpec template at `@fission-ai/openspec/schemas/spec-driven/templates/tasks.md`
+- Each task should be broken down to component-level granularity
 - All changes must be tested and validated before marking tasks complete
 - After all tasks are complete, changes can be archived using `/opsx:archive`
 

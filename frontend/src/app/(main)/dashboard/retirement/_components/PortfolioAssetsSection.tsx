@@ -4,7 +4,8 @@ import { FC, useMemo } from "react";
 import { useFormContext, Controller, useWatch } from "react-hook-form";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
-import { InfoIcon } from "lucide-react";
+import { InfoIcon, WalletMinimalIcon } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 // Import the form data types and validation components
 import type { FormData } from "@/app/(main)/dashboard/retirement/_components/RetirementForm";
@@ -40,19 +41,28 @@ export const PortfolioAssetsSection: FC<PortfolioAssetsSectionProps> = ({ classN
   }, [equityPct, fixedIncomePct]);
 
   return (
-    <div data-slot="card" className="bg-card text-card-foreground flex flex-col gap-6 rounded-xl border-l-4 border-blue-500 py-6 shadow-sm mt-3">
-      <div data-slot="card-header" className="@container/card-header grid auto-rows-min grid-rows-[auto_auto] items-start gap-2 has-data-[slot=card-action]:grid-cols-[1fr_auto] [.border-b]:pb-6">
-        <div data-slot="card-title" className="leading-none font-semibold flex items-center gap-2">
-          <span className="grid size-7 place-content-center rounded-sm bg-muted">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-wallet-minimal size-5" aria-hidden="true">
-              <path d="M17 14h.01"></path>
-              <path d="M7 7h12a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14"></path>
-            </svg>
-          </span>
-          Portfolio Assets
+    <section data-slot="card" className={cn(
+      "group relative overflow-hidden rounded-2xl border bg-card text-card-foreground shadow-sm transition-all hover:shadow-md",
+      className
+    )}>
+      {/* Decorative accent bar */}
+      <div className="absolute inset-y-0 left-0 w-1.5 bg-gradient-to-b from-blue-500 via-indigo-500 to-purple-500 opacity-80 transition-all group-hover:opacity-100" />
+
+      {/* Header Section */}
+      <div className="relative px-4 py-3 border-b border-slate-100 dark:border-slate-800">
+        <div className="flex items-center gap-2">
+          <div className="grid size-7 place-content-center rounded-md bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950/30 dark:to-indigo-950/30 border border-blue-100 dark:border-blue-800/50 shadow-inner">
+            <WalletMinimalIcon className="size-4 text-blue-600 dark:text-indigo-400" />
+          </div>
+          <h2 className="text-base font-semibold tracking-tight text-slate-900 dark:text-slate-100">
+            Portfolio Assets
+          </h2>
         </div>
       </div>
-      <div data-slot="card-content" className="px-6 space-y-4">
+
+      {/* Card Content */}
+      <div data-slot="card-content" className="px-4 py-3 space-y-3">
+        
         {/* Validation Error Banner for Allocation */}
         {validationErrors["portfolio_allocation"] && (
           <ValidationError field="portfolio_allocation" message={validationErrors["portfolio_allocation"]} />
@@ -287,7 +297,7 @@ export const PortfolioAssetsSection: FC<PortfolioAssetsSectionProps> = ({ classN
           {/* ReturnsSection will be imported here from the original component */}
         </div>
       </div>
-    </div>
+    </section>
   );
 };
 
