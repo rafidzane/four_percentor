@@ -285,7 +285,7 @@ class RetirementCalculator:
         )
 
     def _calculate_yearly_income(self, age: int) -> float:
-        """Calculate total yearly income for a given age"""
+        """Calculate total yearly income for a given age (excluding portfolio withdrawals)"""
         total_income = 0.0
 
         # Calculate Social Security (simplified - would need actual COLA logic)
