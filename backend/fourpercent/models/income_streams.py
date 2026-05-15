@@ -6,14 +6,12 @@ class SocialSecurityInput(BaseModel):
     """Social Security input for a single person"""
     claim_age: int = Field(62, ge=62, le=70, description="Age to claim benefits")
     yearly_amount_today_dollars: float = Field(ge=0, description="Yearly amount in today's dollars")
-    cola_adjustment: Literal["inflation", "fixed"] = Field("inflation", description="COLA adjustment method")
 
 
 class PensionInput(BaseModel):
     """Pension input"""
     starting_age: int = Field(description="Age when pension starts")
     yearly_amount: float = Field(ge=0, description="Yearly pension amount")
-    annual_cola_pct: float = Field(default=0.0, ge=0, le=100, description="Annual COLA percentage")
 
 
 class OneTimeBenefitInput(BaseModel):
