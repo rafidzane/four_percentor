@@ -2,6 +2,11 @@ from pydantic import BaseModel, Field, field_validator, model_validator
 from typing import Optional, Literal
 
 
+class HistoricalYearInput(BaseModel):
+    """Historical year selection - only visible in single_year mode"""
+    historical_year: int = Field(1929, ge=1871, le=2025, description="Historical year for simulation")
+
+
 class PortfolioAllocationInput(BaseModel):
     """Portfolio allocation and returns input section"""
     equity_pct: float = Field(70.0, ge=0, le=100, description="Percentage in equities")
