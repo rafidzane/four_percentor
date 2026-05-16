@@ -83,26 +83,30 @@ class RetirementCalculator:
         # Initialize arrays for results
         ages = []
         balances = []
-        incomes = []
+        net_cash_flows = []
         expenses_list = []
-        net_incomes = []
 
         current_contribution = yearly_contribution
         current_spending = first_year_withdrawal
-        
+
         for year in range(current_age, end_age + 1):
             ages.append(year)
 
             if year < retirement_age:
                 # Pre-retirement: add contributions, earn returns
+                starting_balance = portfolio_balance
                 portfolio_balance += current_contribution
                 portfolio_balance *= (1 + pre_retirement_return)
 
                 current_contribution *= (1 + contribution_growth)
                 current_spending *= (1 + inflation_rate)  # Adjust for inflation
 
+                # Calculate cash flow using starting balance
+                annual_cash_flow = self._calculate_yearly_income(year, starting_balance, False)
             else:
                 # Post-retirement: withdraw expenses, earn post-retirement returns
+                starting_balance = portfolio_balance
+
                 # Handle two-period spending logic
                 if spending.two_period_mode:
                     # Determine which period we're in and set appropriate spending
@@ -131,15 +135,12 @@ class RetirementCalculator:
                 else:
                     current_spending *= (1 + inflation_rate)
 
+                # Calculate cash flow using starting balance
+                annual_cash_flow = self._calculate_yearly_income(year, starting_balance, True)
+
             balances.append(portfolio_balance)
-
-            # Calculate income and expenses
-            annual_income = self._calculate_yearly_income(year)
-            annual_expenses = current_spending
-
-            incomes.append(annual_income)
-            expenses_list.append(annual_expenses)
-            net_incomes.append(annual_income - annual_expenses)
+            net_cash_flows.append(annual_cash_flow)
+            expenses_list.append(current_spending)
         
         # Determine success (portfolio > 0 throughout)
         success = all(b >= 0 for b in balances)
@@ -148,13 +149,12 @@ class RetirementCalculator:
             year_of_depletion = next((i + current_age for i, b in enumerate(balances) if b < 0), None)
         else:
             year_of_depletion = None
-        
+
         return RetirementResponse(
             age=ages,
             portfolio_balance=balances,
-            income=incomes,
+            net_cash_flows=net_cash_flows,
             expenses=expenses_list,
-            net_income=net_incomes,
             success=success,
             success_probability=None,  # Would need Monte Carlo for this
             year_of_depletion=year_of_depletion,
@@ -164,41 +164,90 @@ class RetirementCalculator:
             min_balance=min(balances) if balances else 0
         )
     
-    def _calculate_yearly_income(self, age: int) -> float:
-        """Calculate total yearly income for a given age (excluding portfolio withdrawals)"""
-        total_income = 0.0
+    def _calculate_yearly_income(
+        self, age: int, portfolio_balance: float, is_retired: bool
+    ) -> float:
+        """Calculate net cash flow for a given year.
 
-        # Calculate Social Security (simplified - would need actual COLA logic)
-        if self.input.income_streams and self.input.income_streams.social_security_you:
-            ss_you = self.input.income_streams.social_security_you
-            if age >= ss_you.claim_age:
-                total_income += ss_you.yearly_amount_today_dollars
+        Pre-retirement: returns + contributions
+        Post-retirement: returns - withdrawals
 
-        if self.input.income_streams and self.input.income_streams.social_security_spouse:
-            ss_spouse = self.input.income_streams.social_security_spouse
-            if age >= ss_spouse.claim_age:
-                total_income += ss_spouse.yearly_amount_today_dollars
+        Args:
+            age: Current age
+            portfolio_balance: Starting balance for this year
+            is_retired: Whether we're in retirement phase
 
-        # Calculate pensions (simplified - would need actual COLA logic)
-        if self.input.income_streams and self.input.income_streams.pension_1:
-            pension1 = self.input.income_streams.pension_1
-            if age >= pension1.starting_age:
-                total_income += pension1.yearly_amount
+        Returns:
+            Net cash flow (positive = net gain, negative = net loss)
+        """
+        if portfolio_balance <= 0:
+            return 0.0
 
-        if self.input.income_streams and self.input.income_streams.pension_2:
-            pension2 = self.input.income_streams.pension_2
-            if age >= pension2.starting_age:
-                total_income += pension2.yearly_amount
+        timeline = self.input.timeline
+        assets = self.input.current_assets
+        portfolio = self.input.portfolio_allocation
 
-        # Calculate rental income (simplified - would need actual growth logic)
-        if self.input.income_streams and self.input.income_streams.rental_properties:
-            for prop in self.input.income_streams.rental_properties:
-                # Skip properties with None values to avoid validation errors
-                if prop.until_age is not None and prop.net_annual_income is not None:
-                    if age <= prop.until_age:
-                        total_income += prop.net_annual_income
+        # Calculate pre-retirement return rate
+        pre_retirement_return = (
+            (portfolio.equity_pct / 100) * (portfolio.equity_return_pre_retirement_pct / 100)
+            + (portfolio.fixed_income_pct / 100) * (portfolio.fixed_income_return_pct / 100)
+        )
 
-        return total_income
+        # Calculate post-retirement return rate
+        post_retirement_return = (
+            (portfolio.equity_pct / 100) * (portfolio.equity_return_post_retirement_pct / 100)
+            + (portfolio.fixed_income_pct / 100) * (portfolio.fixed_income_return_pct / 100)
+        )
+
+        # Calculate returns on portfolio
+        if is_retired:
+            return_rate = post_retirement_return
+        else:
+            return_rate = pre_retirement_return
+
+        returns = portfolio_balance * return_rate
+
+        if not is_retired:
+            # Pre-retirement: add contributions
+            contribution = assets.yearly_contribution
+            cash_flow = returns + contribution
+        else:
+            # Post-retirement: subtract withdrawals based on spending config
+            withdrawal = self._calculate_withdrawal(age, portfolio_balance)
+            cash_flow = returns - withdrawal
+
+        return cash_flow
+
+    def _calculate_withdrawal(self, age: int, portfolio_balance: float) -> float:
+        """Calculate withdrawal amount for a given year."""
+        spending = self.input.retirement_spending
+
+        if spending.two_period_mode:
+            # Determine which period we're in
+            if (spending.period_1_start_age is not None and spending.period_1_end_age is not None
+                and age >= spending.period_1_start_age and age <= spending.period_1_end_age):
+                withdrawal_pct = spending.period_1_withdrawal_pct
+            elif (spending.period_2_start_age is not None and spending.period_2_end_age is not None
+                  and age >= spending.period_2_start_age and age <= spending.period_2_end_age):
+                withdrawal_pct = spending.period_2_withdrawal_pct
+            else:
+                # Fallback to standard calculation
+                withdrawal_pct = spending.withdrawal_pct if hasattr(spending, 'withdrawal_pct') else 4.0
+        else:
+            # Single period spending
+            if spending.spending_mode == "four_pct_rule":
+                withdrawal_pct = 4.0
+            elif hasattr(spending, 'withdrawal_pct') and spending.withdrawal_pct is not None:
+                withdrawal_pct = spending.withdrawal_pct
+            else:
+                # Fallback: use first_year_expenses as dollar amount or percentage
+                if hasattr(spending, 'first_year_expenses') and spending.first_year_expenses is not None:
+                    # If first_year_expenses is set, we need to convert to percentage
+                    withdrawal_pct = (spending.first_year_expenses / portfolio_balance) * 100
+                else:
+                    withdrawal_pct = 4.0
+
+        return portfolio_balance * (withdrawal_pct / 100)
     
     def validate_inputs(self) -> tuple[bool, list[str]]:
         """Validate input data and return (is_valid, error_messages)"""

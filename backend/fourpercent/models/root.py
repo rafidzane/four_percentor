@@ -27,9 +27,8 @@ class RetirementResponse(BaseModel):
     """Response model for retirement projection"""
     age: list[int]
     portfolio_balance: list[float]
-    income: list[float]
+    net_cash_flows: list[float]
     expenses: list[float]
-    net_income: list[float]
     success: bool
     success_probability: Optional[float] = None
     year_of_depletion: Optional[int] = None
