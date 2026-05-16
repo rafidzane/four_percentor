@@ -7,8 +7,6 @@ from fourpercent.models.portfolio import PortfolioAllocationInput
 from fourpercent.models.spending import SpendingStrategyInput
 from fourpercent.models.income_streams import IncomeStreamsInput
 from fourpercent.models.real_estate import RealEstateInput
-from fourpercent.models.health import HealthDataInput
-from fourpercent.models.debt import DebtInput
 
 
 class RetirementInput(BaseModel):
@@ -23,8 +21,6 @@ class RetirementInput(BaseModel):
     # Optional sections (checkbox-gated)
     income_streams: Optional[IncomeStreamsInput] = Field(None, description="Income streams (optional)")
     real_estate: Optional[RealEstateInput] = Field(None, description="Real estate equity (optional)")
-    health_data: Optional[HealthDataInput] = Field(None, description="Health status and longevity data (optional)")
-    debt: Optional[DebtInput] = Field(None, description="Debt obligations (optional)")
 
 
 class RetirementResponse(BaseModel):
@@ -41,6 +37,3 @@ class RetirementResponse(BaseModel):
     avg_balance: float
     max_balance: float
     min_balance: float
-    total_debt: Optional[float] = None
-    monthly_debt_service: Optional[float] = None
-    debt_to_income_ratio: Optional[float] = None

@@ -9,8 +9,6 @@ from typing import Optional
 import math
 
 from fourpercent.models.root import RetirementInput, RetirementResponse
-from fourpercent.models.health import HealthDataOutput
-from fourpercent.models.debt import DebtOutput
 
 
 class RetirementCalculator:
@@ -18,9 +16,7 @@ class RetirementCalculator:
 
     def __init__(self, input_data: RetirementInput):
         self.input = input_data
-        self.health_output = self._calculate_health_adjustments()
-        self.debt_output = self._calculate_debt_adjustments()
-    
+
     def calculate_projection(self) -> RetirementResponse:
         """
         Calculate retirement projection based on input parameters.
@@ -32,11 +28,8 @@ class RetirementCalculator:
         retirement_age = timeline.retirement_age
         years_in_retirement = timeline.years_in_retirement
 
-        # Apply health adjustments to the retirement period
-        adjusted_years_in_retirement = self.health_output.adjusted_years_in_retirement or years_in_retirement
-
         # Calculate end age (based on spouse if younger, otherwise standard)
-        end_age = current_age + adjusted_years_in_retirement
+        end_age = current_age + years_in_retirement
         
         # Get portfolio data
         assets = self.input.current_assets
@@ -168,122 +161,9 @@ class RetirementCalculator:
             final_balance=balances[-1] if balances else 0,
             avg_balance=sum(balances) / len(balances) if balances else 0,
             max_balance=max(balances) if balances else 0,
-            min_balance=min(balances) if balances else 0,
-            total_debt=self.debt_output.total_debt,
-            monthly_debt_service=self.debt_output.monthly_debt_service,
-            debt_to_income_ratio=self.debt_output.debt_to_income_ratio
+            min_balance=min(balances) if balances else 0
         )
     
-    def _calculate_health_adjustments(self) -> HealthDataOutput:
-        """Calculate health-based adjustments to retirement planning"""
-        health_data = self.input.health_data
-
-        # Default values
-        longevity_multiplier = 1.0
-        healthcare_cost_multiplier = 1.0
-        adjusted_years_in_retirement = 0
-
-        if health_data and health_data.health_status:
-            # Apply longevity multipliers based on health status
-            health_multipliers = {
-                "excellent": 1.12,
-                "good": 1.08,
-                "average": 1.00,
-                "fair": 0.96,
-                "poor": 0.92
-            }
-
-            longevity_multiplier = health_multipliers.get(health_data.health_status, 1.0)
-
-        # Apply healthcare cost escalation multipliers
-        if health_data and health_data.healthcare_cost_escalation:
-            escalation_multipliers = {
-                "normal": 1.0,
-                "high": 1.03,
-                "very_high": 1.05
-            }
-
-            healthcare_cost_multiplier = escalation_multipliers.get(health_data.healthcare_cost_escalation, 1.0)
-
-        # If user provided custom expected lifespan, adjust years_in_retirement accordingly
-        if health_data and health_data.expected_lifespan:
-            timeline = self.input.timeline
-            base_years = timeline.years_in_retirement
-            # Calculate difference from baseline (assumed baseline of 30 years)
-            expected_years = health_data.expected_lifespan - timeline.current_age
-            adjusted_years_in_retirement = max(1, min(expected_years, 50))  # Keep reasonable bounds
-
-        return HealthDataOutput(
-            longevity_multiplier=longevity_multiplier,
-            healthcare_cost_multiplier=healthcare_cost_multiplier,
-            adjusted_years_in_retirement=adjusted_years_in_retirement
-        )
-
-    def _calculate_debt_adjustments(self) -> DebtOutput:
-        """Calculate debt-related adjustments to retirement planning"""
-        debt_data = self.input.debt
-
-        # Default values
-        total_debt = 0.0
-        monthly_debt_service = 0.0
-        debt_to_income_ratio = 0.0
-        estimated_debt_free_year = None
-
-        if debt_data:
-            # Calculate total debt from all sources
-            if debt_data.mortgage and debt_data.mortgage.balance:
-                total_debt += debt_data.mortgage.balance or 0.0
-
-            if debt_data.auto_loans:
-                for loan in debt_data.auto_loans:
-                    if loan.balance:
-                        total_debt += loan.balance
-
-            if debt_data.credit_cards and debt_data.credit_cards.total_balance:
-                total_debt += debt_data.credit_cards.total_balance or 0.0
-
-            if debt_data.student_loans and debt_data.student_loans.balance:
-                total_debt += debt_data.student_loans.balance or 0.0
-
-            # Calculate monthly debt service
-            if debt_data.mortgage and debt_data.mortgage.monthly_payment:
-                monthly_debt_service += debt_data.mortgage.monthly_payment or 0.0
-
-            if debt_data.auto_loans:
-                for loan in debt_data.auto_loans:
-                    if loan.monthly_payment:
-                        monthly_debt_service += loan.monthly_payment
-
-            if debt_data.credit_cards and debt_data.credit_cards.total_balance:
-                # Estimate minimum payment as 2-3% of balance
-                min_payment_pct = debt_data.credit_cards.min_payment_pct or 2.5
-                credit_card_min_payment = (debt_data.credit_cards.total_balance * min_payment_pct / 100) / 12
-                monthly_debt_service += credit_card_min_payment
-
-            if debt_data.student_loans and debt_data.student_loans.monthly_payment:
-                monthly_debt_service += debt_data.student_loans.monthly_payment or 0.0
-
-            # Calculate debt-to-income ratio (simplified - using current income)
-            # In a real implementation, we'd use projected retirement income
-            if total_debt > 0:
-                # For now, estimate debt service as a percentage of total assets
-                # This is a placeholder that would be improved in a more sophisticated model
-                total_assets = (
-                    self.input.current_assets.investment_portfolio +
-                    self.input.current_assets.your_401k_ira +
-                    self.input.current_assets.spouse_401k_ira
-                )
-
-                if total_assets > 0:
-                    debt_to_income_ratio = monthly_debt_service / (total_assets / 12) if total_assets > 0 else 0.0
-
-        return DebtOutput(
-            total_debt=total_debt,
-            monthly_debt_service=monthly_debt_service,
-            debt_to_income_ratio=debt_to_income_ratio,
-            estimated_debt_free_year=estimated_debt_free_year
-        )
-
     def _calculate_yearly_income(self, age: int) -> float:
         """Calculate total yearly income for a given age (excluding portfolio withdrawals)"""
         total_income = 0.0
