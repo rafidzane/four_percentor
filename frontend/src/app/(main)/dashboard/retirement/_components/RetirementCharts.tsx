@@ -17,9 +17,8 @@ import {
 interface RetirementResponse {
   age: number[];
   portfolio_balance: number[];
-  income: number[];
+  net_cash_flows: number[];
   expenses: number[];
-  net_income: number[];
   success: boolean;
   final_balance: number;
   avg_balance: number;
@@ -30,11 +29,11 @@ interface RetirementResponse {
 // Transform API response into chart-compatible data format
 function transformDataToChartData(result?: RetirementResponse) {
   if (!result || !result.age.length) return null;
-  
+
   const portfolio = result.age.map((age, index) => ({
     age,
     portfolioValue: result.portfolio_balance[index] ?? 0,
-    income: result.income[index] ?? 0,
+    net_cash_flows: result.net_cash_flows[index] ?? 0,
     expenses: result.expenses[index] ?? 0,
   }));
 
@@ -89,20 +88,20 @@ export function RetirementCharts({ result }: { result?: any }) {
           </ResponsiveContainer>
         </div>
 
-        {/* Income vs Expenses Chart */}
+        {/* Cash Flow vs Expenses Chart */}
         <div className="space-y-2">
-          <h3 className="text-sm font-medium text-slate-700 dark:text-slate-300">Income vs Expenses</h3>
+          <h3 className="text-sm font-medium text-slate-700 dark:text-slate-300">Cash Flow vs Expenses</h3>
           <ResponsiveContainer width="100%" height={300}>
             <BarChart data={chartData.portfolio} margin={{ top: 20, right: 30, left: 20, bottom: 20 }} barSize={6} barGap={4}>
               <CartesianGrid strokeDasharray="3 3" vertical={false} />
               <XAxis dataKey="age" label={{ value: 'Age', position: 'insideBottom', offset: -5 }} />
               <YAxis tickFormatter={(value) => `$${(value / 1000).toFixed(0)}K`} />
               <Tooltip formatter={(value: number, name: string) => {
-                if (name === 'Income' || name === 'Expenses') return [`$${value.toLocaleString()}`, name];
+                if (name === 'Cash Flow' || name === 'Expenses') return [`$${value.toLocaleString()}`, name];
                 return [`$${value.toLocaleString()}`, 'Amount'];
               }} />
               <Legend />
-              <Bar dataKey="income" fill="#10b981" name="Income" radius={[4, 4, 0, 0]} />
+              <Bar dataKey="net_cash_flows" fill="#10b981" name="Cash Flow" radius={[4, 4, 0, 0]} />
               <Bar dataKey="expenses" fill="#ef4444" name="Expenses" radius={[4, 4, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>

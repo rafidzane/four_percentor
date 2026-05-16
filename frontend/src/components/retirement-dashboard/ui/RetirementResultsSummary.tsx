@@ -8,9 +8,8 @@ import { cn } from "@/lib/utils";
 interface RetirementResponse {
   age: number[];
   portfolio_balance: number[];
-  income: number[];
+  net_cash_flows: number[];
   expenses: number[];
-  net_income: number[];
   success: boolean;
   final_balance: number;
   avg_balance: number;
@@ -25,7 +24,7 @@ function transformDataToChartData(result?: RetirementResponse) {
   const portfolio = result.age.map((age, index) => ({
     age,
     portfolioValue: result.portfolio_balance[index] ?? 0,
-    income: result.income[index] ?? 0,
+    net_cash_flows: result.net_cash_flows[index] ?? 0,
     expenses: result.expenses[index] ?? 0,
   }));
 
@@ -152,9 +151,9 @@ export const RetirementResultsSummary: FC<RetirementResultsSummaryProps> = ({ re
             )}
           </div>
 
-          {/* Income vs Expenses Chart */}
+          {/* Cash Flow vs Expenses Chart */}
           <div className="space-y-2">
-            <h3 className="text-sm font-medium text-slate-700 dark:text-slate-300">Income vs Expenses</h3>
+            <h3 className="text-sm font-medium text-slate-700 dark:text-slate-300">Cash Flow vs Expenses</h3>
             {chartData && (
               <ResponsiveContainer width="100%" height={280}>
                 <LineChart data={chartData.portfolio} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
@@ -162,11 +161,11 @@ export const RetirementResultsSummary: FC<RetirementResultsSummaryProps> = ({ re
                   <XAxis dataKey="age" label={{ value: "Age", position: "insideBottom", offset: -5 }} />
                   <YAxis tickFormatter={(value) => `$${(value / 1000).toFixed(0)}K`} />
                   <Tooltip formatter={(value: number, name: string) => {
-                    if (name === "Income" || name === "Expenses") return [`$${value.toLocaleString()}`, name];
+                    if (name === "Cash Flow" || name === "Expenses") return [`$${value.toLocaleString()}`, name];
                     return [`$${value.toLocaleString()}`, "Amount"];
                   }} />
                   <Legend />
-                  <Line type="monotone" dataKey="income" stroke="#10b981" name="Income" strokeWidth={2} activeDot={{ r: 6 }} />
+                  <Line type="monotone" dataKey="net_cash_flows" stroke="#10b981" name="Cash Flow" strokeWidth={2} activeDot={{ r: 6 }} />
                   <Line type="monotone" dataKey="expenses" stroke="#ef4444" name="Expenses" strokeWidth={2} activeDot={{ r: 6 }} />
                 </LineChart>
               </ResponsiveContainer>

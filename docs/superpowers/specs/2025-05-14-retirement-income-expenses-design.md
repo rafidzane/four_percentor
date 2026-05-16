@@ -114,7 +114,7 @@ interface RetirementResponse {
 | 63 | $509,750* | $24,600* | $15,443* | $9,157 |
 | 66 | $535,000 | $25,800 | $21,400 (4%) | $4,400 |
 
----
+
 
 ## Implementation Tasks
 

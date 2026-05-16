@@ -7,9 +7,8 @@ import { useDebounce } from './useDebounce';
 export interface RetirementResponse {
   age: number[];
   portfolio_balance: number[];
-  income: number[];
+  net_cash_flows: number[];
   expenses: number[];
-  net_income: number[];
   success: boolean;
   final_balance: number;
   avg_balance: number;
