@@ -186,6 +186,24 @@ export const RetirementForm: FC<RetirementFormProps> = ({ className, onResult })
   return (
     <FormProvider {...form}>
       <form onSubmit={(e) => e.preventDefault()} className={`space-y-8 ${className}`}>
+        {/* Calculate Button - Top of Form */}
+        <div className="flex justify-end">
+          <Button
+            onClick={() => calculateNow()}
+            disabled={isLoading}
+            className="w-full sm:w-auto"
+          >
+            {isLoading ? (
+              <>
+                <LoadingSpinner />
+                Calculating...
+              </>
+            ) : (
+              'Calculate Projection'
+            )}
+          </Button>
+        </div>
+
         {/* Section: Personal Information & Portfolio */}
         <PersonalInformationSection />
         
@@ -219,51 +237,6 @@ export const RetirementForm: FC<RetirementFormProps> = ({ className, onResult })
           </TooltipContent>
         </Tooltip>
 
-        {/* Manual Calculate Button */}
-        <Button 
-          onClick={() => calculateNow()}
-          disabled={isLoading}
-          className="w-full"
-        >
-          {isLoading ? (
-            <>
-              <LoadingSpinner />
-              Calculating...
-            </>
-          ) : (
-            'Calculate Projection'
-          )}
-        </Button>
-
-        {/* Loading Indicator */}
-        {isLoading && (
-          <div className="flex items-center justify-center py-4 text-sm text-muted-foreground">
-            <span className="mr-2">⏳</span>
-            Calculating...
-          </div>
-        )}
-
-        {/* Error Banner */}
-        {isError && error && (
-          <div className="bg-destructive/10 border border-destructive rounded-lg p-4">
-            <p className="text-destructive font-medium">{error.message}</p>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => window.location.reload()}
-              className="mt-2 bg-destructive text-destructive-foreground hover:bg-destructive/90"
-            >
-              Retry
-            </Button>
-          </div>
-        )}
-
-        {/* Auto-calculation indicator */}
-        {!isLoading && !isError && (
-          <p className="text-sm text-muted-foreground text-center italic">
-            Manual calculation enabled for Income Sources and Real Estate sections
-          </p>
-        )}
       </form>
     </FormProvider>
   );

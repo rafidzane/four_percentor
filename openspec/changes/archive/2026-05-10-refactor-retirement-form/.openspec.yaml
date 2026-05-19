@@ -1,7 +1,0 @@
-name: Refactor RetirementForm Component
-description: Break down the large RetirementForm component into smaller, more manageable components by section while maintaining all existing functionality and UI.
-apply:
-  requires:
-    - proposal
-    - design
-    - tasks

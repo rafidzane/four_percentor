@@ -1,10 +1,11 @@
 "use client";
 
 import { FC } from "react";
-import { useFormContext } from "react-hook-form";
+import { useFormContext, Controller } from "react-hook-form";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
-import { InfoIcon } from "lucide-react";
+import { InfoIcon, HomeIcon } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 // Import the form data types
 import type { FormData } from "@/app/(main)/dashboard/retirement/_components/RetirementForm";
@@ -17,18 +18,27 @@ export const RealEstateSection: FC<RealEstateSectionProps> = ({ className }) => 
   const { control, register, watch } = useFormContext<FormData>();
 
   return (
-    <section className="rounded-xl border-l-4 border-blue-500 p-6 min-h-[200px]">
-      <div data-slot="card-header" className="@container/card-header grid auto-rows-min grid-rows-[auto_auto] items-start gap-2 has-data-[slot=card-action]:grid-cols-[1fr_auto] [.border-b]:pb-6 mb-4">
-        <div data-slot="card-title" className="leading-none font-semibold flex items-center gap-2 text-lg">
-          <span className="grid size-7 place-content-center rounded-sm bg-muted">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-home size-5" aria-hidden="true">
-              <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-              <polyline points="9 22 9 12 15 12 15 22"></polyline>
-            </svg>
-          </span>
-          Real Estate
+    <section data-slot="card" className={cn(
+      "group relative overflow-hidden rounded-2xl border bg-card text-card-foreground shadow-sm transition-all hover:shadow-md",
+      className
+    )}>
+      {/* Decorative accent bar */}
+      <div className="absolute inset-y-0 left-0 w-1.5 bg-gradient-to-b from-blue-500 via-indigo-500 to-purple-500 opacity-80 transition-all group-hover:opacity-100" />
+
+      {/* Header Section */}
+      <div data-slot="card-header" className="relative px-4 py-3 border-b border-slate-100 dark:border-slate-800">
+        <div className="flex items-center gap-2">
+          <div className="grid size-7 place-content-center rounded-md bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950/30 dark:to-indigo-950/30 border border-blue-100 dark:border-blue-800/50 shadow-inner">
+            <HomeIcon className="size-4 text-blue-600 dark:text-indigo-400" />
+          </div>
+          <h2 className="text-base font-semibold tracking-tight text-slate-900 dark:text-slate-100">
+            Real Estate
+          </h2>
         </div>
       </div>
+
+      {/* Card Content */}
+      <div data-slot="card-content" className="px-4 py-3 space-y-6">
 
       {/* Primary Home */}
       <div className="space-y-4 mb-6">
@@ -272,6 +282,7 @@ export const RealEstateSection: FC<RealEstateSectionProps> = ({ className }) => 
             </div>
           </>
         )}
+      </div>
       </div>
     </section>
   );

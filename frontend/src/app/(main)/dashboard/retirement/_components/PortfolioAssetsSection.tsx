@@ -307,8 +307,187 @@ export const PortfolioAssetsSection: FC<PortfolioAssetsSectionProps> = ({ classN
             </div>
           </div>
         </div>
+
+        {/* Returns Simulation Section - under Contributions */}
         <div className="mt-3">
-          {/* ReturnsSection will be imported here from the original component */}
+          <h4 className="font-medium mb-2">Returns Simulation</h4>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2">
+            <div className="space-y-1">
+              <div className="flex items-center gap-1">
+                <label htmlFor="portfolio_allocation.equity_return_pre_retirement_pct" className="block font-medium text-xs mb-0.5">Equity return pre-retirement %</label>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button variant="ghost" size="sm" className="h-4 w-4 p-0">
+                      <InfoIcon className="h-3 w-3 text-muted-foreground" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent side="right" className="max-w-xs">
+                    Expected annual return for equity investments before retirement.
+                  </TooltipContent>
+                </Tooltip>
+              </div>
+              <Controller
+                name="portfolio_allocation.equity_return_pre_retirement_pct"
+                control={control}
+                rules={{
+                  min: { value: 0, message: "Return cannot be negative" },
+                  max: { value: 100, message: "Return cannot exceed 100%" },
+                }}
+                render={({ field }) => (
+                  <>
+                    <div className="flex items-center rounded-md border bg-transparent px-2 py-1.5 shadow-xs focus-within:border-ring focus-within:ring-ring/50 outline-none transition-colors">
+                      <input
+                        id="portfolio_allocation.equity_return_pre_retirement_pct"
+                        type="number"
+                        min={0}
+                        max={100}
+                        step={0.5}
+                        value={field.value ?? ''}
+                        onChange={(e) => field.onChange(e.target.value === '' ? null : Number(e.target.value))}
+                        className="flex-1 bg-transparent text-xs outline-none"
+                      />
+                      <span className="text-xs text-muted-foreground">%</span>
+                    </div>
+                    {errors.portfolio_allocation?.equity_return_pre_retirement_pct && (
+                      <ValidationError field="portfolio_allocation.equity_return_pre_retirement_pct" message={errors.portfolio_allocation.equity_return_pre_retirement_pct.message ?? "Invalid value"} />
+                    )}
+                  </>
+                )}
+              />
+            </div>
+
+            <div className="space-y-1">
+              <div className="flex items-center gap-1">
+                <label htmlFor="portfolio_allocation.equity_return_post_retirement_pct" className="block font-medium text-xs mb-0.5">Equity return post-retirement %</label>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button variant="ghost" size="sm" className="h-4 w-4 p-0">
+                      <InfoIcon className="h-3 w-3 text-muted-foreground" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent side="right" className="max-w-xs">
+                    Expected annual return for equity investments after retirement.
+                  </TooltipContent>
+                </Tooltip>
+              </div>
+              <Controller
+                name="portfolio_allocation.equity_return_post_retirement_pct"
+                control={control}
+                rules={{
+                  min: { value: 0, message: "Return cannot be negative" },
+                  max: { value: 100, message: "Return cannot exceed 100%" },
+                }}
+                render={({ field }) => (
+                  <>
+                    <div className="flex items-center rounded-md border bg-transparent px-2 py-1.5 shadow-xs focus-within:border-ring focus-within:ring-ring/50 outline-none transition-colors">
+                      <input
+                        id="portfolio_allocation.equity_return_post_retirement_pct"
+                        type="number"
+                        min={0}
+                        max={100}
+                        step={0.5}
+                        value={field.value ?? ''}
+                        onChange={(e) => field.onChange(e.target.value === '' ? null : Number(e.target.value))}
+                        className="flex-1 bg-transparent text-xs outline-none"
+                      />
+                      <span className="text-xs text-muted-foreground">%</span>
+                    </div>
+                    {errors.portfolio_allocation?.equity_return_post_retirement_pct && (
+                      <ValidationError field="portfolio_allocation.equity_return_post_retirement_pct" message={errors.portfolio_allocation.equity_return_post_retirement_pct.message ?? "Invalid value"} />
+                    )}
+                  </>
+                )}
+              />
+            </div>
+
+            <div className="space-y-1">
+              <div className="flex items-center gap-1">
+                <label htmlFor="portfolio_allocation.fixed_income_return_pct" className="block font-medium text-xs mb-0.5">Fixed income return %</label>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button variant="ghost" size="sm" className="h-4 w-4 p-0">
+                      <InfoIcon className="h-3 w-3 text-muted-foreground" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent side="right" className="max-w-xs">
+                    Expected annual return for fixed income investments (bonds, etc.).
+                  </TooltipContent>
+                </Tooltip>
+              </div>
+              <Controller
+                name="portfolio_allocation.fixed_income_return_pct"
+                control={control}
+                rules={{
+                  min: { value: 0, message: "Return cannot be negative" },
+                  max: { value: 100, message: "Return cannot exceed 100%" },
+                }}
+                render={({ field }) => (
+                  <>
+                    <div className="flex items-center rounded-md border bg-transparent px-2 py-1.5 shadow-xs focus-within:border-ring focus-within:ring-ring/50 outline-none transition-colors">
+                      <input
+                        id="portfolio_allocation.fixed_income_return_pct"
+                        type="number"
+                        min={0}
+                        max={100}
+                        step={0.5}
+                        value={field.value ?? ''}
+                        onChange={(e) => field.onChange(e.target.value === '' ? null : Number(e.target.value))}
+                        className="flex-1 bg-transparent text-xs outline-none"
+                      />
+                      <span className="text-xs text-muted-foreground">%</span>
+                    </div>
+                    {errors.portfolio_allocation?.fixed_income_return_pct && (
+                      <ValidationError field="portfolio_allocation.fixed_income_return_pct" message={errors.portfolio_allocation.fixed_income_return_pct.message ?? "Invalid value"} />
+                    )}
+                  </>
+                )}
+              />
+            </div>
+
+            <div className="space-y-1">
+              <div className="flex items-center gap-1">
+                <label htmlFor="portfolio_allocation.inflation_rate_pct" className="block font-medium text-xs mb-0.5">Inflation rate %</label>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button variant="ghost" size="sm" className="h-4 w-4 p-0">
+                      <InfoIcon className="h-3 w-3 text-muted-foreground" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent side="right" className="max-w-xs">
+                    Expected annual inflation rate. Used to adjust spending power over time.
+                  </TooltipContent>
+                </Tooltip>
+              </div>
+              <Controller
+                name="portfolio_allocation.inflation_rate_pct"
+                control={control}
+                rules={{
+                  min: { value: 0, message: "Inflation rate cannot be negative" },
+                  max: { value: 100, message: "Inflation rate cannot exceed 100%" },
+                }}
+                render={({ field }) => (
+                  <>
+                    <div className="flex items-center rounded-md border bg-transparent px-2 py-1.5 shadow-xs focus-within:border-ring focus-within:ring-ring/50 outline-none transition-colors">
+                      <input
+                        id="portfolio_allocation.inflation_rate_pct"
+                        type="number"
+                        min={0}
+                        max={100}
+                        step={0.1}
+                        value={field.value ?? ''}
+                        onChange={(e) => field.onChange(e.target.value === '' ? null : Number(e.target.value))}
+                        className="flex-1 bg-transparent text-xs outline-none"
+                      />
+                      <span className="text-xs text-muted-foreground">%</span>
+                    </div>
+                    {errors.portfolio_allocation?.inflation_rate_pct && (
+                      <ValidationError field="portfolio_allocation.inflation_rate_pct" message={errors.portfolio_allocation.inflation_rate_pct.message ?? "Invalid value"} />
+                    )}
+                  </>
+                )}
+              />
+            </div>
+          </div>
         </div>
       </div>
     </section>

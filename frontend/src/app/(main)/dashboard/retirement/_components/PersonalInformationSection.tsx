@@ -157,7 +157,7 @@ export const PersonalInformationSection: FC<PersonalInformationSectionProps> = (
           </div>
 
           {/* Spouse Age Field - Only show when spouse info provided */}
-          {(showSpouseFields || showSpouseFields === false) && (
+          {showSpouseFields && (
             <div className="space-y-1 animate-in fade-in slide-in-from-top-2 duration-300">
               <div className="flex items-center gap-1">
                 <label htmlFor="timeline.spouse_age" className="block font-medium text-xs mb-0.5">Spouse Age</label>
@@ -200,7 +200,7 @@ export const PersonalInformationSection: FC<PersonalInformationSectionProps> = (
           )}
 
           {/* Years in Retirement Field - Only show when spouse info provided */}
-          {(showSpouseFields || showSpouseFields === false) && (
+          {showSpouseFields && (
             <div className="space-y-1 animate-in fade-in slide-in-from-top-2 duration-300">
               <div className="flex items-center gap-1">
                 <label htmlFor="timeline.years_in_retirement" className="block font-medium text-xs mb-0.5">Retirement Years</label>
